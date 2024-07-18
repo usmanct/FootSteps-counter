@@ -1,20 +1,28 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import CircularProgress from 'react-native-circular-progress-indicator';
+import Header from './src/components/Header';
+import Home from './src/screens/Home';
+import ScreenNavigation from './src/stackNavigation/ScreenNavigation';
+import { AppProvider } from './src/contextApi/AppContext';
+
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <AppProvider>
+      <SafeAreaView style={styles.container}>
+        <ScreenNavigation />
+      </SafeAreaView>
+    </AppProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: 'lightgrey',
+    marginTop: 40
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
 });
