@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.usmanct.FootStepscounter"
+      "package": "com.usmanct.FootStepscounter",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -37,7 +38,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "a8e1bffd-dcd1-4eb2-915e-c76758e0e096"
+        "projectId": "1d65ac4d-3b9a-4179-bc57-7cc94905daf6"
       }
     }
   }

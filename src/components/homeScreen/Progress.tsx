@@ -7,7 +7,7 @@ import TargetModal from '../TargetModal';
 import { Pedometer } from 'expo-sensors';
 import { datadb } from '../../sqLiteDb/Connection';
 import { AppContext } from '../../contextApi/AppContext';
-const Progress = ({ setCurrentStepCount, currentStepCount }) => {
+const Progress = ({ setCurrentStepCount, currentStepCount } :any) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [target, setTarget] = useState(10)
@@ -35,6 +35,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount }) => {
             setCurrentStepCount(0)
             setIsTargetReached(false);
         }
+        console.log("Inside Target")
     }, [target]);
 
     const openTargetModal = () => {
@@ -66,8 +67,9 @@ const Progress = ({ setCurrentStepCount, currentStepCount }) => {
 
                 return;
             }
+            
             console.log('Steps', result.steps)
-            if (!IsTargetReached) {
+                console.log('Inside Incremental')
                 setCurrentStepCount((preCount) => {
                     const newCount = preCount + result.steps
                     if (newCount >= target) {
@@ -76,22 +78,16 @@ const Progress = ({ setCurrentStepCount, currentStepCount }) => {
                     }
                     return newCount;
                 });
-                // setIsTargetReached(true);
-                // lastSteps = result.steps;
-                // if (lastSteps >= target) {
-                //     console.log('1111')
-                //     setCurrentStepCount(target)
-                //     setIsTargetReached(true);
-                // }
-            }
+            console.log('OutSide Incremental')
         });
 
         //  datadb(state)
+        console.log('Inside Pedometer')
         return () => {
             subscription && subscription.remove();
 
         };
-    }, [IsTargetReached, IstargetUpdate]);
+    }, [IstargetUpdate]);
 
 
 
@@ -103,7 +99,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount }) => {
                     style={styles.btn}
                     onPress={openTargetModal}
                 >
-                    <Text style={styles.btnText}>Edit</Text>
+                    <Text style={styles.btnText}>edit</Text>
                     <AntDesign name="right" size={12} color="black" />
                 </TouchableOpacity>
             </View>
