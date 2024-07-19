@@ -8,16 +8,16 @@ import { Pedometer } from 'expo-sensors';
 import { datadb } from '../../sqLiteDb/Connection';
 import { AppContext } from '../../contextApi/AppContext';
 const Progress = ({ setCurrentStepCount, currentStepCount }) => {
-    
+
     const [modalVisible, setModalVisible] = useState(false);
     const [target, setTarget] = useState(10)
     const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
     const [IstargetUpdate, setIstargetUpdate] = useState<any>(true)
     const [IsTargetReached, setIsTargetReached] = useState<any>(false);
-    const  { state, setState } : any  = useContext(AppContext);
+    const { state, setState }: any = useContext(AppContext);
 
 
-   
+
 
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
@@ -36,6 +36,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount }) => {
             setIsTargetReached(false);
         }
     }, [target]);
+
     const openTargetModal = () => {
         setModalVisible(!modalVisible)
     }
@@ -62,7 +63,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount }) => {
                 console.log('Before', IstargetUpdate)
                 setIstargetUpdate(false);
                 console.log('Target was just updated', IstargetUpdate)
-            
+
                 return;
             }
             console.log('Steps', result.steps)
@@ -84,12 +85,13 @@ const Progress = ({ setCurrentStepCount, currentStepCount }) => {
                 // }
             }
         });
-        
+
         //  datadb(state)
         return () => {
             subscription && subscription.remove();
+
         };
-    }, [IsTargetReached, target, IstargetUpdate]);
+    }, [IsTargetReached, IstargetUpdate]);
 
 
 
