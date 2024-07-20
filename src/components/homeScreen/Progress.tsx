@@ -5,9 +5,10 @@ import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import TargetModal from '../TargetModal';
 import { Pedometer } from 'expo-sensors';
-import { datadb } from '../../sqLiteDb/Connection';
 import { AppContext } from '../../contextApi/AppContext';
-const Progress = ({ setCurrentStepCount, currentStepCount } :any) => {
+import DataBaseInitialization from '../../sqLiteDb/DataBaseInitialization';
+import { useDatabase } from '../../sqLiteDb/useDatabase';
+const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [target, setTarget] = useState(10)
@@ -16,7 +17,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount } :any) => {
     const [IsTargetReached, setIsTargetReached] = useState<any>(false);
     const { state, setState }: any = useContext(AppContext);
 
-
+    const { insertData } = useDatabase();
 
 
     const now = new Date();
@@ -24,6 +25,11 @@ const Progress = ({ setCurrentStepCount, currentStepCount } :any) => {
     const props = {
 
     }
+
+    useEffect(() => {
+        DataBaseInitialization()
+    }, [])
+
     useEffect(() => {
         setIsTargetReached(false);
         setIstargetUpdate(true)
@@ -35,8 +41,31 @@ const Progress = ({ setCurrentStepCount, currentStepCount } :any) => {
             setCurrentStepCount(0)
             setIsTargetReached(false);
         }
-        console.log("Inside Target")
-    }, [target]);
+        console.log("Inside Target:state", state);
+    }, [, target]);
+
+    useEffect(() => {
+
+        setState((pre: any) => ({
+            ...pre,
+            date: dateOnly,
+            footsteps: currentStepCount,
+            flag: true,
+            distance,
+            energy: kcal
+        }))
+    }, [kcal, distance, currentStepCount])
+    useEffect(() => {
+        setTimeout(() => {
+            if (IsTargetReached) {
+                insertData().then(() => {
+                    console.log('Data inserted successfully');
+                }).catch(error => {
+                    console.error('Error inserting data:', error);
+                });
+            }
+        }, 3000);
+    }, [IsTargetReached])
 
     const openTargetModal = () => {
         setModalVisible(!modalVisible)
@@ -67,21 +96,21 @@ const Progress = ({ setCurrentStepCount, currentStepCount } :any) => {
 
                 return;
             }
-            
+
             console.log('Steps', result.steps)
-                console.log('Inside Incremental')
-                setCurrentStepCount((preCount) => {
-                    const newCount = preCount + result.steps
-                    if (newCount >= target) {
-                        setIsTargetReached(true);
-                        return target;
-                    }
-                    return newCount;
-                });
+            console.log('Inside Incremental')
+            setCurrentStepCount((preCount) => {
+                const newCount = preCount + result.steps
+                if (newCount >= target) {
+                    setIsTargetReached(true);
+                    return target;
+                }
+                return newCount;
+            });
             console.log('OutSide Incremental')
         });
 
-        //  datadb(state)
+
         console.log('Inside Pedometer')
         return () => {
             subscription && subscription.remove();

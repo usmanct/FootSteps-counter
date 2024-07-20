@@ -4,15 +4,16 @@ export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
     const [state, setState] = useState({
-        // Your initial state here
-        date: '12/09/24',
-        steps: 20
+        date: '',
+        footsteps: 0,
+        flag: false,
+        distance: 0,
+        energy: 0
     });
-
-    const [dbData , setDbData] = useState([])
-
+    const [record, setRecord] = useState([])
+    const [isLoading, setIsLoading] = useState(false);
     return (
-        <AppContext.Provider value={{ state, setState }}>
+        <AppContext.Provider value={{ state, setState, isLoading, setIsLoading ,record, setRecord }}>
             {children}
         </AppContext.Provider>
     );

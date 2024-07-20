@@ -1,19 +1,27 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import StatsCard from './StatsCard'
 import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
+import { AppContext } from '../../contextApi/AppContext';
 
 const Stats = ({ setCurrentStepCount, currentStepCount, kcal, setKcal, distance, setDistance }) => {
     const [time, setTime] = useState(new Date());
+    const { state, setState }: any = useContext(AppContext);
 
     useEffect(() => {
         const energyWaste = parseFloat(currentStepCount) * 0.05
         setKcal(energyWaste.toFixed(2))
         const distanceCover = parseFloat(currentStepCount) * 0.60 / 1000.0
-        setDistance(distanceCover.toFixed(2))
+        setDistance(distanceCover.toFixed(3))
     }, [currentStepCount])
+
+    // setState((pre: any) => ({
+    //     ...pre,
+    //     distance,
+    //     energy: kcal
+    // }))
 
     useEffect(() => {
         const interval = setInterval(() => {

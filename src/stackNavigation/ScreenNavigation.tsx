@@ -5,9 +5,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Home from '../screens/Home'
 import BmiCalculations from '../screens/BmiCalculations'
 import BmiResult from '../components/bmiScreen/BmiResult'
+import Results from '../components/homeScreen/Results'
+import LetsRun from '../screens/LetsRun'
+import WaterTrack from '../screens/WaterTrack'
+import Account from '../screens/Account'
 
 
 const Stack = createNativeStackNavigator()
+
 
 const ScreenNavigation = () => {
     return (
@@ -22,10 +27,14 @@ const ScreenNavigation = () => {
                     headerTitleAlign: 'center',
                     headerShown: false
                 }}
-                initialRouteName="Tic Tac Toe">
+                initialRouteName="Home">
                 <Stack.Screen name='Home' component={Home} />
+                <Stack.Screen name='WaterTrack' component={WaterTrack} />
+                <Stack.Screen name="LetsRun" component={LetsRun} />
+                <Stack.Screen name='Account' component={Account} />
                 <Stack.Screen name='BmiCalculations' component={BmiCalculations} />
                 <Stack.Screen name='BmiResult' component={BmiResult} />
+                <Stack.Screen name='Results' component={Results} />
             </Stack.Navigator>
         </NavigationContainer>
     )

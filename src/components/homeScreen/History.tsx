@@ -2,10 +2,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
 import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { useNavigation } from '@react-navigation/native';
+import { useDatabase } from '../../sqLiteDb/useDatabase';
 
-const History = ({ currentStepCount }) => {
+const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance }) => {
 
-
+    const { getData } = useDatabase();
+    const navigation = useNavigation();
 
     const [selected, setSelected] = useState('');
     const now = new Date();
@@ -16,8 +19,15 @@ const History = ({ currentStepCount }) => {
     }, [selected])
 
     const onPressDateHandler = (day: any) => {
+        const today = now.getDate()
+        const dayselected = day?.day
         setSelected(day.dateString);
         // getMyStringValue(day)
+        if (today >= dayselected) {
+            getData()
+            navigation.navigate('Results' as never, { currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance })
+        }
+
 
     }
 
@@ -26,7 +36,7 @@ const History = ({ currentStepCount }) => {
         <View style={styles.upperContainer}>
             <View style={styles.container}>
                 <Text style={styles.heading}>Your Progress</Text>
-                <TouchableOpacity style={styles.btn} onPress={() => {}}>
+                <TouchableOpacity style={styles.btn} onPress={() => { }}>
                     <Text style={styles.btnText}>Months</Text>
                     <AntDesign name="right" size={12} color="black" />
                 </TouchableOpacity>
@@ -35,7 +45,7 @@ const History = ({ currentStepCount }) => {
             <Calendar
                 onDayPress={onPressDateHandler}
                 markedDates={{
-                    [selected]: { selected: true, disableTouchEvent: true,  }
+                    [selected]: { selected: true, disableTouchEvent: true, }
                 }}
             />
         </View>
@@ -55,6 +65,7 @@ const styles = StyleSheet.create({
         gap: 15,
         paddingHorizontal: 10,
         backgroundColor: 'white',
+        marginBottom: 73
 
     },
     container: {
