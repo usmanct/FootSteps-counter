@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         gap: 15,
         paddingHorizontal: 10,
         backgroundColor: 'white',
-        marginBottom: 73
+        // marginBottom: 73
 
     },
     container: {

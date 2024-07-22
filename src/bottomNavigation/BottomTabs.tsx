@@ -6,7 +6,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Home from '../screens/Home';
 import WaterTrack from '../screens/WaterTrack';
 import LetsRun from '../screens/LetsRun';
+import { Fontisto } from '@expo/vector-icons';
+
 import Account from '../screens/Account';
+import ScreenNavigation from '../stackNavigation/ScreenNavigation';
 
 
 
@@ -19,12 +22,13 @@ function MyTabs() {
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        tabBarActiveTintColor: '#e91e63',
+        tabBarActiveTintColor: '#2ecc71',
+        headerShown: false,
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={Home}
+        name="ScreenNavigation"
+        component={ScreenNavigation}
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
@@ -38,7 +42,7 @@ function MyTabs() {
         options={{
           tabBarLabel: 'WaterTrack',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="bell" color={color} size={size} />
+            <Fontisto name="blood-drop" color={color} size={size} />
           ),
         }}
       />
@@ -48,7 +52,7 @@ function MyTabs() {
         options={{
           tabBarLabel: 'LetsRun',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" color={color} size={size} />
+            <MaterialCommunityIcons name="run-fast" color={color} size={size} />
           ),
         }}
       />
@@ -66,10 +70,13 @@ function MyTabs() {
   );
 }
 
-export  function BottomTabs() {
+export function BottomTabs() {
   return (
-    <NavigationContainer>
-      <MyTabs />
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        <MyTabs />
+      </NavigationContainer>
+      {/* <ScreenNavigation /> */}
+    </>
   );
 }

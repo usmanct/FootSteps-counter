@@ -9,6 +9,8 @@ import Results from '../components/homeScreen/Results'
 import LetsRun from '../screens/LetsRun'
 import WaterTrack from '../screens/WaterTrack'
 import Account from '../screens/Account'
+import { BottomTabs } from '../bottomNavigation/BottomTabs'
+import WaterTrackSetting from '../components/waterTrackScreen/WaterTrackSetting'
 
 
 const Stack = createNativeStackNavigator()
@@ -16,7 +18,6 @@ const Stack = createNativeStackNavigator()
 
 const ScreenNavigation = () => {
     return (
-        <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{
                     headerStyle: {
@@ -35,8 +36,8 @@ const ScreenNavigation = () => {
                 <Stack.Screen name='BmiCalculations' component={BmiCalculations} />
                 <Stack.Screen name='BmiResult' component={BmiResult} />
                 <Stack.Screen name='Results' component={Results} />
+                <Stack.Screen name='WaterTrackSetting' component={WaterTrackSetting} />
             </Stack.Navigator>
-        </NavigationContainer>
     )
 }
 
