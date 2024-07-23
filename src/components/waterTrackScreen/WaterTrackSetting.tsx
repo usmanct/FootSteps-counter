@@ -27,14 +27,7 @@ const WaterTrackSetting = () => {
     }, [drinkGoal])
 
 
-    useEffect(() => {
-        let HEIGHT_ON_EVERY_CUP
 
-        let NO_OF_CUPS = drinkGoal / cupCapacity
-        console.log('NoOfCUPS', NO_OF_CUPS)
-        setNoOfCups(NO_OF_CUPS)
-
-    }, [cupCapacity])
     
 
     const unitHandler = () => {

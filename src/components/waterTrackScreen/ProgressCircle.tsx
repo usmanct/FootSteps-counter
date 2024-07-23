@@ -20,13 +20,25 @@ const ProgressCircle = () => {
         setNoOfCups,
         modalType,
         setModalType,
+        preWaterCount,
+        setWaterCupCount,
     }: any = useContext(AppContext)
     const [fillcontainer, setFillContainer] = useState(0)
     const [bolflag, setBolFlag] = useState(true)
     const [drinkflag, setDrinkFlag] = useState(true)
     const [capacityflag, setCapacityFlag] = useState(true)
     const isFocused = useIsFocused();
+    const [cupHeight, setCupHeight] = useState(0)
 
+
+    useEffect(() => {
+        let HEIGHT_ON_EVERY_CUP
+
+        let NO_OF_CUPS = drinkGoal / cupCapacity
+        setNoOfCups(NO_OF_CUPS)
+        HEIGHT_ON_EVERY_CUP = MAX_HEIGHT / NO_OF_CUPS
+        setCupHeight(HEIGHT_ON_EVERY_CUP)
+    }, [])
 
 
     useEffect(() => {
@@ -35,20 +47,13 @@ const ProgressCircle = () => {
             setBolFlag(false)
             return
         }
-        let HEIGHT_ON_EVERY_CUP
-
-        let NO_OF_CUPS = drinkGoal / cupCapacity
-        setNoOfCups(NO_OF_CUPS)
-        HEIGHT_ON_EVERY_CUP = MAX_HEIGHT / NO_OF_CUPS
-        console.log('h', NO_OF_CUPS)
-        console.log('fillonEachCup', HEIGHT_ON_EVERY_CUP)
-        if (fillcontainer + HEIGHT_ON_EVERY_CUP > MAX_HEIGHT) {
+        if (fillcontainer + cupHeight > MAX_HEIGHT) {
             setFillContainer(MAX_HEIGHT)
         }
         else {
-            setFillContainer((pre) => pre + HEIGHT_ON_EVERY_CUP)
+            setFillContainer((pre) => pre + cupHeight)
         }
-        console.log('fillcontainer', fillcontainer + HEIGHT_ON_EVERY_CUP)
+        console.log('fillcontainer', fillcontainer)
 
         return () => {
 
@@ -57,23 +62,37 @@ const ProgressCircle = () => {
     }, [waterdrinked])
 
     useEffect(() => {
-
+        let HEIGHT_ON_EVERY_CUP
         if (drinkflag) {
             setDrinkFlag(false)
             return
         }
         let NO_OF_CUPS = drinkGoal / cupCapacity
-        setNoOfCups(NO_OF_CUPS)
-        console.log('pre', preCupCount)
-        let HEIGHT_ON_EVERY_CUP
         HEIGHT_ON_EVERY_CUP = MAX_HEIGHT / NO_OF_CUPS
-        let HEIGHT_FROM_PREVOIUS_TARGET = HEIGHT_ON_EVERY_CUP * preCupCount
-        console.log('HEIGHT_FROM_PREVOIUS_TARGET', HEIGHT_FROM_PREVOIUS_TARGET)
-        setFillContainer(HEIGHT_FROM_PREVOIUS_TARGET)
+        setCupHeight(HEIGHT_ON_EVERY_CUP)
+        console.log("preWaterCount", preWaterCount)
+        let p = (preWaterCount / drinkGoal) * 100
+
+        let preHeight = (p * MAX_HEIGHT) / 100
+
+        setFillContainer(preHeight)
         console.log('When Drink Goal Change Water IN EVERY CUP', HEIGHT_ON_EVERY_CUP)
         console.log(fillcontainer)
 
     }, [drinkGoal])
+    useEffect(() => {
+        let HEIGHT_ON_EVERY_CUP
+
+        let req = drinkGoal - waterdrinked
+
+        let NO_OF_CUPS = drinkGoal / cupCapacity
+        HEIGHT_ON_EVERY_CUP = MAX_HEIGHT / NO_OF_CUPS
+        setCupHeight(HEIGHT_ON_EVERY_CUP)
+
+        console.log('NoOfCUPS', NO_OF_CUPS)
+        setNoOfCups(NO_OF_CUPS)
+
+    }, [cupCapacity])
 
     return (
         <View style={{ ...styles.container, height: MAX_HEIGHT }}>

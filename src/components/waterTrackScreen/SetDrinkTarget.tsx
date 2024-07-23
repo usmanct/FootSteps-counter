@@ -17,6 +17,9 @@ const SetDrinkTarget = ({ modalVisible, setModalVisible }) => {
         setISgoalAchieved,
         modalType,
         setModalType,
+        preWaterCount,
+        setWaterCupCount,
+        waterdrinked
 
     }: any = useContext(AppContext)
 
@@ -42,10 +45,11 @@ const SetDrinkTarget = ({ modalVisible, setModalVisible }) => {
         } else if (inputValue.value < drinkGoal && IsgoalAchieved) {
             ToastAndroid.show('Target Must Be Higher than Previous Target', ToastAndroid.SHORT);
         } else {
+            setWaterCupCount(waterdrinked)
             setDrinkGoal(inputValue.value);
             setDefaultIndexgoal(inputValue.i);
         }
-        
+
 
     }
 
