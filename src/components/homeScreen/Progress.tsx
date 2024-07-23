@@ -7,7 +7,7 @@ import TargetModal from '../TargetModal';
 import { Pedometer } from 'expo-sensors';
 import { AppContext } from '../../contextApi/AppContext';
 import DataBaseInitialization from '../../sqLiteDb/DataBaseInitialization';
-import { useDatabase } from '../../sqLiteDb/useDatabase';
+import { useDatabase  } from '../../sqLiteDb/useDatabase';
 const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any) => {
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -17,7 +17,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
     const [IsTargetReached, setIsTargetReached] = useState<any>(false);
     const { state, setState }: any = useContext(AppContext);
 
-    const { insertData } = useDatabase();
+    const { insertData , getData } = useDatabase();
 
 
     const now = new Date();
@@ -38,7 +38,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
             setIsTargetReached(true);
         }
         if (IsTargetReached) {
-            setCurrentStepCount(0)
+            // setCurrentStepCount(0)
             setIsTargetReached(false);
         }
         console.log("Inside Target:state", state);
@@ -55,17 +55,23 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
             energy: kcal
         }))
     }, [kcal, distance, currentStepCount])
+
     useEffect(() => {
-        setTimeout(() => {
-            if (IsTargetReached) {
+        const interval = setInterval(() => {
+            const newNow = new Date();
+            const newDateOnly = newNow.toLocaleDateString();
+            if (newDateOnly !== dateOnly) {
                 insertData().then(() => {
                     console.log('Data inserted successfully');
                 }).catch(error => {
                     console.error('Error inserting data:', error);
                 });
+                setCurrentStepCount(0); // Reset the steps for the new day
             }
-        }, 3000);
-    }, [IsTargetReached])
+        }, 60000); // Check every minute
+
+        return () => clearInterval(interval); // Clean up the interval on unmount
+    }, [dateOnly]);
 
     const openTargetModal = () => {
         setModalVisible(!modalVisible)

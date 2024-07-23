@@ -18,7 +18,9 @@ const WaterProgress = () => {
         waterdrinked,
         setwaterdrinked,
         IsgoalAchieved,
-        setISgoalAchieved
+        setISgoalAchieved,
+        preCupCount,
+        setPreCupCount,
     }: any = useContext(AppContext)
     const navigation = useNavigation();
 
@@ -28,7 +30,7 @@ const WaterProgress = () => {
         per = waterdrinked / drinkGoal * 100
         setPercentageDrinked(per.toFixed(2))
 
-    }, [waterdrinked])
+    }, [waterdrinked , drinkGoal])
     useEffect(() => {
 
     }, [])
@@ -46,6 +48,7 @@ const WaterProgress = () => {
     const handleDrink = () => {
         if (waterdrinked < drinkGoal) {
             setwaterdrinked(waterdrinked + cupCapacity)
+            setPreCupCount(preCupCount + 1)
         }
         else {
             setISgoalAchieved(true)

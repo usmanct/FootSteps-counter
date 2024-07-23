@@ -1,16 +1,47 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import StatsCard from './StatsCard';
 import { AppContext } from '../../contextApi/AppContext';
+import { BarChart } from 'react-native-chart-kit';
 
 
+const screenWidth = Dimensions.get("window").width;
+
+const chartConfig = {
+    backgroundGradientFrom: 'transparent',
+    backgroundGradientTo: 'transparent',
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientToOpacity: 0,
+    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // bars color can be set here, currently black
+    strokeWidth: 1,
+    barPercentage: 0.9,
+    useShadowColorFromDataset: false,
+
+};
 const Results = ({ route }) => {
-    const { isLoading, record }: any = useContext(AppContext);
+    const {
+        isLoading,
+        record,
+        waterRecord,
+    }: any = useContext(AppContext);
     const { currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance } = route.params;
     const [totalSteps, setTotalSteps] = useState(0);
+
+
+    const data = {
+        labels: [waterRecord[0]?.date],
+        datasets: [
+            {
+                data: [waterRecord[0]?.waterIntake],
+                color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, // target color
+                label: 'Target'
+            }
+        ]
+    };
+
 
     useEffect(() => {
         let total = 0;
@@ -39,6 +70,18 @@ const Results = ({ route }) => {
                     )}
                 />
 
+            </View>
+            <View style={styles.container}>
+                <BarChart
+                    data={data}
+                    width={screenWidth - 35}
+                    height={300}
+                    chartConfig={chartConfig}
+                    verticalLabelRotation={0}
+                    fromZero={true}
+                    showValuesOnTopOfBars={true}
+                    showBarTops={true}
+                />
             </View>
         </View>
     )

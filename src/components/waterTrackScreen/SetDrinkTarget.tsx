@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
+import { Alert, Modal, StyleSheet, Text, Pressable, View, ToastAndroid } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { AppContext } from '../../contextApi/AppContext';
+import { useNavigation } from '@react-navigation/native';
 
-const SetDrinkTarget = ({ modalVisible, setModalVisible, modalType, setModalType }) => {
+const SetDrinkTarget = ({ modalVisible, setModalVisible }) => {
 
     const drinkGaolData: any = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000,]
     const cupcapacitydata: any = [50, 100, 150, 200, 250, 300]
@@ -12,11 +13,18 @@ const SetDrinkTarget = ({ modalVisible, setModalVisible, modalType, setModalType
         setDrinkGoal,
         cupCapacity,
         setCupCapacity,
-        
+        IsgoalAchieved,
+        setISgoalAchieved,
+        modalType,
+        setModalType,
+
     }: any = useContext(AppContext)
 
     const [inputValue, setInputValue] = useState<any>({})
-    const [defaultIndex, setDefaultIndex] = useState(0)
+    const [defaultIndexcup, setDefaultIndexcup] = useState(0)
+    const [defaultIndexgoal, setDefaultIndexgoal] = useState(0)
+
+    const navigation = useNavigation();
 
     // useEffect(() => {
     //     console.log(inputValue)
@@ -27,14 +35,17 @@ const SetDrinkTarget = ({ modalVisible, setModalVisible, modalType, setModalType
 
     const saveChanges = () => {
         console.log(inputValue)
-        setDefaultIndex(inputValue.i)
         setModalVisible(!modalVisible)
-
-        modalType === 'cupcapacity' ? setCupCapacity(inputValue.value) : modalType === 'drinkgoal' ? setDrinkGoal(inputValue.value) : setCupCapacity(inputValue.value)
-
-
-        setModalType('')
-
+        if (modalType === 'cupcapacity') {
+            setCupCapacity(inputValue.value);
+            setDefaultIndexcup(inputValue.i);
+        } else if (inputValue.value < drinkGoal && IsgoalAchieved) {
+            ToastAndroid.show('Target Must Be Higher than Previous Target', ToastAndroid.SHORT);
+        } else {
+            setDrinkGoal(inputValue.value);
+            setDefaultIndexgoal(inputValue.i);
+        }
+        
 
     }
 
@@ -59,7 +70,7 @@ const SetDrinkTarget = ({ modalVisible, setModalVisible, modalType, setModalType
                         <WheelPickerExpo
                             height={150}
                             width={150}
-                            initialSelectedIndex={defaultIndex}
+                            initialSelectedIndex={modalType === 'cupcapacity' ? defaultIndexcup : defaultIndexgoal}
                             items={
                                 modalType === 'drinkgoal' ? drinkGaolData.map(name => ({ label: name, value: '' }))
                                     : modalType === 'cupcapacity' ? cupcapacitydata.map(name => ({ label: name, value: '' }))

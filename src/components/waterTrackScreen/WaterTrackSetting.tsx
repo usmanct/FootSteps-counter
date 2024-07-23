@@ -7,21 +7,36 @@ import { AppContext } from '../../contextApi/AppContext'
 
 const WaterTrackSetting = () => {
     const [modalVisible, setModalVisible] = useState(false);
-    const [modalType, setModalType] = useState('')
-    
+
+
     const {
         drinkGoal,
         setDrinkGoal,
         cupCapacity,
         setCupCapacity,
         IsgoalAchieved,
-        setISgoalAchieved
+        setISgoalAchieved,
+        modalType,
+        setModalType,
+        noOfCups,
+        setNoOfCups,
     }: any = useContext(AppContext)
+
+    useEffect(() => {
+        setISgoalAchieved(false)
+    }, [drinkGoal])
+
+
+    useEffect(() => {
+        let HEIGHT_ON_EVERY_CUP
+
+        let NO_OF_CUPS = drinkGoal / cupCapacity
+        console.log('NoOfCUPS', NO_OF_CUPS)
+        setNoOfCups(NO_OF_CUPS)
+
+    }, [cupCapacity])
     
-        useEffect(()=>{
-            setISgoalAchieved(false)
-        },[drinkGoal])
-    
+
     const unitHandler = () => {
         setModalVisible(!modalVisible)
         setModalType('unit')
@@ -39,7 +54,7 @@ const WaterTrackSetting = () => {
         <>
             <Header />
             <View style={styles.container}>
-                <SetDrinkTarget modalVisible={modalVisible} setModalVisible={setModalVisible} modalType={modalType} setModalType={setModalType} />
+                <SetDrinkTarget modalVisible={modalVisible} setModalVisible={setModalVisible} />
                 <Row title={"Unit"} onpress={unitHandler} />
                 <Row title={"Cup Capacity"} subtil={cupCapacity} onpress={cupcapacityHandler} />
                 <Row title={"Drink Goal"} subtil={drinkGoal} onpress={drinkgoalhandler} />

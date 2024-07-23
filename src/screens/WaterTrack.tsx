@@ -2,11 +2,13 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import Header from '../components/Header'
 import WaterProgress from '../components/waterTrackScreen/WaterProgress'
+import HistoryChat from '../components/waterTrackScreen/HistoryChat'
 const WaterTrack = () => {
   return (
     <ScrollView>
       <Header />
       <WaterProgress />
+      <HistoryChat />
     </ScrollView>
   )
 }

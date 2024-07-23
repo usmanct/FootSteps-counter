@@ -16,6 +16,11 @@ export const AppProvider = ({ children }) => {
     const [cupCapacity, setCupCapacity] = useState(50)
     const [waterdrinked, setwaterdrinked] = useState(0)
     const [IsgoalAchieved, setISgoalAchieved] = useState(false)
+    const [preCupCount, setPreCupCount] = useState(0)
+    const [noOfCups, setNoOfCups] = useState(0)
+    const [modalType, setModalType] = useState('')
+    const [waterRecord, setWaterRecord] = useState([])
+
 
 
     const MAX_HEIGHT = 200
@@ -36,7 +41,14 @@ export const AppProvider = ({ children }) => {
             setwaterdrinked,
             IsgoalAchieved,
             setISgoalAchieved,
-
+            preCupCount,
+            setPreCupCount,
+            noOfCups,
+            setNoOfCups,
+            modalType,
+            setModalType,
+            waterRecord,
+            setWaterRecord,
         }}>
             {children}
         </AppContext.Provider>
