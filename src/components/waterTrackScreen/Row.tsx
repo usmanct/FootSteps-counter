@@ -17,9 +17,7 @@ const Row = ({ title, subtil, onpress }) => {
         </View>
     )
 }
-Row.defaultProps = {
-    subtil: ''
-};
+
 
 
 export default Row

@@ -10,13 +10,17 @@ export const useDatabase = () => {
         setRecord,
         waterRecord,
         setWaterRecord,
+        setWaterState,
+        waterState,
+        waterHistory,
+        setWaterHistory,
     }: any = useContext(AppContext);
 
-    const insertData = async (s: any) => {
+    const insertData = async () => {
 
         const db = await SQLite.openDatabaseAsync('usmanct');
         const result = await db.runAsync('INSERT INTO step_data (date, footsteps, flag, distance, energy) VALUES (?, ?, ?, ?, ?)',
-            s.date, s.footsteps, s.flag, s.distance, s.energy);
+            state.date, state.footsteps, state.flag, state.distance, state.energy);
         if (result) {
             console.log('ddd', result);
             const allRows = await db.getAllAsync('SELECT * FROM step_data');
@@ -50,6 +54,18 @@ export const useDatabase = () => {
             setIsLoading(false)
         }, 1000)
     }
+    const getALLWaterData = async () => {
+        setIsLoading(true)
+        const db = await SQLite.openDatabaseAsync('usmanct');
+        const result = await db.getAllAsync('SELECT * FROM water_record');
+        if (result) {
+            console.log('Water', result);
+            setWaterHistory([...result]);
+        }
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 1000)
+    }
     const dropTable = async (s: any) => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         const result = await db.runAsync('DELETE  FROM step_data WHERE flag = $value', { $value: 0 });
@@ -63,21 +79,20 @@ export const useDatabase = () => {
     };
 
 
-    const insertWaterData = async (s: any) => {
-        setIsLoading(true)
+    const insertWaterData = async () => {
 
         const db = await SQLite.openDatabaseAsync('usmanct');
         const result = await db.runAsync('INSERT INTO water_record ( date, waterIntake,cupCapacity,goal) VALUES (?, ?, ?, ?)',
-            s.date, s.waterIntake, s.cupCapacity, s.goal);
+            waterState.date, waterState.waterIntake, waterState.cupCapacity, waterState.goal);
         if (result) {
             console.log('ddd', result);
             const allRows = await db.getAllAsync('SELECT * FROM water_record');
 
             console.log('allRows', allRows);
         }
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 1000)
+        // setTimeout(() => {
+        //     setIsLoading(false)
+        // }, 1000)
     };
 
 
@@ -86,6 +101,7 @@ export const useDatabase = () => {
         getData,
         dropTable,
         insertWaterData,
-        getWaterData
+        getWaterData,
+        getALLWaterData
     };
 };

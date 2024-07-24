@@ -26,19 +26,10 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      [
-        "expo-font",
-        {
-          "fonts": [
-            "./assets/fonts/Inter-Black.otf"
-          ]
-        }
-      ]
-    ],
+    "plugins": [],
     "extra": {
       "eas": {
-        "projectId": "1d65ac4d-3b9a-4179-bc57-7cc94905daf6"
+        "projectId": "ccaa69d9-3069-40a1-a260-d10463a39b18"
       }
     }
   }

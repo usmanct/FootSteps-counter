@@ -83,13 +83,17 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.usmanct.FootStepscounter"
+    namespace 'com.usmanct.FootStepscounter'
+    lint {
+          baseline = file("lint-baseline.xml")
+      }
     defaultConfig {
-        applicationId "com.usmanct.FootStepscounter"
+        applicationId 'com.usmanct.FootStepscounter'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
+        multiDexEnabled true
     }
     signingConfigs {
         debug {
@@ -142,8 +146,7 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    
-
+    implementation 'com.android.support:multidex:2.0.1'
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
     def isWebpAnimatedEnabled = (findProperty('expo.webp.animated') ?: "") == "true";

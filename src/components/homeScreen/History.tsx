@@ -37,15 +37,15 @@ const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distanc
         const today = now.getDate()
         const dayselected = day?.day
 
-        // const dateParts = day.dateString.split("-");
-        // const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+        const dateParts = day.dateString.split("-");
+        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
         // console.log("Formatted Date:", formattedDate);
-        setSelected(day.dateString);
+        setSelected(formattedDate);
         // getMyStringValue(day)
         if (today >= dayselected) {
-            getData(day.dateString);
-            getWaterData(day.dateString)
+            getData(formattedDate);
+            getWaterData(formattedDate)
             navigation.navigate('Results' as never, { currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance })
         }
 

@@ -11,7 +11,7 @@ export const AppProvider = ({ children }) => {
         energy: 0
     });
     const [record, setRecord] = useState([])
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [drinkGoal, setDrinkGoal] = useState(1000)
     const [cupCapacity, setCupCapacity] = useState(50)
     const [waterdrinked, setwaterdrinked] = useState(0)
@@ -20,7 +20,14 @@ export const AppProvider = ({ children }) => {
     const [noOfCups, setNoOfCups] = useState(0)
     const [modalType, setModalType] = useState('')
     const [waterRecord, setWaterRecord] = useState([])
-
+    const [waterState, setWaterState] = useState({
+        date: '',
+        waterIntake: 0,
+        cupCapacity: 0,
+        goal: 0
+    })
+    const [IsCupfilllied, setIsCupfilllied] = useState(false)
+    const [waterHistory, setWaterHistory] = useState([])
 
 
     const MAX_HEIGHT = 200
@@ -49,6 +56,12 @@ export const AppProvider = ({ children }) => {
             setModalType,
             waterRecord,
             setWaterRecord,
+            waterState,
+            setWaterState,
+            IsCupfilllied,
+            setIsCupfilllied,
+            waterHistory,
+            setWaterHistory,
         }}>
             {children}
         </AppContext.Provider>

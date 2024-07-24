@@ -2,6 +2,9 @@ import { useContext, useEffect, useState } from 'react';
 import { Button, StyleSheet, View, Text } from 'react-native';
 import { AppContext } from '../../contextApi/AppContext';
 import { useIsFocused } from '@react-navigation/native';
+import DataBaseInitialization from '../../sqLiteDb/DataBaseInitialization';
+import { useDatabase } from '../../sqLiteDb/useDatabase';
+
 
 
 
@@ -22,7 +25,16 @@ const ProgressCircle = () => {
         setModalType,
         preWaterCount,
         setWaterCupCount,
+        waterState,
+        setWaterState,
+        IsCupfilllied,
+        setIsCupfilllied,
+        IsgoalAchieved,
+        setISgoalAchieved,
     }: any = useContext(AppContext)
+
+    const { insertWaterData } = useDatabase();
+
     const [fillcontainer, setFillContainer] = useState(0)
     const [bolflag, setBolFlag] = useState(true)
     const [drinkflag, setDrinkFlag] = useState(true)
@@ -30,6 +42,8 @@ const ProgressCircle = () => {
     const isFocused = useIsFocused();
     const [cupHeight, setCupHeight] = useState(0)
 
+    const now = new Date();
+    const dateOnly = now.toLocaleDateString();
 
     useEffect(() => {
         let HEIGHT_ON_EVERY_CUP
@@ -38,8 +52,51 @@ const ProgressCircle = () => {
         setNoOfCups(NO_OF_CUPS)
         HEIGHT_ON_EVERY_CUP = MAX_HEIGHT / NO_OF_CUPS
         setCupHeight(HEIGHT_ON_EVERY_CUP)
+        DataBaseInitialization()
     }, [])
+    useEffect(() => {
 
+        setWaterState((pre: any) => ({
+            ...pre,
+            date: dateOnly,
+            waterIntake: waterdrinked,
+            cupCapacity: cupCapacity,
+            goal: drinkGoal
+        }))
+    }, [waterdrinked, cupCapacity, drinkGoal])
+
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         const newNow = new Date();
+    //         const newDateOnly = newNow.toLocaleDateString();
+    //         if (newDateOnly !== dateOnly) {
+    //             insertWaterData().then(() => {
+    //                 console.log('Data inserted successfully');
+    //             }).catch(error => {
+    //                 console.error('Error inserting data:', error);
+    //             });
+    //             waterdrinked(0); // Reset the steps for the new day
+    //         }
+    //     }, 60000); // Check every minute
+
+    //     return () => clearInterval(interval); // Clean up the interval on unmount
+    // }, [dateOnly]);
+
+
+    useEffect(() => {
+        if (IsgoalAchieved) {
+            insertWaterData().then(() => {
+                console.log('Data inserted successfully');
+            }).catch(error => {
+                console.error('Error inserting data:', error);
+            });
+            setwaterdrinked(0);
+            setFillContainer(0)
+            setISgoalAchieved(false)
+            setBolFlag(true);
+        }
+    },
+        [IsgoalAchieved])
 
     useEffect(() => {
 
@@ -47,11 +104,13 @@ const ProgressCircle = () => {
             setBolFlag(false)
             return
         }
-        if (fillcontainer + cupHeight > MAX_HEIGHT) {
+        if (fillcontainer + cupHeight >= MAX_HEIGHT) {
             setFillContainer(MAX_HEIGHT)
+            setISgoalAchieved(true)
         }
         else {
-            setFillContainer((pre) => pre + cupHeight)
+            console.log("dd")
+            setFillContainer((pre) => (pre + cupHeight))
         }
         console.log('fillcontainer', fillcontainer)
 
@@ -80,6 +139,8 @@ const ProgressCircle = () => {
         console.log(fillcontainer)
 
     }, [drinkGoal])
+
+
     useEffect(() => {
         let HEIGHT_ON_EVERY_CUP
 
@@ -96,7 +157,8 @@ const ProgressCircle = () => {
 
     return (
         <View style={{ ...styles.container, height: MAX_HEIGHT }}>
-            <View style={{ ...styles.fillingContainer, height: fillcontainer }}></View>
+            <View style={{ ...styles.fillingContainer, height: fillcontainer }}>
+            </View>
         </View>
     );
 };
@@ -108,15 +170,14 @@ const styles = StyleSheet.create({
         width: 200,
         borderColor: '#0cf249',
         borderWidth: 2,
-        borderTopWidth: 0,
-        borderBottomLeftRadius: 4,
-        borderBottomRightRadius: 4,
+        borderRadius: 100,
         // justifyContent: 'center',
         // alignItems: 'center',
         // paddingHorizontal: 5,
-        position: 'relative',
+        // position: 'relative',
         flexDirection: 'row',
         justifyContent: 'center',
+        overflow: 'hidden'
     },
     fillingContainer: {
         width: '100%',
@@ -125,5 +186,5 @@ const styles = StyleSheet.create({
         bottom: 0,
         borderBottomLeftRadius: 4,
         borderBottomRightRadius: 4,
-    }
+    },
 });

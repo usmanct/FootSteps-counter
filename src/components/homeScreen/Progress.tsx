@@ -7,7 +7,7 @@ import TargetModal from '../TargetModal';
 import { Pedometer } from 'expo-sensors';
 import { AppContext } from '../../contextApi/AppContext';
 import DataBaseInitialization from '../../sqLiteDb/DataBaseInitialization';
-import { useDatabase  } from '../../sqLiteDb/useDatabase';
+import { useDatabase } from '../../sqLiteDb/useDatabase';
 const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any) => {
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -17,7 +17,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
     const [IsTargetReached, setIsTargetReached] = useState<any>(false);
     const { state, setState }: any = useContext(AppContext);
 
-    const { insertData , getData } = useDatabase();
+    const { insertData, getData } = useDatabase();
 
 
     const now = new Date();
@@ -57,21 +57,35 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
     }, [kcal, distance, currentStepCount])
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            const newNow = new Date();
-            const newDateOnly = newNow.toLocaleDateString();
-            if (newDateOnly !== dateOnly) {
-                insertData().then(() => {
-                    console.log('Data inserted successfully');
-                }).catch(error => {
-                    console.error('Error inserting data:', error);
-                });
-                setCurrentStepCount(0); // Reset the steps for the new day
-            }
-        }, 60000); // Check every minute
+        console.log("Inside Target:state", state)
+    }, [state])
 
-        return () => clearInterval(interval); // Clean up the interval on unmount
-    }, [dateOnly]);
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         const newNow = new Date();
+    //         const newDateOnly = newNow.toLocaleDateString();
+    //         if (newDateOnly !== dateOnly) {
+    //             insertData().then(() => {
+    //                 console.log('Data inserted successfully');
+    //             }).catch(error => {
+    //                 console.error('Error inserting data:', error);
+    //             });
+    //             setCurrentStepCount(0); // Reset the steps for the new day
+    //         }
+    //     }, 60000); // Check every minute
+
+    //     return () => clearInterval(interval); // Clean up the interval on unmount
+    // }, [dateOnly]);
+    useEffect(() => {
+        if (IsTargetReached) {
+            insertData().then(() => {
+                console.log('Data inserted successfully');
+            }).catch(error => {
+                console.error('Error inserting data:', error);
+            });
+            setCurrentStepCount(0);
+        }
+    }, [IsTargetReached])
 
     const openTargetModal = () => {
         setModalVisible(!modalVisible)

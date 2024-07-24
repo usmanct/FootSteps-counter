@@ -3,11 +3,13 @@ import React from 'react'
 import Header from '../components/Header'
 import WaterProgress from '../components/waterTrackScreen/WaterProgress'
 import HistoryChat from '../components/waterTrackScreen/HistoryChat'
+import { CanvasProgress } from '../components/waterTrackScreen/CanvasProgress'
 const WaterTrack = () => {
   return (
     <ScrollView>
       <Header />
       <WaterProgress />
+      {/* <CanvasProgress/> */}
       <HistoryChat />
     </ScrollView>
   )

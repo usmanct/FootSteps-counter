@@ -1,40 +1,32 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Dimensions } from "react-native";
-import { BarChart } from "react-native-chart-kit";
-
+import { BarChart } from "react-native-gifted-charts";
+import { AppContext } from '../../contextApi/AppContext';
+import { useDatabase } from '../../sqLiteDb/useDatabase';
 const screenWidth = Dimensions.get("window").width;
 
 const HistoryChat = () => {
-    const chartConfig = {
-        backgroundGradientFrom: 'transparent',
-        backgroundGradientTo: 'transparent',
-        backgroundGradientFromOpacity: 0,
-        backgroundGradientToOpacity: 0,
-        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // bars color can be set here, currently black
-        strokeWidth: 2,
-        barPercentage: 0.5,
-        useShadowColorFromDataset: false
-    };
+    const now = new Date();
+    const { waterHistory , IsgoalAchieved }: any = useContext(AppContext)
+    const [barData , setbarData] = useState([])
 
-    const data = {
-        labels: ['20', '21', '22', '23'],
-        datasets: [
-            {
-                data: [2000, 3000, 1500, 3500]
-            }
-        ]
-    };
+    const {getALLWaterData} = useDatabase()
 
+    useEffect(() => {
+        getALLWaterData()
+        const waterDrinkedData = waterHistory.map((data) => ({ value: data.waterIntake }))
+        setbarData([...waterDrinkedData])
+        // console.log('waterDrinkedData', waterDrinkedData)
+    }, [IsgoalAchieved])
+    // console.log('waterDrinkedData', wdata)
     return (
         <View style={styles.container}>
             <Text style={styles.textHeading}>HistoryChat</Text>
             <BarChart
-                data={data}
-                width={screenWidth - 35}
-                height={220}
-                chartConfig={chartConfig}
-                verticalLabelRotation={30}
+                frontColor={'#0cf249'}
+                barWidth={22}
+                data={barData}
             />
         </View>
     );
@@ -53,7 +45,7 @@ const styles = StyleSheet.create({
         gap: 15,
         paddingHorizontal: 10,
     },
-    textHeading:{
+    textHeading: {
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
