@@ -1,19 +1,31 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { Dimensions } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
-const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
-const HistoryChat = ({barData}) => {
+const HistoryChat = ({ barData, }) => {
 
 
-    // console.log('waterDrinkedData', wdata)
+
     return (
         <View style={styles.container}>
             <Text style={styles.textHeading}>HistoryChat</Text>
             <BarChart
                 frontColor={'#0cf249'}
-                barWidth={22}
-                data={barData}
+                barWidth={70}
+                data={barData.slice(barData.length - 3, barData.length)}
+                yAxisLabelWidth={35}
+                isAnimated
+                hideRules
+                // yAxisLabelTexts={yAxisLabels}
+                stepValue={500} // Adjust this to match the scale of your y-axis
+                maxValue={7000}
+                yAxisThickness={0}
+                xAxisThickness={0}
+                barBorderRadius={5}
+                // height={screenHeight - 400}
+                showValuesAsTopLabel={true}
+                hideYAxisText
             />
         </View>
     );

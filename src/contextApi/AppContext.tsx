@@ -28,6 +28,7 @@ export const AppProvider = ({ children }) => {
     })
     const [IsCupfilllied, setIsCupfilllied] = useState(false)
     const [waterHistory, setWaterHistory] = useState([])
+    const [fetchData, setFetchData] = useState([])
 
 
     const MAX_HEIGHT = 200
@@ -62,6 +63,8 @@ export const AppProvider = ({ children }) => {
             setIsCupfilllied,
             waterHistory,
             setWaterHistory,
+            fetchData,
+            setFetchData,
         }}>
             {children}
         </AppContext.Provider>

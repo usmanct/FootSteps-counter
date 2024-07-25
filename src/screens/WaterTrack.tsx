@@ -16,7 +16,9 @@ const WaterTrack = () => {
 
   useEffect(() => {
     getALLWaterData()
-    const waterDrinkedData = waterHistory.map((data) => ({ value: data.waterIntake }))
+    const waterDrinkedData = waterHistory.map((data) => ({
+      value: data.waterIntake, label: data.date
+    }))
     setbarData([...waterDrinkedData])
     // console.log('waterDrinkedData', waterDrinkedData)
   }, [waterHistory])

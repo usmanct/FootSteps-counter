@@ -48,7 +48,7 @@ const WaterTrackSetting = () => {
             <Header />
             <View style={styles.container}>
                 <SetDrinkTarget modalVisible={modalVisible} setModalVisible={setModalVisible} />
-                <Row title={"Unit"} onpress={unitHandler} />
+                <Row title={"Unit"} onpress={unitHandler} subtil={''} />
                 <Row title={"Cup Capacity"} subtil={cupCapacity} onpress={cupcapacityHandler} />
                 <Row title={"Drink Goal"} subtil={drinkGoal} onpress={drinkgoalhandler} />
             </View>
