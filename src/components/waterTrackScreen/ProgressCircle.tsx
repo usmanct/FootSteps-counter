@@ -11,24 +11,13 @@ import { useDatabase } from '../../sqLiteDb/useDatabase';
 const ProgressCircle = () => {
     const {
         drinkGoal,
-        setDrinkGoal,
         cupCapacity,
-        setCupCapacity,
         MAX_HEIGHT,
         waterdrinked,
         setwaterdrinked,
-        preCupCount,
-        setPreCupCount,
-        noOfCups,
         setNoOfCups,
-        modalType,
-        setModalType,
         preWaterCount,
-        setWaterCupCount,
-        waterState,
         setWaterState,
-        IsCupfilllied,
-        setIsCupfilllied,
         IsgoalAchieved,
         setISgoalAchieved,
     }: any = useContext(AppContext)
@@ -38,8 +27,6 @@ const ProgressCircle = () => {
     const [fillcontainer, setFillContainer] = useState(0)
     const [bolflag, setBolFlag] = useState(true)
     const [drinkflag, setDrinkFlag] = useState(true)
-    const [capacityflag, setCapacityFlag] = useState(true)
-    const isFocused = useIsFocused();
     const [cupHeight, setCupHeight] = useState(0)
 
     const now = new Date();
@@ -109,10 +96,8 @@ const ProgressCircle = () => {
             setISgoalAchieved(true)
         }
         else {
-            console.log("dd")
             setFillContainer((pre) => (pre + cupHeight))
         }
-        console.log('fillcontainer', fillcontainer)
 
         return () => {
 
@@ -129,28 +114,17 @@ const ProgressCircle = () => {
         let NO_OF_CUPS = drinkGoal / cupCapacity
         HEIGHT_ON_EVERY_CUP = MAX_HEIGHT / NO_OF_CUPS
         setCupHeight(HEIGHT_ON_EVERY_CUP)
-        console.log("preWaterCount", preWaterCount)
         let p = (preWaterCount / drinkGoal) * 100
-
         let preHeight = (p * MAX_HEIGHT) / 100
-
         setFillContainer(preHeight)
-        console.log('When Drink Goal Change Water IN EVERY CUP', HEIGHT_ON_EVERY_CUP)
-        console.log(fillcontainer)
-
     }, [drinkGoal])
 
 
     useEffect(() => {
         let HEIGHT_ON_EVERY_CUP
-
-        let req = drinkGoal - waterdrinked
-
         let NO_OF_CUPS = drinkGoal / cupCapacity
         HEIGHT_ON_EVERY_CUP = MAX_HEIGHT / NO_OF_CUPS
         setCupHeight(HEIGHT_ON_EVERY_CUP)
-
-        console.log('NoOfCUPS', NO_OF_CUPS)
         setNoOfCups(NO_OF_CUPS)
 
     }, [cupCapacity])
@@ -171,10 +145,6 @@ const styles = StyleSheet.create({
         borderColor: '#0cf249',
         borderWidth: 2,
         borderRadius: 100,
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        // paddingHorizontal: 5,
-        // position: 'relative',
         flexDirection: 'row',
         justifyContent: 'center',
         overflow: 'hidden'

@@ -2,8 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import ProgressCircle from './ProgressCircle';
-import { AppContext } from '../../contextApi/AppContext';
-import SetDrinkTarget from './SetDrinkTarget';
+import { AppContext } from '../../contextApi/AppContext';;
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -11,17 +10,12 @@ import { useNavigation } from '@react-navigation/native';
 const WaterProgress = () => {
     const {
         drinkGoal,
-        setDrinkGoal,
         cupCapacity,
-        setCupCapacity,
-        MAX_HEIGHT,
         waterdrinked,
         setwaterdrinked,
         IsgoalAchieved,
-        setISgoalAchieved,
         waterState,
-        IsCupfilllied,
-        setIsCupfilllied,
+     
     }: any = useContext(AppContext)
     const navigation = useNavigation();
 
@@ -32,17 +26,6 @@ const WaterProgress = () => {
         setPercentageDrinked(per.toFixed(2))
 
     }, [waterdrinked, drinkGoal])
-    useEffect(() => {
-
-    }, [])
-    useEffect(() => {
-
-    }, [])
-
-
-    useEffect(() => {
-
-    }, [])
 
     const [precentageDrinked, setPercentageDrinked] = useState(0.0)
 
@@ -50,7 +33,6 @@ const WaterProgress = () => {
         if (!IsgoalAchieved) {
             setwaterdrinked(waterdrinked + cupCapacity)
         }
-        console.log("Water State", waterState)
     }
     const navigateToSetting = () => {
         navigation.navigate('WaterTrackSetting' as never)

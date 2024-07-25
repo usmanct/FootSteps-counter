@@ -7,26 +7,11 @@ import { useDatabase } from '../../sqLiteDb/useDatabase';
 
 const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance }) => {
 
-    const { getData, dropTable, insertData, insertWaterData, getWaterData } = useDatabase();
+    const { getData, getWaterData } = useDatabase();
     const navigation = useNavigation();
-
-
-    const dummyData = [
-        { id: 1, date: '2024-07-09', waterIntake: 500, cupCapacity: 250, goal: 2000 },
-        { id: 2, date: '2024-07-10', waterIntake: 750, cupCapacity: 250, goal: 2000 },
-        { id: 3, date: '2024-07-11', waterIntake: 1000, cupCapacity: 250, goal: 2000 },
-        { id: 4, date: '2024-07-12', waterIntake: 1250, cupCapacity: 250, goal: 2000 },
-        { id: 5, date: '2024-07-13', waterIntake: 1500, cupCapacity: 250, goal: 2000 },
-        { id: 6, date: '2024-07-14', waterIntake: 1750, cupCapacity: 250, goal: 2000 },
-        { id: 7, date: '2024-07-15', waterIntake: 2000, cupCapacity: 250, goal: 2000 },
-        { id: 8, date: '2024-07-16', waterIntake: 2250, cupCapacity: 250, goal: 2000 },
-        { id: 9, date: '2024-07-17', waterIntake: 2500, cupCapacity: 250, goal: 2000 }
-    ];
-
 
     const [selected, setSelected] = useState('');
     const now = new Date();
-    const dateOnly = now.toLocaleDateString();
 
     useEffect(() => {
         console.log("Today Date: ", selected)
@@ -46,7 +31,7 @@ const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distanc
         if (today >= dayselected) {
             getData(formattedDate);
             getWaterData(formattedDate)
-            navigation.navigate('Results' as never, { currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance })
+            navigation.navigate('Results' as never)
         }
 
 

@@ -10,6 +10,7 @@ import { Fontisto } from '@expo/vector-icons';
 
 import Account from '../screens/Account';
 import ScreenNavigation from '../stackNavigation/ScreenNavigation';
+import WaterTrackStack from '../stackNavigation/WaterTrackStack ';
 
 
 
@@ -38,7 +39,7 @@ function MyTabs() {
       />
       <Tab.Screen
         name="WaterTrack"
-        component={WaterTrack}
+        component={WaterTrackStack}
         options={{
           tabBarLabel: 'WaterTrack',
           tabBarIcon: ({ color, size }) => (

@@ -19,52 +19,46 @@ export const useDatabase = () => {
     const insertData = async () => {
 
         const db = await SQLite.openDatabaseAsync('usmanct');
-        const result = await db.runAsync('INSERT INTO step_data (date, footsteps, flag, distance, energy) VALUES (?, ?, ?, ?, ?)',
-            state.date, state.footsteps, state.flag, state.distance, state.energy);
-        if (result) {
-            console.log('ddd', result);
-            const allRows = await db.getAllAsync('SELECT * FROM step_data');
-
-            console.log('allRows', allRows);
+        try {
+            await db.runAsync('INSERT INTO step_data (date, footsteps, flag, distance, energy) VALUES (?, ?, ?, ?, ?)',
+                state.date, state.footsteps, state.flag, state.distance, state.energy);
+        } catch (error) {
+            console.error("Insertion Step Data Error", error);
         }
+
     };
     const getData = async (s: any) => {
-        setIsLoading(true)
         const db = await SQLite.openDatabaseAsync('usmanct');
-        console.log("Insde getData function", s)
-        const result = await db.getAllAsync('SELECT * FROM step_data WHERE date = ?', s);
-        if (result) {
-            console.log('Data', result);
-            setRecord([...result]);
+        try {
+            const result = await db.getAllAsync('SELECT * FROM step_data WHERE date = ?', s);
+            if (result) {
+                setRecord([...result]);
+            }
+        } catch (error) {
+            console.error("Step Data Fetching Error", error);
         }
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 1000)
     }
     const getWaterData = async (s: any) => {
-        setIsLoading(true)
         const db = await SQLite.openDatabaseAsync('usmanct');
-        console.log("Inside Water", s)
-        const result = await db.getAllAsync('SELECT * FROM water_record WHERE date = ?', s);
-        if (result) {
-            console.log('Water', result);
-            setWaterRecord([...result]);
+        try {
+            const result = await db.getAllAsync('SELECT * FROM water_record WHERE date = ?', s);
+            if (result) {
+                setWaterRecord([...result]);
+            }
+        } catch (error) {
+            console.error("Water Data Fetching Error", error)
         }
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 1000)
     }
     const getALLWaterData = async () => {
-        setIsLoading(true)
         const db = await SQLite.openDatabaseAsync('usmanct');
-        const result = await db.getAllAsync('SELECT * FROM water_record');
-        if (result) {
-            console.log('Water', result);
-            setWaterHistory([...result]);
+        try {
+            const result = await db.getAllAsync('SELECT * FROM water_record');
+            if (result) {
+                setWaterHistory([...result]);
+            }
+        } catch (error) {
+            console.error("Water Data Fetching Error", error)
         }
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 1000)
     }
     const dropTable = async (s: any) => {
         const db = await SQLite.openDatabaseAsync('usmanct');
@@ -82,17 +76,12 @@ export const useDatabase = () => {
     const insertWaterData = async () => {
 
         const db = await SQLite.openDatabaseAsync('usmanct');
-        const result = await db.runAsync('INSERT INTO water_record ( date, waterIntake,cupCapacity,goal) VALUES (?, ?, ?, ?)',
-            waterState.date, waterState.waterIntake, waterState.cupCapacity, waterState.goal);
-        if (result) {
-            console.log('ddd', result);
-            const allRows = await db.getAllAsync('SELECT * FROM water_record');
-
-            console.log('allRows', allRows);
+        try {
+            await db.runAsync('INSERT INTO water_record ( date, waterIntake,cupCapacity,goal) VALUES (?, ?, ?, ?)',
+                waterState.date, waterState.waterIntake, waterState.cupCapacity, waterState.goal);
+        } catch (error) {
+            console.log('Error inserting water, error: ' + error)
         }
-        // setTimeout(() => {
-        //     setIsLoading(false)
-        // }, 1000)
     };
 
 

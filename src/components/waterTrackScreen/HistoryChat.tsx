@@ -1,24 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
 import { Dimensions } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
-import { AppContext } from '../../contextApi/AppContext';
-import { useDatabase } from '../../sqLiteDb/useDatabase';
 const screenWidth = Dimensions.get("window").width;
 
-const HistoryChat = () => {
-    const now = new Date();
-    const { waterHistory , IsgoalAchieved }: any = useContext(AppContext)
-    const [barData , setbarData] = useState([])
+const HistoryChat = ({barData}) => {
 
-    const {getALLWaterData} = useDatabase()
 
-    useEffect(() => {
-        getALLWaterData()
-        const waterDrinkedData = waterHistory.map((data) => ({ value: data.waterIntake }))
-        setbarData([...waterDrinkedData])
-        // console.log('waterDrinkedData', waterDrinkedData)
-    }, [IsgoalAchieved])
     // console.log('waterDrinkedData', wdata)
     return (
         <View style={styles.container}>

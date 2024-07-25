@@ -1,47 +1,35 @@
-import { Dimensions, FlatList, StyleSheet, Text, View  , ScrollView} from 'react-native'
+import { Dimensions, FlatList, StyleSheet, Text, View, ScrollView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import StatsCard from './StatsCard';
 import { AppContext } from '../../contextApi/AppContext';
-import { BarChart } from 'react-native-chart-kit';
+import { BarChart } from "react-native-gifted-charts";
+import { useDatabase } from '../../sqLiteDb/useDatabase';
 
 
-const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
-const chartConfig = {
-    backgroundGradientFrom: 'transparent',
-    backgroundGradientTo: 'transparent',
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientToOpacity: 0,
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // bars color can be set here, currently black
-    strokeWidth: 1,
-    barPercentage: 0.9,
-    useShadowColorFromDataset: false,
-
-};
-const Results = ({ route }) => {
+const Results = () => {
     const {
         isLoading,
         record,
         waterRecord,
     }: any = useContext(AppContext);
-    const { currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance } = route.params;
     const [totalSteps, setTotalSteps] = useState(0);
+    const { waterHistory }: any = useContext(AppContext)
+    const [fetchData, setFetchData] = useState([])
 
 
-    const data = {
-        labels: [waterRecord[0]?.date],
-        datasets: [
-            {
-                data: [waterRecord[0]?.waterIntake],
-                color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, // target color
-                label: 'Target'
-            }
-        ]
-    };
+    const { getALLWaterData } = useDatabase()
 
+    useEffect(() => {
+        getALLWaterData()
+        const waterDrinkedData = waterHistory.map((data) => ({ value: data.waterIntake }))
+        setFetchData([...waterDrinkedData])
+        // console.log('waterDrinkedData', waterDrinkedData)
+    }, [waterHistory])
 
     useEffect(() => {
         let total = 0;
@@ -50,26 +38,27 @@ const Results = ({ route }) => {
         });
         setTotalSteps(total);
     }, [record]);
-    return (isLoading ?
-        <View style={styles.loaderView}>
-            <Text>Loading.......</Text>
-        </View> :
+    return (
+
         <View>
             <Text style={styles.headingText}>Results</Text>
             <Text style={styles.subHeading}>Steps</Text>
             {record.length ?
                 <View style={styles.container}>
                     <Text style={styles.headingText}>{totalSteps}</Text>
-                    <FlatList
-                        data={record}
-                        renderItem={({ item }) => (
-                            <View style={styles.subContainer}>
-                                <StatsCard icon={<AntDesign name="clockcircleo" size={14} color="red" />} value={item?.date} unit={'time'} isFirst={true} />
-                                <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} value={item?.energy} unit={'kcal'} isFirst={undefined} />
-                                <StatsCard icon={<Octicons name="location" size={14} color="green" />} value={item?.distance} unit={'km'} isFirst={undefined} />
-                            </View>
-                        )}
-                    />
+                    <View style={{ height: screenHeight / 2 - 100 }}>
+                        <FlatList
+                            data={record}
+                            renderItem={({ item }) => (
+                                <View style={styles.subContainer}>
+                                    <StatsCard icon={<AntDesign name="clockcircleo" size={14} color="red" />} value={item?.date} unit={'time'} isFirst={true} />
+                                    <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} value={item?.energy} unit={'kcal'} isFirst={undefined} />
+                                    <StatsCard icon={<Octicons name="location" size={14} color="green" />} value={item?.distance} unit={'km'} isFirst={undefined} />
+                                </View>
+                            )}
+                            scrollEnabled={true}
+                        />
+                    </View>
 
                 </View> :
                 <View style={styles.notFoundView}>
@@ -79,14 +68,9 @@ const Results = ({ route }) => {
             {waterRecord.length ?
                 <View style={styles.container}>
                     <BarChart
-                        data={data}
-                        width={screenWidth - 35}
-                        height={200}
-                        chartConfig={chartConfig}
-                        verticalLabelRotation={0}
-                        fromZero={true}
-                        showValuesOnTopOfBars={true}
-                        showBarTops={true}
+                        frontColor={'#0cf249'}
+                        barWidth={22}
+                        data={fetchData}
                     />
                 </View> :
                 <View style={styles.notFoundView}>

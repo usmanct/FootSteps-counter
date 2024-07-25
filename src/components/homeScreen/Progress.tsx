@@ -110,28 +110,18 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
             })
         subscription = Pedometer.watchStepCount((result) => {
             if (IstargetUpdate) {
-                console.log('Before', IstargetUpdate)
                 setIstargetUpdate(false);
-                console.log('Target was just updated', IstargetUpdate)
-
                 return;
             }
-
-            console.log('Steps', result.steps)
-            console.log('Inside Incremental')
             setCurrentStepCount((preCount) => {
-                const newCount = preCount + result.steps
+                const newCount =  result.steps
                 if (newCount >= target) {
                     setIsTargetReached(true);
                     return target;
                 }
                 return newCount;
             });
-            console.log('OutSide Incremental')
         });
-
-
-        console.log('Inside Pedometer')
         return () => {
             subscription && subscription.remove();
 
@@ -159,7 +149,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
                 duration={1000}
                 maxValue={target}
                 inActiveStrokeOpacity={.5}
-                activeStrokeColor={IsTargetReached ? 'grey' : '#2ecc71'}
+                activeStrokeColor={'#2ecc71'}
                 {...props}
                 onAnimationComplete={() => {
 

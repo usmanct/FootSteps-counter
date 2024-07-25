@@ -5,10 +5,6 @@ import Stats from '../components/homeScreen/Stats'
 import Bmi from '../components/homeScreen/Bmi'
 import History from '../components/homeScreen/History'
 import Header from '../components/Header'
-import initializeDatabase from '../sqLiteDb/DataBaseInitialization'
-import BottomNavigationBar from '../bottomNavigation/BottomNavigationBar'
-
-
 const Home = () => {
   const [currentStepCount, setCurrentStepCount] = useState(0);
   const [kcal, setKcal] = useState<any>(0);

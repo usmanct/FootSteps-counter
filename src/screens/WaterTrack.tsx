@@ -1,16 +1,31 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { ScrollView, StyleSheet } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import WaterProgress from '../components/waterTrackScreen/WaterProgress'
 import HistoryChat from '../components/waterTrackScreen/HistoryChat'
-import { CanvasProgress } from '../components/waterTrackScreen/CanvasProgress'
+import { useDatabase } from '../sqLiteDb/useDatabase'
+import { AppContext } from '../contextApi/AppContext'
 const WaterTrack = () => {
+
+  const [barData, setbarData] = useState([])
+  const now = new Date();
+  const { waterHistory }: any = useContext(AppContext)
+
+
+  const { getALLWaterData } = useDatabase()
+
+  useEffect(() => {
+    getALLWaterData()
+    const waterDrinkedData = waterHistory.map((data) => ({ value: data.waterIntake }))
+    setbarData([...waterDrinkedData])
+    // console.log('waterDrinkedData', waterDrinkedData)
+  }, [waterHistory])
   return (
     <ScrollView>
       <Header />
       <WaterProgress />
       {/* <CanvasProgress/> */}
-      <HistoryChat />
+      <HistoryChat barData={barData} />
     </ScrollView>
   )
 }
