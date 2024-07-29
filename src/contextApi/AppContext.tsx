@@ -3,6 +3,9 @@ import React, { createContext, useState } from 'react';
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+
+     const now = new Date();
+    const dateOnly = now.toLocaleDateString();
     const [state, setState] = useState({
         date: '',
         footsteps: 0,
@@ -14,7 +17,7 @@ export const AppProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [drinkGoal, setDrinkGoal] = useState(1000)
     const [cupCapacity, setCupCapacity] = useState(50)
-    const [waterdrinked, setwaterdrinked] = useState(0)
+    const [waterdrinked, setwaterdrinked] = useState<any>(0)
     const [IsgoalAchieved, setISgoalAchieved] = useState(false)
     const [preWaterCount, setWaterCupCount] = useState(0)
     const [noOfCups, setNoOfCups] = useState(0)
@@ -64,7 +67,7 @@ export const AppProvider = ({ children }) => {
             waterHistory,
             setWaterHistory,
             fetchData,
-            setFetchData,
+            setFetchData
         }}>
             {children}
         </AppContext.Provider>

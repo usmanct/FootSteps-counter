@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import { Button, StyleSheet, View, Text } from 'react-native';
 import { AppContext } from '../../contextApi/AppContext';
-import { useIsFocused } from '@react-navigation/native';
 import DataBaseInitialization from '../../sqLiteDb/DataBaseInitialization';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -20,17 +19,16 @@ const ProgressCircle = () => {
         setWaterState,
         IsgoalAchieved,
         setISgoalAchieved,
+        waterState,
     }: any = useContext(AppContext)
-
-    const { insertWaterData } = useDatabase();
-
-    const [fillcontainer, setFillContainer] = useState(0)
     const [bolflag, setBolFlag] = useState(true)
     const [drinkflag, setDrinkFlag] = useState(true)
     const [cupHeight, setCupHeight] = useState(0)
+    const [fillcontainer, setFillContainer] = useState(0)
 
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
+    const [today, setToday] = useState(dateOnly)
 
     useEffect(() => {
         let HEIGHT_ON_EVERY_CUP
@@ -41,6 +39,8 @@ const ProgressCircle = () => {
         setCupHeight(HEIGHT_ON_EVERY_CUP)
         DataBaseInitialization()
     }, [])
+
+ 
     useEffect(() => {
 
         setWaterState((pre: any) => ({
@@ -52,38 +52,18 @@ const ProgressCircle = () => {
         }))
     }, [waterdrinked, cupCapacity, drinkGoal])
 
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         const newNow = new Date();
-    //         const newDateOnly = newNow.toLocaleDateString();
-    //         if (newDateOnly !== dateOnly) {
-    //             insertWaterData().then(() => {
-    //                 console.log('Data inserted successfully');
-    //             }).catch(error => {
-    //                 console.error('Error inserting data:', error);
-    //             });
-    //             waterdrinked(0); // Reset the steps for the new day
-    //         }
-    //     }, 60000); // Check every minute
-
-    //     return () => clearInterval(interval); // Clean up the interval on unmount
-    // }, [dateOnly]);
-
 
     useEffect(() => {
         if (IsgoalAchieved) {
-            insertWaterData().then(() => {
-                console.log('Data inserted successfully');
-            }).catch(error => {
-                console.error('Error inserting data:', error);
-            });
-            setwaterdrinked(0);
+            setwaterdrinked(0)
             setFillContainer(0)
             setISgoalAchieved(false)
             setBolFlag(true);
+            console.log("waterState", waterState)
         }
-    },
-        [IsgoalAchieved])
+    }, [IsgoalAchieved])
+
+
 
     useEffect(() => {
 
@@ -91,6 +71,9 @@ const ProgressCircle = () => {
             setBolFlag(false)
             return
         }
+
+
+        console.log("fillContainer", fillcontainer + cupHeight)
         if (fillcontainer + cupHeight >= MAX_HEIGHT) {
             setFillContainer(MAX_HEIGHT)
             setISgoalAchieved(true)
@@ -98,7 +81,6 @@ const ProgressCircle = () => {
         else {
             setFillContainer((pre) => (pre + cupHeight))
         }
-
         return () => {
 
         }

@@ -4,6 +4,7 @@ import { AntDesign } from '@expo/vector-icons';
 import ProgressCircle from './ProgressCircle';
 import { AppContext } from '../../contextApi/AppContext';;
 import { useNavigation } from '@react-navigation/native';
+import { useDatabase } from '../../sqLiteDb/useDatabase';
 
 
 
@@ -15,10 +16,10 @@ const WaterProgress = () => {
         setwaterdrinked,
         IsgoalAchieved,
         waterState,
-     
+
     }: any = useContext(AppContext)
     const navigation = useNavigation();
-
+    const { dropTable } = useDatabase()
 
     useEffect(() => {
         let per
@@ -51,7 +52,9 @@ const WaterProgress = () => {
             </View>
             {/* <View style={styles.innerContainer}> */}
             <ProgressCircle />
-            <Text style={styles.pageText}>{precentageDrinked}%</Text>
+            <TouchableOpacity onPress={() => dropTable()}>
+                <Text style={styles.pageText}>{precentageDrinked}%</Text>
+            </TouchableOpacity>
             <Text>{waterdrinked}/{drinkGoal}ml</Text>
             <View>
                 <TouchableOpacity

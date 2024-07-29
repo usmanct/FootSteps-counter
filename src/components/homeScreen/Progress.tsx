@@ -16,7 +16,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
     const [IstargetUpdate, setIstargetUpdate] = useState<any>(true)
     const [IsTargetReached, setIsTargetReached] = useState<any>(false);
     const { state, setState }: any = useContext(AppContext);
-
+    const [IsInsertionCall, setIsInsertionCall] = useState(true);
     const { insertData, getData } = useDatabase();
 
 
@@ -114,7 +114,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
                 return;
             }
             setCurrentStepCount((preCount) => {
-                const newCount =  result.steps
+                const newCount = result.steps
                 if (newCount >= target) {
                     setIsTargetReached(true);
                     return target;

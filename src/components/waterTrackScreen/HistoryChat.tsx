@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { Dimensions } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 const screenHeight = Dimensions.get("window").height;
@@ -10,7 +10,7 @@ const HistoryChat = ({ barData, }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.textHeading}>HistoryChat</Text>
-            <BarChart
+            {barData.length ? <BarChart
                 frontColor={'#0cf249'}
                 barWidth={70}
                 data={barData.slice(barData.length - 3, barData.length)}
@@ -26,7 +26,14 @@ const HistoryChat = ({ barData, }) => {
                 // height={screenHeight - 400}
                 showValuesAsTopLabel={true}
                 hideYAxisText
-            />
+            /> :
+                <View>
+                    <Image
+                        source={require('../images/NotFound.gif')}
+                    />
+                </View>
+            }
+
         </View>
     );
 };

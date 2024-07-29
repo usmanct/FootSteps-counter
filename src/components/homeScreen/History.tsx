@@ -7,7 +7,7 @@ import { useDatabase } from '../../sqLiteDb/useDatabase';
 
 const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance }) => {
 
-    const { getData, getWaterData } = useDatabase();
+    const { getData, getWaterData, getALLWaterData } = useDatabase();
     const navigation = useNavigation();
 
     const [selected, setSelected] = useState('');
@@ -43,10 +43,6 @@ const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distanc
             <View style={styles.container}>
                 <Text style={styles.heading}>Your Progress</Text>
                 <TouchableOpacity style={styles.btn} onPress={() => {
-
-                    //     dummyData.forEach((d) => (
-                    // insertWaterData(d)
-                    //  ))
 
                 }}>
                     <Text style={styles.btnText}>Months</Text>
