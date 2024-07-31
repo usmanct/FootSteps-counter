@@ -17,8 +17,13 @@ export const useDatabase = () => {
         setwaterdrinked,
         MAX_HEIGHT,
         drinkGoal,
-        setDrinkGoal
+        setDrinkGoal,
+        setCupCapacity,
+        waterdrinked,
+        cupCapacity
     }: any = useContext(AppContext);
+    const now = new Date();
+    const dateOnly = now.toLocaleDateString();
     //Inserting the footsteps data into the data
     const insertData = async () => {
 
@@ -48,12 +53,16 @@ export const useDatabase = () => {
         console.log(s)
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
-            const result = await db.getAllAsync('SELECT * FROM water_record WHERE date = ?', s);
-            if (result) {
-                setWaterState(result[0]);
-            }
+            return await db.getAllAsync('SELECT * FROM water_record WHERE date = ?', s);
+            // if (result) {
+            //     console.log(result[0])
+            //     setDrinkGoal(result[0]?.goal);
+            //     setwaterdrinked(result[0]?.waterIntake);
+            //     setCupCapacity(result[0]?.cupCapacity);
+            //     setWaterState(result[0]);
+            // }
         } catch (error) {
-            console.error("Water Data Fetching Error", error)
+            console.error("Water Data Fetch", error)
         }
     }
 
@@ -62,8 +71,9 @@ export const useDatabase = () => {
     const updateWaterRecord = async (s: any) => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
+            console.log("sdsd", waterdrinked, drinkGoal, cupCapacity)
             const result = await db.runAsync('UPDATE water_record SET waterIntake = ? , goal=? , cupCapacity=?   WHERE date = ?',
-                [waterState.waterIntake, waterState.goal, waterState.cupCapacity, s]);
+                [waterdrinked, drinkGoal, cupCapacity, s]);
             if (result) {
                 console.log('rrrrr', result)
             }
@@ -77,7 +87,7 @@ export const useDatabase = () => {
         try {
             const result = await db.getAllAsync('SELECT * FROM water_record');
             if (result) {
-                // console.log("Water Data Fetching", result)
+                console.log("Water Data Fetching", result)
                 setWaterHistory([...result]);
             }
         } catch (error) {
@@ -91,7 +101,7 @@ export const useDatabase = () => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
             await db.runAsync('INSERT INTO water_record ( date, waterIntake,cupCapacity,goal) VALUES (?, ?, ?, ?)',
-                waterState.date, waterState.waterIntake, waterState.cupCapacity, waterState.goal);
+                dateOnly, waterdrinked, cupCapacity, drinkGoal);
         } catch (error) {
             console.log('Error inserting water, error: ' + error)
         }
@@ -100,7 +110,7 @@ export const useDatabase = () => {
     //function for clean the entire foot step counter table
     const dropTable = async () => {
         const db = await SQLite.openDatabaseAsync('usmanct');
-        const result = await db.runAsync('DELETE  FROM water_record WHERE date = $value', { $value: '29/07/2024' });
+        const result = await db.runAsync('DELETE  FROM water_record WHERE date = $value', { $value: '31/07/2024' });
         if (result) {
             console.log('Data deleted successfully', result);
             const allRows = await db.getAllAsync('SELECT * FROM water_record');
@@ -110,6 +120,21 @@ export const useDatabase = () => {
 
     };
 
+    //Function for updating the footstep Data
+    const updateFootStepRecord = async (s: any) => {
+        const db = await SQLite.openDatabaseAsync('usmanct');
+        try {
+            console.log("sdsd", waterdrinked, drinkGoal, cupCapacity)
+            console.log("WaterState", waterState)
+            const result = await db.runAsync('UPDATE water_record SET waterIntake = ? , goal=? , cupCapacity=?   WHERE date = ?',
+                [waterdrinked, drinkGoal, cupCapacity, s]);
+            if (result) {
+                console.log('rrrrr', result)
+            }
+        } catch (error) {
+            console.error("Water Update  Error", error)
+        }
+    }
 
 
     return {
@@ -119,6 +144,7 @@ export const useDatabase = () => {
         insertWaterData,
         getWaterData,
         getALLWaterData,
-        updateWaterRecord
+        updateWaterRecord,
+        updateFootStepRecord
     };
 };

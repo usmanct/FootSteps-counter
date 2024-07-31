@@ -1,9 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Button, StyleSheet, View, Text } from 'react-native';
 import { AppContext } from '../../contextApi/AppContext';
-import DataBaseInitialization from '../../sqLiteDb/DataBaseInitialization';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -16,19 +14,22 @@ const ProgressCircle = () => {
         setwaterdrinked,
         setNoOfCups,
         preWaterCount,
-        setWaterState,
         IsgoalAchieved,
         setISgoalAchieved,
-        waterState,
+        fillcontainer,
+        setFillContainer,
+        setDrinkGoal,
+        setCupCapacity
     }: any = useContext(AppContext)
     const [bolflag, setBolFlag] = useState(true)
     const [drinkflag, setDrinkFlag] = useState(true)
     const [cupHeight, setCupHeight] = useState(0)
-    const [fillcontainer, setFillContainer] = useState(0)
+
 
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
     const [today, setToday] = useState(dateOnly)
+    const { getALLWaterData, updateWaterRecord, insertWaterData, getWaterData } = useDatabase()
 
     useEffect(() => {
         let HEIGHT_ON_EVERY_CUP
@@ -37,29 +38,15 @@ const ProgressCircle = () => {
         setNoOfCups(NO_OF_CUPS)
         HEIGHT_ON_EVERY_CUP = MAX_HEIGHT / NO_OF_CUPS
         setCupHeight(HEIGHT_ON_EVERY_CUP)
-        DataBaseInitialization()
+
     }, [])
 
- 
-    useEffect(() => {
 
-        setWaterState((pre: any) => ({
-            ...pre,
-            date: dateOnly,
-            waterIntake: waterdrinked,
-            cupCapacity: cupCapacity,
-            goal: drinkGoal
-        }))
-    }, [waterdrinked, cupCapacity, drinkGoal])
 
 
     useEffect(() => {
         if (IsgoalAchieved) {
-            setwaterdrinked(0)
-            setFillContainer(0)
-            setISgoalAchieved(false)
             setBolFlag(true);
-            console.log("waterState", waterState)
         }
     }, [IsgoalAchieved])
 
@@ -68,6 +55,7 @@ const ProgressCircle = () => {
     useEffect(() => {
 
         if (bolflag) {
+            console.log('sasa')
             setBolFlag(false)
             return
         }
@@ -81,6 +69,7 @@ const ProgressCircle = () => {
         else {
             setFillContainer((pre) => (pre + cupHeight))
         }
+
         return () => {
 
         }

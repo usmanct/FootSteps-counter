@@ -6,18 +6,18 @@ import HistoryChat from '../components/waterTrackScreen/HistoryChat'
 import { useDatabase } from '../sqLiteDb/useDatabase'
 import { AppContext } from '../contextApi/AppContext'
 import CompleteAnimation from '../components/CompleteAnimation'
+import DataBaseInitialization from '../sqLiteDb/DataBaseInitialization'
 const WaterTrack = () => {
 
   const [barData, setbarData] = useState([])
   const now = new Date();
   const dateOnly = now.toLocaleDateString();
-  const { waterHistory, drinkGoal, waterdrinked, IsgoalAchieved }: any = useContext(AppContext)
-  const [goalAchieved, setGoalAchieved] = useState(false);
-
-  const { getALLWaterData, getWaterData } = useDatabase()
+  const { drinkGoal, waterdrinked, IsgoalAchieved, setCupCapacity, waterHistory, setDrinkGoal, cupCapacity, setwaterdrinked, setFillContainer, setISgoalAchieved, MAX_HEIGHT }: any = useContext(AppContext)
+  const [updateflag, setUpdateflag] = useState(true);
+  const [currentDate, setCurrentDate] = useState(dateOnly);
+  const { getALLWaterData, updateWaterRecord, insertWaterData, getWaterData } = useDatabase()
 
   useEffect(() => {
-    getALLWaterData();
     const waterDrinkedData = waterHistory.map((data: any) => ({
       value: data?.waterIntake,
       label: data?.date,
@@ -26,18 +26,82 @@ const WaterTrack = () => {
 
     // Check if the goal is achieved
 
-  }, [waterHistory]);
-
+  }, [waterdrinked, waterHistory]);
 
   useEffect(() => {
-    const totalIntake = waterdrinked
+    const loadInitialData = async () => {
+      try {
+        const data: any = await getWaterData(dateOnly);
+        if (data) {
+          console.log('data', data);
+          setDrinkGoal(data[0]?.goal);
+          setCupCapacity(data[0]?.cupCapacity);
+          setwaterdrinked(data[0]?.waterIntake);
+          setFillContainer((data[0]?.waterIntake / data[0]?.goal) * MAX_HEIGHT);
+          if (data[0]?.goal === data[0]?.waterIntake) {
+            setISgoalAchieved(true)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load initial data', error);
+      }
+    };
+    getALLWaterData()
 
-    if (totalIntake >= drinkGoal && IsgoalAchieved) {
-      setGoalAchieved(true);
-      setTimeout(() => setGoalAchieved(false), 10000); // hide overlay after 2 seconds
+    loadInitialData();
+  }, []);
+
+  useEffect(() => {
+    if (updateflag) {
+      setUpdateflag(false);
+      return
     }
+    else {
+      const updateAndFetchData = async () => {
+        try {
+          await updateWaterRecord(dateOnly).then(() => {
+            getALLWaterData()
+          }).catch(() => { });
 
-  }, [waterdrinked])
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      updateAndFetchData();
+    }
+  }, [waterdrinked, cupCapacity, drinkGoal]);
+
+
+  // useEffect(() => {
+  //   const totalIntake = waterdrinked
+
+  //   if (totalIntake >= drinkGoal && IsgoalAchieved) {
+  //     setGoalAchieved(true);
+  //     setTimeout(() => setGoalAchieved(false), 10000); // hide overlay after 2 seconds
+  //   }
+
+  // }, [waterdrinked])
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const newNow = new Date();
+  //     const newDateOnly = newNow.toLocaleDateString();
+
+  //     if (newDateOnly !== currentDate) {
+  //       // Date has changed, insert data and update current date
+  //       insertWaterData();
+  //       setCurrentDate(newDateOnly);
+  //     }
+  //     else{
+  //       insertWaterData();
+  //       // updateWaterRecord(currentDate)
+  //     }
+  //   }, 60000); // Check every minute
+
+  //   return () => clearInterval(interval); // Clean up the interval on unmount
+  // }, [currentDate, insertWaterData, waterdrinked]);
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -48,7 +112,7 @@ const WaterTrack = () => {
         {/* <CanvasProgress/> */}
         <HistoryChat barData={barData} />
       </ScrollView>
-      {goalAchieved && <CompleteAnimation isVisible={goalAchieved} />}
+      {/* {goalAchieved && <CompleteAnimation isVisible={goalAchieved} />} */}
     </View>
   )
 }

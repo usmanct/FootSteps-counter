@@ -17,7 +17,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
     const [IsTargetReached, setIsTargetReached] = useState<any>(false);
     const { state, setState }: any = useContext(AppContext);
     const [IsInsertionCall, setIsInsertionCall] = useState(true);
-    const { insertData, getData } = useDatabase();
+    const { insertData, getData, updateFootStepRecord } = useDatabase();
 
 
     const now = new Date();
@@ -54,7 +54,14 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
             distance,
             energy: kcal
         }))
+
     }, [kcal, distance, currentStepCount])
+    
+
+
+    useEffect(() => {
+        updateFootStepRecord(dateOnly)
+    }, [])
 
     useEffect(() => {
         console.log("Inside Target:state", state)
@@ -76,16 +83,16 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
 
     //     return () => clearInterval(interval); // Clean up the interval on unmount
     // }, [dateOnly]);
-    useEffect(() => {
-        if (IsTargetReached) {
-            insertData().then(() => {
-                console.log('Data inserted successfully');
-            }).catch(error => {
-                console.error('Error inserting data:', error);
-            });
-            setCurrentStepCount(0);
-        }
-    }, [IsTargetReached])
+    // useEffect(() => {
+    //     if (IsTargetReached) {
+    //         insertData().then(() => {
+    //             console.log('Data inserted successfully');
+    //         }).catch(error => {
+    //             console.error('Error inserting data:', error);
+    //         });
+    //         setCurrentStepCount(0);
+    //     }
+    // }, [IsTargetReached])
 
     const openTargetModal = () => {
         setModalVisible(!modalVisible)

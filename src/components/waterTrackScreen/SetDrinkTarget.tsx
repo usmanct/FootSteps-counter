@@ -42,12 +42,18 @@ const SetDrinkTarget = ({ modalVisible, setModalVisible }) => {
         if (modalType === 'cupcapacity') {
             setCupCapacity(inputValue.value);
             setDefaultIndexcup(inputValue.i);
-        } else if (inputValue.value < drinkGoal && IsgoalAchieved) {
-            ToastAndroid.show('Target Must Be Higher than Previous Target', ToastAndroid.SHORT);
-        } else {
-            setWaterCupCount(waterdrinked)
-            setDrinkGoal(inputValue.value);
-            setDefaultIndexgoal(inputValue.i);
+        }
+        else if (modalType === 'drinkgoal') {
+
+            if (inputValue.value < waterdrinked) {
+                ToastAndroid.show('Target Must Be Higher than Previous Target', ToastAndroid.SHORT);
+            }
+            else {
+                setWaterCupCount(waterdrinked)
+                setDrinkGoal(inputValue.value);
+                setDefaultIndexgoal(inputValue.i);
+                setISgoalAchieved(false)
+            }
         }
 
 

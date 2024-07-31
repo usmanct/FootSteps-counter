@@ -16,17 +16,25 @@ const WaterProgress = () => {
         setwaterdrinked,
         IsgoalAchieved,
         waterState,
+        MAX_HEIGHT,
+        fillcontainer,
+        setFillContainer,
 
     }: any = useContext(AppContext)
+    const now = new Date()
+    const dateOnly = now.toLocaleDateString();
     const navigation = useNavigation();
-    const { dropTable } = useDatabase()
+    const { dropTable, getWaterData } = useDatabase()
 
     useEffect(() => {
         let per
         per = waterdrinked / drinkGoal * 100
         setPercentageDrinked(per.toFixed(2))
+        const prefill = waterdrinked / drinkGoal * 100
+        let preHeight = (prefill * MAX_HEIGHT) / 100
+        setFillContainer(preHeight)
 
-    }, [waterdrinked, drinkGoal])
+    }, [waterdrinked, drinkGoal, cupCapacity])
 
     const [precentageDrinked, setPercentageDrinked] = useState(0.0)
 
@@ -34,6 +42,7 @@ const WaterProgress = () => {
         if (!IsgoalAchieved) {
             setwaterdrinked(waterdrinked + cupCapacity)
         }
+
     }
     const navigateToSetting = () => {
         navigation.navigate('WaterTrackSetting' as never)

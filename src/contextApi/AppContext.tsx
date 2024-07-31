@@ -4,10 +4,10 @@ export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
 
-     const now = new Date();
+    const now = new Date();
     const dateOnly = now.toLocaleDateString();
     const [state, setState] = useState({
-        date: '',
+        date: dateOnly,
         footsteps: 0,
         flag: false,
         distance: 0,
@@ -23,15 +23,10 @@ export const AppProvider = ({ children }) => {
     const [noOfCups, setNoOfCups] = useState(0)
     const [modalType, setModalType] = useState('')
     const [waterRecord, setWaterRecord] = useState([])
-    const [waterState, setWaterState] = useState({
-        date: '',
-        waterIntake: 0,
-        cupCapacity: 0,
-        goal: 0
-    })
     const [IsCupfilllied, setIsCupfilllied] = useState(false)
     const [waterHistory, setWaterHistory] = useState([])
     const [fetchData, setFetchData] = useState([])
+    const [fillcontainer, setFillContainer] = useState<any>(0)
 
 
     const MAX_HEIGHT = 200
@@ -60,14 +55,14 @@ export const AppProvider = ({ children }) => {
             setModalType,
             waterRecord,
             setWaterRecord,
-            waterState,
-            setWaterState,
             IsCupfilllied,
             setIsCupfilllied,
             waterHistory,
             setWaterHistory,
             fetchData,
-            setFetchData
+            setFetchData,
+            fillcontainer,
+            setFillContainer,
         }}>
             {children}
         </AppContext.Provider>

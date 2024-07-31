@@ -6,14 +6,18 @@ import Home from './src/screens/Home';
 import ScreenNavigation from './src/stackNavigation/ScreenNavigation';
 import { AppProvider } from './src/contextApi/AppContext';
 import { BottomTabs } from './src/bottomNavigation/BottomTabs';
+import { useEffect } from 'react';
 
 
 export default function App() {
+
+ 
+
   return (
     <AppProvider>
       <SafeAreaView style={styles.container}>
         {/* <ScreenNavigation /> */}
-        <BottomTabs/>
+        <BottomTabs />
       </SafeAreaView>
     </AppProvider>
   );
