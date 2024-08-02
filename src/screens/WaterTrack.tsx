@@ -53,30 +53,36 @@ const WaterTrack = () => {
     return () => clearInterval(interval); // Clean up the interval on unmount
   }, [dateOnly]);
 
-  useEffect(() => {
+ useEffect(() => {
     const loadInitialData = async () => {
       try {
         const data: any = await getWaterData(dateOnly);
-        if (data) {
+        if (data && data.length > 0) {
           console.log('data====', data[0]);
           if (data[0]?.goal == data[0]?.waterIntake) {
-            console.log('goal', data[0]?.goal, data[0]?.waterIntake)
-            setISgoalAchieved(true)
+            console.log('goal', data[0]?.goal, data[0]?.waterIntake);
+            setISgoalAchieved(true);
           }
           setDrinkGoal(data[0]?.goal);
           setCupCapacity(data[0]?.cupCapacity);
           setwaterdrinked(data[0]?.waterIntake);
           setFillContainer((data[0]?.waterIntake / data[0]?.goal) * MAX_HEIGHT);
-
+        } else {
+          // If no data for the current date, insert a new row
+          insertWaterData(dateOnly, waterdrinked, cupCapacity, drinkGoal).then(() => {
+            console.log('New data inserted for the current date');
+          }).catch(error => {
+            console.error('Error inserting new data:', error);
+          });
         }
       } catch (error) {
         console.error('Failed to load initial data', error);
       }
     };
-    getALLWaterData()
+    getALLWaterData();
 
     loadInitialData();
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (updateflag) {

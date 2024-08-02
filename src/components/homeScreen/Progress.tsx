@@ -41,17 +41,38 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
         updateFootStepRecord(dateOnly, currentStepCount, kcal, distance)
         getData(dateOnly)
     }, [currentStepCount, kcal, distance])
-    const initialLoad = async () => {
-        const res: any = await getData(dateOnly)
-        if (res) {
-            console.log('resss', res)
-            setCurrentStepCount(res[0].footsteps)
-            setKcal(res[0].energy)
-            setDistance(res[0].distance)
-        }
+    // const initialLoad = async () => {
+    //     const res: any = await getData(dateOnly)
+    //     if (res) {
+    //         console.log('resss', res)
+    //         setCurrentStepCount(res[0].footsteps)
+    //         setKcal(res[0].energy)
+    //         setDistance(res[0].distance)
+    //     }
 
-        console.log('res', res)
-    }
+    //     console.log('res', res)
+    // }
+
+    const initialLoad = async () => {
+        try {
+            const res: any = await getData(dateOnly);
+            if (res && res.length > 0) {
+                setCurrentStepCount(res[0].footsteps);
+                setKcal(res[0].energy);
+                setDistance(res[0].distance);
+            } else {
+                // If no data for the current date, insert a new row
+                insertData(dateOnly, currentStepCount, kcal, distance).then(() => {
+                    console.log('New data inserted for the current date');
+                }).catch(error => {
+                    console.error('Error inserting new data:', error);
+                });
+            }
+        } catch (error) {
+            console.error('Failed to load initial data', error);
+        }
+    };
+
     useEffect(() => {
         const interval = setInterval(() => {
             const newNow = new Date();

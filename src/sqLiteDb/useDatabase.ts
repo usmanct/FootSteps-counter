@@ -105,11 +105,11 @@ export const useDatabase = () => {
     //function for clean the entire foot step counter table
     const dropTable = async () => {
         const db = await SQLite.openDatabaseAsync('usmanct');
-        const result = await db.runAsync('DELETE  FROM step_data WHERE flag = $value', { $value: 1 });
+        const result = await db.runAsync('DELETE  FROM step_data WHERE date = $value', { $value: '02/08/2024' });
         if (result) {
             console.log('Data deleted successfully', result);
             const allRows = await db.getAllAsync('SELECT * FROM step_data');
-            console.log('allRows', allRows);
+            console.log('allRows===', allRows);
             setRecord([...allRows]);
         }
 

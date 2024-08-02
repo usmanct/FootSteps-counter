@@ -7,7 +7,7 @@ import { useDatabase } from '../../sqLiteDb/useDatabase';
 
 const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance }) => {
 
-    const { getData, getWaterData, getALLWaterData, insertData } = useDatabase();
+    const { getData, getWaterData, dropTable, insertData } = useDatabase();
     const navigation = useNavigation();
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
@@ -48,7 +48,7 @@ const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distanc
             <View style={styles.container}>
                 <Text style={styles.heading}>Your Progress</Text>
                 <TouchableOpacity style={styles.btn} onPress={() => {
-
+             
                 }}>
                     <Text style={styles.btnText}>Months</Text>
                     <AntDesign name="right" size={12} color="black" />
