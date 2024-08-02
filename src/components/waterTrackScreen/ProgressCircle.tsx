@@ -5,21 +5,13 @@ import { useDatabase } from '../../sqLiteDb/useDatabase';
 
 
 
-const ProgressCircle = () => {
+const ProgressCircle = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved, setISgoalAchieved }) => {
     const {
-        drinkGoal,
-        cupCapacity,
         MAX_HEIGHT,
-        waterdrinked,
-        setwaterdrinked,
         setNoOfCups,
         preWaterCount,
-        IsgoalAchieved,
-        setISgoalAchieved,
         fillcontainer,
         setFillContainer,
-        setDrinkGoal,
-        setCupCapacity
     }: any = useContext(AppContext)
     const [bolflag, setBolFlag] = useState(true)
     const [drinkflag, setDrinkFlag] = useState(true)
@@ -38,6 +30,11 @@ const ProgressCircle = () => {
         setNoOfCups(NO_OF_CUPS)
         HEIGHT_ON_EVERY_CUP = MAX_HEIGHT / NO_OF_CUPS
         setCupHeight(HEIGHT_ON_EVERY_CUP)
+
+        if (waterdrinked >= drinkGoal) {
+            console.log("waterdrinked >= drinkGoal", waterdrinked, drinkGoal)
+            setISgoalAchieved(true)
+        }
 
     }, [])
 
@@ -102,7 +99,7 @@ const ProgressCircle = () => {
 
     return (
         <View style={{ ...styles.container, height: MAX_HEIGHT }}>
-            <View style={{ ...styles.fillingContainer, height: fillcontainer }}>
+            <View style={{ ...styles.fillingContainer, height: fillcontainer || 0 }}>
             </View>
         </View>
     );

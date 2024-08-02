@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import BottomNavigationBar from '../bottomNavigation/BottomNavigationBar'
 
 const LetsRun = () => {
   return (

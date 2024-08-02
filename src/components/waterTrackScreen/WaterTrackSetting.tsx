@@ -4,18 +4,14 @@ import Header from '../Header'
 import Row from './Row'
 import SetDrinkTarget from './SetDrinkTarget'
 import { AppContext } from '../../contextApi/AppContext'
+import { useIsFocused } from '@react-navigation/native';
 
-const WaterTrackSetting = () => {
+const WaterTrackSetting = ({ route }) => {
     const [modalVisible, setModalVisible] = useState(false);
-
-
+    const { drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved,
+        setISgoalAchieved } = route.params;
+    const isFocused = useIsFocused();
     const {
-        drinkGoal,
-        setDrinkGoal,
-        cupCapacity,
-        setCupCapacity,
-        IsgoalAchieved,
-        setISgoalAchieved,
         modalType,
         setModalType,
         noOfCups,
@@ -24,11 +20,8 @@ const WaterTrackSetting = () => {
 
     useEffect(() => {
         setISgoalAchieved(false)
-    }, [drinkGoal])
+    }, [drinkGoal, cupCapacity])
 
-
-
-    
 
     const unitHandler = () => {
         setModalVisible(!modalVisible)
@@ -47,7 +40,18 @@ const WaterTrackSetting = () => {
         <>
             <Header />
             <View style={styles.container}>
-                <SetDrinkTarget modalVisible={modalVisible} setModalVisible={setModalVisible} />
+                <SetDrinkTarget
+                    modalVisible={modalVisible}
+                    setModalVisible={setModalVisible}
+                    drinkGoal={drinkGoal}
+                    setDrinkGoal={setDrinkGoal}
+                    cupCapacity={cupCapacity}
+                    setCupCapacity={setCupCapacity}
+                    waterdrinked={waterdrinked}
+                    setwaterdrinked={setwaterdrinked}
+                    IsgoalAchieved={IsgoalAchieved}
+                    setISgoalAchieved={setISgoalAchieved}
+                />
                 <Row title={"Unit"} onpress={unitHandler} subtil={''} />
                 <Row title={"Cup Capacity"} subtil={cupCapacity} onpress={cupcapacityHandler} />
                 <Row title={"Drink Goal"} subtil={drinkGoal} onpress={drinkgoalhandler} />

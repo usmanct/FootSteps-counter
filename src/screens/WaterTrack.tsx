@@ -12,9 +12,17 @@ const WaterTrack = () => {
   const [barData, setbarData] = useState([])
   const now = new Date();
   const dateOnly = now.toLocaleDateString();
-  const { drinkGoal, waterdrinked, IsgoalAchieved, setCupCapacity, waterHistory, setDrinkGoal, cupCapacity, setwaterdrinked, setFillContainer, setISgoalAchieved, MAX_HEIGHT }: any = useContext(AppContext)
+  const {
+    waterHistory,
+    setFillContainer,
+    MAX_HEIGHT
+  }: any = useContext(AppContext)
   const [updateflag, setUpdateflag] = useState(true);
   const [currentDate, setCurrentDate] = useState(dateOnly);
+  const [drinkGoal, setDrinkGoal] = useState(1000)
+  const [cupCapacity, setCupCapacity] = useState(50)
+  const [waterdrinked, setwaterdrinked] = useState<any>(0)
+  const [IsgoalAchieved, setISgoalAchieved] = useState(false)
   const { getALLWaterData, updateWaterRecord, insertWaterData, getWaterData } = useDatabase()
 
   useEffect(() => {
@@ -29,18 +37,37 @@ const WaterTrack = () => {
   }, [waterdrinked, waterHistory]);
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      const newNow = new Date();
+      const newDateOnly = newNow.toLocaleDateString();
+      if (newDateOnly !== dateOnly) {
+        insertWaterData(dateOnly, waterdrinked, cupCapacity, drinkGoal).then(() => {
+          console.log('Data inserted successfully');
+        }).catch(error => {
+          console.error('Error inserting data:', error);
+        });
+        setwaterdrinked(0); // Reset the steps for the new day
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval); // Clean up the interval on unmount
+  }, [dateOnly]);
+
+  useEffect(() => {
     const loadInitialData = async () => {
       try {
         const data: any = await getWaterData(dateOnly);
         if (data) {
-          console.log('data', data);
+          console.log('data====', data[0]);
+          if (data[0]?.goal == data[0]?.waterIntake) {
+            console.log('goal', data[0]?.goal, data[0]?.waterIntake)
+            setISgoalAchieved(true)
+          }
           setDrinkGoal(data[0]?.goal);
           setCupCapacity(data[0]?.cupCapacity);
           setwaterdrinked(data[0]?.waterIntake);
           setFillContainer((data[0]?.waterIntake / data[0]?.goal) * MAX_HEIGHT);
-          if (data[0]?.goal === data[0]?.waterIntake) {
-            setISgoalAchieved(true)
-          }
+
         }
       } catch (error) {
         console.error('Failed to load initial data', error);
@@ -59,7 +86,7 @@ const WaterTrack = () => {
     else {
       const updateAndFetchData = async () => {
         try {
-          await updateWaterRecord(dateOnly).then(() => {
+          await updateWaterRecord(dateOnly, drinkGoal, cupCapacity, waterdrinked).then(() => {
             getALLWaterData()
           }).catch(() => { });
 
@@ -108,7 +135,16 @@ const WaterTrack = () => {
 
       <ScrollView>
         <Header />
-        <WaterProgress />
+        <WaterProgress
+          drinkGoal={drinkGoal}
+          setDrinkGoal={setDrinkGoal}
+          cupCapacity={cupCapacity}
+          setCupCapacity={setCupCapacity}
+          waterdrinked={waterdrinked}
+          setwaterdrinked={setwaterdrinked}
+          IsgoalAchieved={IsgoalAchieved}
+          setISgoalAchieved={setISgoalAchieved}
+        />
         {/* <CanvasProgress/> */}
         <HistoryChat barData={barData} />
       </ScrollView>

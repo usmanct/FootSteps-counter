@@ -7,19 +7,24 @@ import { useDatabase } from '../../sqLiteDb/useDatabase';
 
 const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance }) => {
 
-    const { getData, getWaterData, getALLWaterData } = useDatabase();
+    const { getData, getWaterData, getALLWaterData, insertData } = useDatabase();
     const navigation = useNavigation();
-
-    const [selected, setSelected] = useState('');
     const now = new Date();
+    const dateOnly = now.toLocaleDateString();
+    const [selected, setSelected] = useState('');
 
     useEffect(() => {
         console.log("Today Date: ", selected)
     }, [selected])
 
+
     const onPressDateHandler = (day: any) => {
         console.log("Press Date:", day)
+        const currentMonth = day.month
+        console.log('now', now)
         const today = now.getDate()
+        const monthPress = now.getMonth() + 1
+        console.log('fd', monthPress, currentMonth)
         const dayselected = day?.day
 
         const dateParts = day.dateString.split("-");
@@ -28,7 +33,7 @@ const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distanc
         // console.log("Formatted Date:", formattedDate);
         setSelected(formattedDate);
         // getMyStringValue(day)
-        if (today >= dayselected) {
+        if (today >= dayselected && currentMonth == monthPress) {
             getData(formattedDate);
             getWaterData(formattedDate)
             navigation.navigate('Results' as never)

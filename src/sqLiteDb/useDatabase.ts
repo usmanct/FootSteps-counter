@@ -25,12 +25,12 @@ export const useDatabase = () => {
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
     //Inserting the footsteps data into the data
-    const insertData = async () => {
+    const insertData = async (s, currentStepCount, kcal, distance) => {
 
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
             await db.runAsync('INSERT INTO step_data (date, footsteps, flag, distance, energy) VALUES (?, ?, ?, ?, ?)',
-                state.date, state.footsteps, state.flag, state.distance, state.energy);
+                s, currentStepCount, 1, distance, kcal);
         } catch (error) {
             console.error("Insertion Step Data Error", error);
         }
@@ -42,8 +42,10 @@ export const useDatabase = () => {
         try {
             const result = await db.getAllAsync('SELECT * FROM step_data WHERE date = ?', s);
             if (result) {
+                console.log('getData====', result);
                 setRecord([...result]);
             }
+            return result;
         } catch (error) {
             console.error("Step Data Fetching Error", error);
         }
@@ -54,13 +56,6 @@ export const useDatabase = () => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
             return await db.getAllAsync('SELECT * FROM water_record WHERE date = ?', s);
-            // if (result) {
-            //     console.log(result[0])
-            //     setDrinkGoal(result[0]?.goal);
-            //     setwaterdrinked(result[0]?.waterIntake);
-            //     setCupCapacity(result[0]?.cupCapacity);
-            //     setWaterState(result[0]);
-            // }
         } catch (error) {
             console.error("Water Data Fetch", error)
         }
@@ -68,7 +63,7 @@ export const useDatabase = () => {
 
 
     //Update the water Record
-    const updateWaterRecord = async (s: any) => {
+    const updateWaterRecord = async (s, drinkGoal, cupCapacity, waterdrinked) => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
             console.log("sdsd", waterdrinked, drinkGoal, cupCapacity)
@@ -87,7 +82,7 @@ export const useDatabase = () => {
         try {
             const result = await db.getAllAsync('SELECT * FROM water_record');
             if (result) {
-                console.log("Water Data Fetching", result)
+                // console.log("Water Data Fetching", result)
                 setWaterHistory([...result]);
             }
         } catch (error) {
@@ -96,7 +91,7 @@ export const useDatabase = () => {
     }
 
     //insertion of single Water Record into the table
-    const insertWaterData = async () => {
+    const insertWaterData = async (dateOnly, waterdrinked, cupCapacity, drinkGoal) => {
 
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
@@ -110,24 +105,22 @@ export const useDatabase = () => {
     //function for clean the entire foot step counter table
     const dropTable = async () => {
         const db = await SQLite.openDatabaseAsync('usmanct');
-        const result = await db.runAsync('DELETE  FROM water_record WHERE date = $value', { $value: '31/07/2024' });
+        const result = await db.runAsync('DELETE  FROM step_data WHERE flag = $value', { $value: 1 });
         if (result) {
             console.log('Data deleted successfully', result);
-            const allRows = await db.getAllAsync('SELECT * FROM water_record');
+            const allRows = await db.getAllAsync('SELECT * FROM step_data');
             console.log('allRows', allRows);
-            setWaterHistory([...allRows]);
+            setRecord([...allRows]);
         }
 
     };
 
     //Function for updating the footstep Data
-    const updateFootStepRecord = async (s: any) => {
+    const updateFootStepRecord = async (s, currentStepCount, kcal, distance) => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
-            console.log("sdsd", waterdrinked, drinkGoal, cupCapacity)
-            console.log("WaterState", waterState)
-            const result = await db.runAsync('UPDATE water_record SET waterIntake = ? , goal=? , cupCapacity=?   WHERE date = ?',
-                [waterdrinked, drinkGoal, cupCapacity, s]);
+            const result = await db.runAsync('UPDATE step_data SET footsteps = ? , distance=? , energy=?   WHERE date = ?',
+                [currentStepCount, distance, kcal, s]);
             if (result) {
                 console.log('rrrrr', result)
             }

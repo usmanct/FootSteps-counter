@@ -8,7 +8,7 @@ import { Pedometer } from 'expo-sensors';
 import { AppContext } from '../../contextApi/AppContext';
 import DataBaseInitialization from '../../sqLiteDb/DataBaseInitialization';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
-const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any) => {
+const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKcal, setDistance }: any) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [target, setTarget] = useState(10)
@@ -22,12 +22,10 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
 
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
-    const props = {
 
-    }
 
     useEffect(() => {
-        DataBaseInitialization()
+        initialLoad()
     }, [])
 
     useEffect(() => {
@@ -37,62 +35,39 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
             setCurrentStepCount(target)
             setIsTargetReached(true);
         }
-        if (IsTargetReached) {
-            // setCurrentStepCount(0)
-            setIsTargetReached(false);
-        }
         console.log("Inside Target:state", state);
-    }, [, target]);
-
+    }, [target]);
     useEffect(() => {
+        updateFootStepRecord(dateOnly, currentStepCount, kcal, distance)
+        getData(dateOnly)
+    }, [currentStepCount, kcal, distance])
+    const initialLoad = async () => {
+        const res: any = await getData(dateOnly)
+        if (res) {
+            console.log('resss', res)
+            setCurrentStepCount(res[0].footsteps)
+            setKcal(res[0].energy)
+            setDistance(res[0].distance)
+        }
 
-        setState((pre: any) => ({
-            ...pre,
-            date: dateOnly,
-            footsteps: currentStepCount,
-            flag: true,
-            distance,
-            energy: kcal
-        }))
-
-    }, [kcal, distance, currentStepCount])
-    
-
-
+        console.log('res', res)
+    }
     useEffect(() => {
-        updateFootStepRecord(dateOnly)
-    }, [])
+        const interval = setInterval(() => {
+            const newNow = new Date();
+            const newDateOnly = newNow.toLocaleDateString();
+            if (newDateOnly !== dateOnly) {
+                insertData(newDateOnly, currentStepCount, kcal, distance).then(() => {
+                    console.log('Data inserted successfully');
+                }).catch(error => {
+                    console.error('Error inserting data:', error);
+                });
+                setCurrentStepCount(0); // Reset the steps for the new day
+            }
+        }, 60000); // Check every minute
 
-    useEffect(() => {
-        console.log("Inside Target:state", state)
-    }, [state])
-
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         const newNow = new Date();
-    //         const newDateOnly = newNow.toLocaleDateString();
-    //         if (newDateOnly !== dateOnly) {
-    //             insertData().then(() => {
-    //                 console.log('Data inserted successfully');
-    //             }).catch(error => {
-    //                 console.error('Error inserting data:', error);
-    //             });
-    //             setCurrentStepCount(0); // Reset the steps for the new day
-    //         }
-    //     }, 60000); // Check every minute
-
-    //     return () => clearInterval(interval); // Clean up the interval on unmount
-    // }, [dateOnly]);
-    // useEffect(() => {
-    //     if (IsTargetReached) {
-    //         insertData().then(() => {
-    //             console.log('Data inserted successfully');
-    //         }).catch(error => {
-    //             console.error('Error inserting data:', error);
-    //         });
-    //         setCurrentStepCount(0);
-    //     }
-    // }, [IsTargetReached])
+        return () => clearInterval(interval); // Clean up the interval on unmount
+    }, [dateOnly]);
 
     const openTargetModal = () => {
         setModalVisible(!modalVisible)
@@ -157,7 +132,6 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
                 maxValue={target}
                 inActiveStrokeOpacity={.5}
                 activeStrokeColor={'#2ecc71'}
-                {...props}
                 onAnimationComplete={() => {
 
                 }
@@ -170,7 +144,9 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance }: any
                     {/* <Text>Icon</Text> */}
                     <MaterialCommunityIcons name="shoe-cleat" size={24} color="grey" />
                     <Text style={{ fontSize: 12, }}>{dateOnly}</Text>
+                    {/* <TouchableOpacity onPress={() => setCurrentStepCount(currentStepCount + 1)}> */}
                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{currentStepCount}</Text>
+                    {/* </TouchableOpacity> */}
                     <Text style={{ fontSize: 12, }}>/{target}</Text>
                     {/* <Text onPress={() => setIsSimulating(!isSimulating)}>
                         {isSimulating ? 'Stop Simulation' : 'Start Simulation'}

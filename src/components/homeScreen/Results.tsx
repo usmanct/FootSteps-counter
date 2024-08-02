@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, StyleSheet, Text, View, Image } from 'react-native'
+import { Dimensions, FlatList, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
@@ -22,7 +22,7 @@ const Results = () => {
     const [fetchData, setFetchData] = useState([])
 
 
-    const { getALLWaterData } = useDatabase()
+    const { getALLWaterData, dropTable, insertData } = useDatabase()
 
     useEffect(() => {
         getALLWaterData()
@@ -37,34 +37,35 @@ const Results = () => {
             total += e.footsteps;
         });
         setTotalSteps(total);
+        
     }, [record]);
     return (
         <>
             <View>
-                <Text style={styles.headingText}>Results</Text>
+                <TouchableOpacity onPress={dropTable}>
+                    <Text style={styles.headingText}>Results</Text>
+                </TouchableOpacity>
                 {record.length ? <Text style={styles.subHeading}>Steps</Text> : null}
                 {record.length ?
                     <View style={styles.container}>
                         <Text style={styles.headingText}>{totalSteps}</Text>
-                        <View style={{ height: screenHeight / 2 - 100 }}>
-                            <FlatList
-                                data={record}
-                                renderItem={({ item }) => (
-                                    <View style={styles.subContainer}>
-                                        <StatsCard icon={<AntDesign name="clockcircleo" size={14} color="red" />} value={item?.date} unit={'time'} isFirst={true} />
-                                        <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} value={item?.energy} unit={'kcal'} isFirst={undefined} />
-                                        <StatsCard icon={<Octicons name="location" size={14} color="green" />} value={item?.distance} unit={'km'} isFirst={undefined} />
-                                    </View>
-                                )}
-                                scrollEnabled={true}
-                            />
-                        </View>
-
+                        <FlatList
+                            data={record}
+                            renderItem={({ item }) => (
+                                <View style={styles.subContainer}>
+                                    <StatsCard icon={<AntDesign name="clockcircleo" size={14} color="red" />} value={item?.date} unit={'time'} isFirst={true} />
+                                    <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} value={item?.energy} unit={'kcal'} isFirst={undefined} />
+                                    <StatsCard icon={<Octicons name="location" size={14} color="green" />} value={item?.distance} unit={'km'} isFirst={undefined} />
+                                </View>
+                            )}
+                            scrollEnabled={true}
+                        />
                     </View> :
                     null
                 }
                 {fetchData.length ?
                     <View style={styles.container}>
+                        <Text style={styles.subHeading}>Water Track History</Text>
                         <BarChart
                             frontColor={'#0cf249'}
                             barWidth={70}

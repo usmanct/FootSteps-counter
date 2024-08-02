@@ -22,7 +22,9 @@ const HistoryChat = ({ barData, }) => {
                 maxValue={7000}
                 yAxisThickness={0}
                 xAxisThickness={0}
-                barBorderRadius={5}
+                // barBorderRadius={5}
+                barBorderTopLeftRadius={5}
+                barBorderTopRightRadius={5}
                 // height={screenHeight - 400}
                 showValuesAsTopLabel={true}
                 hideYAxisText

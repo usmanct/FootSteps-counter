@@ -5,26 +5,28 @@ import ProgressCircle from './ProgressCircle';
 import { AppContext } from '../../contextApi/AppContext';;
 import { useNavigation } from '@react-navigation/native';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
+import { useIsFocused } from '@react-navigation/native';
 
 
-
-const WaterProgress = () => {
+const WaterProgress = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved,
+    setISgoalAchieved }: any) => {
     const {
-        drinkGoal,
-        cupCapacity,
-        waterdrinked,
-        setwaterdrinked,
-        IsgoalAchieved,
-        waterState,
         MAX_HEIGHT,
         fillcontainer,
         setFillContainer,
 
     }: any = useContext(AppContext)
+    const isFocused = useIsFocused();
     const now = new Date()
     const dateOnly = now.toLocaleDateString();
     const navigation = useNavigation();
     const { dropTable, getWaterData } = useDatabase()
+    useEffect(() => {
+        if (drinkGoal <= waterdrinked) {
+            setISgoalAchieved(true)
+        }
+    }, [isFocused])
+
 
     useEffect(() => {
         let per
@@ -45,7 +47,10 @@ const WaterProgress = () => {
 
     }
     const navigateToSetting = () => {
-        navigation.navigate('WaterTrackSetting' as never)
+        navigation.navigate('WaterTrackSetting', {
+            drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved,
+            setISgoalAchieved
+        } as never)
     }
 
     return (
@@ -60,7 +65,15 @@ const WaterProgress = () => {
                 </TouchableOpacity>
             </View>
             {/* <View style={styles.innerContainer}> */}
-            <ProgressCircle />
+            <ProgressCircle
+                drinkGoal={drinkGoal}
+                setDrinkGoal={setDrinkGoal}
+                cupCapacity={cupCapacity}
+                setCupCapacity={setCupCapacity}
+                waterdrinked={waterdrinked}
+                setwaterdrinked={setwaterdrinked}
+                IsgoalAchieved={IsgoalAchieved}
+                setISgoalAchieved={setISgoalAchieved} />
             <TouchableOpacity onPress={() => dropTable()}>
                 <Text style={styles.pageText}>{precentageDrinked}%</Text>
             </TouchableOpacity>
