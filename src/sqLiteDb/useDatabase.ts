@@ -42,7 +42,7 @@ export const useDatabase = () => {
         try {
             const result = await db.getAllAsync('SELECT * FROM step_data WHERE date = ?', s);
             if (result) {
-                console.log('getData====', result);
+                // console.log('getData====', result);
                 setRecord([...result]);
             }
             return result;
@@ -52,7 +52,7 @@ export const useDatabase = () => {
     }
     //Fetch the single water Record from the database
     const getWaterData = async (s: any) => {
-        console.log(s)
+        // console.log(s)
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
             return await db.getAllAsync('SELECT * FROM water_record WHERE date = ?', s);
@@ -66,11 +66,11 @@ export const useDatabase = () => {
     const updateWaterRecord = async (s, drinkGoal, cupCapacity, waterdrinked) => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
-            console.log("sdsd", waterdrinked, drinkGoal, cupCapacity)
+            // console.log("sdsd", waterdrinked, drinkGoal, cupCapacity)
             const result = await db.runAsync('UPDATE water_record SET waterIntake = ? , goal=? , cupCapacity=?   WHERE date = ?',
                 [waterdrinked, drinkGoal, cupCapacity, s]);
             if (result) {
-                console.log('rrrrr', result)
+                // console.log('rrrrr', result)
             }
         } catch (error) {
             console.error("Water Update  Error", error)
@@ -107,9 +107,9 @@ export const useDatabase = () => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         const result = await db.runAsync('DELETE  FROM step_data WHERE date = $value', { $value: '02/08/2024' });
         if (result) {
-            console.log('Data deleted successfully', result);
+            // console.log('Data deleted successfully', result);
             const allRows = await db.getAllAsync('SELECT * FROM step_data');
-            console.log('allRows===', allRows);
+            // console.log('allRows===', allRows);
             setRecord([...allRows]);
         }
 
@@ -122,7 +122,7 @@ export const useDatabase = () => {
             const result = await db.runAsync('UPDATE step_data SET footsteps = ? , distance=? , energy=?   WHERE date = ?',
                 [currentStepCount, distance, kcal, s]);
             if (result) {
-                console.log('rrrrr', result)
+                // console.log('rrrrr', result)
             }
         } catch (error) {
             console.error("Water Update  Error", error)

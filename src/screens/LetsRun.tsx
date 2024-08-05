@@ -1,10 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import Header from '../components/Header'
+import RunnerMap from '../components/letsrunScreen/RunnerMap'
+import RunnerActions from '../components/letsrunScreen/RunnerActions'
 
 const LetsRun = () => {
   return (
     <View style={styles.container}>
-      <Text>LetsRun</Text>
+      <Header />
+      <RunnerMap />
+      <RunnerActions />
     </View>
   )
 }
@@ -12,11 +17,11 @@ const LetsRun = () => {
 export default LetsRun
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    // justifyContent: 'center',
+  },
+
 })

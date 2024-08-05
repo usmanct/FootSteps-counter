@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, TouchableOpacity, } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Platform, } from 'react-native'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { CircularProgressBase } from 'react-native-circular-progress-indicator';
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -8,50 +8,84 @@ import { Pedometer } from 'expo-sensors';
 import { AppContext } from '../../contextApi/AppContext';
 import DataBaseInitialization from '../../sqLiteDb/DataBaseInitialization';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
+import * as TaskManager from 'expo-task-manager';
+import * as BackgroundFetch from 'expo-background-fetch';
+
+const BACKGROUND_FETCH_TASK = 'background-fetch';
+TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+    const now = Date.now();
+
+    console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
+
+    // Be sure to return the successful result type!
+    return BackgroundFetch.BackgroundFetchResult.NewData;
+});
+
+
+
+async function registerBackgroundFetchAsync() {
+    console.log(`Registering background fetch`)
+    return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+        minimumInterval: 1 * 60, // 1 min for android
+        stopOnTerminate: false, // android only,
+        startOnBoot: true, // android only
+    });
+}
+
+async function unregisterBackgroundFetchAsync() {
+    return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
+}
 const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKcal, setDistance }: any) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [target, setTarget] = useState(10)
     const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
-    const [IstargetUpdate, setIstargetUpdate] = useState<any>(true)
     const [IsTargetReached, setIsTargetReached] = useState<any>(false);
-    const { state, setState }: any = useContext(AppContext);
-    const [IsInsertionCall, setIsInsertionCall] = useState(true);
     const { insertData, getData, updateFootStepRecord } = useDatabase();
 
 
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
+    const [isRegistered, setIsRegistered] = React.useState(false);
+    const [status, setStatus] = React.useState(null);
 
+    useEffect(() => {
+        checkStatusAsync();
+    }, []);
+
+    const checkStatusAsync = async () => {
+        const status = await BackgroundFetch.getStatusAsync();
+        const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
+        if (isRegistered) {
+            console.log('isRegistered', isRegistered)
+            console.log('isstatus', status)
+        }
+        await registerBackgroundFetchAsync()
+        setStatus(status);
+        setIsRegistered(isRegistered);
+    };
 
     useEffect(() => {
         initialLoad()
     }, [])
 
     useEffect(() => {
-        setIsTargetReached(false);
-        setIstargetUpdate(true)
         if (currentStepCount >= target) {
             setCurrentStepCount(target)
             setIsTargetReached(true);
         }
-        console.log("Inside Target:state", state);
-    }, [target]);
+        else {
+            setIsTargetReached(false);
+        }
+        // console.log("Inside Target:state", state);
+    }, [target, currentStepCount]);
+
+
     useEffect(() => {
         updateFootStepRecord(dateOnly, currentStepCount, kcal, distance)
         getData(dateOnly)
     }, [currentStepCount, kcal, distance])
-    // const initialLoad = async () => {
-    //     const res: any = await getData(dateOnly)
-    //     if (res) {
-    //         console.log('resss', res)
-    //         setCurrentStepCount(res[0].footsteps)
-    //         setKcal(res[0].energy)
-    //         setDistance(res[0].distance)
-    //     }
 
-    //     console.log('res', res)
-    // }
 
     const initialLoad = async () => {
         try {
@@ -63,7 +97,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
             } else {
                 // If no data for the current date, insert a new row
                 insertData(dateOnly, currentStepCount, kcal, distance).then(() => {
-                    console.log('New data inserted for the current date');
+                    // console.log('New data inserted for the current date');
                 }).catch(error => {
                     console.error('Error inserting new data:', error);
                 });
@@ -79,7 +113,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
             const newDateOnly = newNow.toLocaleDateString();
             if (newDateOnly !== dateOnly) {
                 insertData(newDateOnly, currentStepCount, kcal, distance).then(() => {
-                    console.log('Data inserted successfully');
+                    // console.log('Data inserted successfully');
                 }).catch(error => {
                     console.error('Error inserting data:', error);
                 });
@@ -93,6 +127,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
     const openTargetModal = () => {
         setModalVisible(!modalVisible)
     }
+
     useEffect(() => {
         let subscription;
         // let lastSteps = 0;
@@ -112,10 +147,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
                 console.log("Could not get availability:", error)
             })
         subscription = Pedometer.watchStepCount((result) => {
-            if (IstargetUpdate) {
-                setIstargetUpdate(false);
-                return;
-            }
+            console.log("result", result.steps)
             setCurrentStepCount((preCount) => {
                 const newCount = result.steps
                 if (newCount >= target) {
@@ -129,8 +161,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
             subscription && subscription.remove();
 
         };
-    }, [IstargetUpdate]);
-
+    }, []);
 
 
     return (
@@ -165,9 +196,9 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
                     {/* <Text>Icon</Text> */}
                     <MaterialCommunityIcons name="shoe-cleat" size={24} color="grey" />
                     <Text style={{ fontSize: 12, }}>{dateOnly}</Text>
-                    {/* <TouchableOpacity onPress={() => setCurrentStepCount(currentStepCount + 1)}> */}
-                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{currentStepCount}</Text>
-                    {/* </TouchableOpacity> */}
+                    <TouchableOpacity onPress={() => { setCurrentStepCount(currentStepCount + 1) }}>
+                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{currentStepCount}</Text>
+                    </TouchableOpacity>
                     <Text style={{ fontSize: 12, }}>/{target}</Text>
                     {/* <Text onPress={() => setIsSimulating(!isSimulating)}>
                         {isSimulating ? 'Stop Simulation' : 'Start Simulation'}

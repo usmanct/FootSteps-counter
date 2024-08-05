@@ -4,17 +4,14 @@ import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { AppContext } from '../../contextApi/AppContext';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 const SetDrinkTarget = ({ modalVisible, setModalVisible, drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved,
-    setISgoalAchieved }) => {
+    setISgoalAchieved, drinkGaolData, cupcapacitydata, defaultIndexcup, setDefaultIndexcup, defaultIndexgoal, setDefaultIndexgoal }) => {
 
-    const drinkGaolData: any = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000]
-    const cupcapacitydata: any = [50, 100, 150, 200, 250, 300]
+
     const {
         modalType,
         setWaterCupCount,
     }: any = useContext(AppContext)
     const [inputValue, setInputValue] = useState<any>({})
-    const [defaultIndexcup, setDefaultIndexcup] = useState(0)
-    const [defaultIndexgoal, setDefaultIndexgoal] = useState(0)
     const saveChanges = () => {
         setModalVisible(!modalVisible)
         if (modalType === 'cupcapacity') {
@@ -26,7 +23,7 @@ const SetDrinkTarget = ({ modalVisible, setModalVisible, drinkGoal, setDrinkGoal
         else if (modalType === 'drinkgoal') {
             if (inputValue.value < waterdrinked) {
                 ToastAndroid.show('Target Must Be Higher than Previous Target', ToastAndroid.SHORT);
-                setISgoalAchieved(true)
+                setISgoalAchieved(false)
             }
             else if (inputValue.value === waterdrinked) {
                 ToastAndroid.show('Target Is Already Reached', ToastAndroid.SHORT);

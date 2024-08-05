@@ -42,7 +42,7 @@ const WaterTrack = () => {
       const newDateOnly = newNow.toLocaleDateString();
       if (newDateOnly !== dateOnly) {
         insertWaterData(dateOnly, waterdrinked, cupCapacity, drinkGoal).then(() => {
-          console.log('Data inserted successfully');
+          // console.log('Data inserted successfully');
         }).catch(error => {
           console.error('Error inserting data:', error);
         });
@@ -58,9 +58,9 @@ const WaterTrack = () => {
       try {
         const data: any = await getWaterData(dateOnly);
         if (data && data.length > 0) {
-          console.log('data====', data[0]);
+          // console.log('data====', data[0]);
           if (data[0]?.goal == data[0]?.waterIntake) {
-            console.log('goal', data[0]?.goal, data[0]?.waterIntake);
+            // console.log('goal', data[0]?.goal, data[0]?.waterIntake);
             setISgoalAchieved(true);
           }
           setDrinkGoal(data[0]?.goal);
@@ -70,7 +70,7 @@ const WaterTrack = () => {
         } else {
           // If no data for the current date, insert a new row
           insertWaterData(dateOnly, waterdrinked, cupCapacity, drinkGoal).then(() => {
-            console.log('New data inserted for the current date');
+            // console.log('New data inserted for the current date');
           }).catch(error => {
             console.error('Error inserting new data:', error);
           });
