@@ -9,17 +9,18 @@ import { BottomTabs } from './src/bottomNavigation/BottomTabs';
 import { useEffect } from 'react';
 
 
+
 export default function App() {
 
- 
+
 
   return (
-    <AppProvider>
-      <SafeAreaView style={styles.container}>
-        {/* <ScreenNavigation /> */}
-        <BottomTabs />
-      </SafeAreaView>
-    </AppProvider>
+      <AppProvider>
+        <SafeAreaView style={styles.container}>
+          {/* <ScreenNavigation /> */}
+          <BottomTabs />
+        </SafeAreaView>
+      </AppProvider>
   );
 }
 

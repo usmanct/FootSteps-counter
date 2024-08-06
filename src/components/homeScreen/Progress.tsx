@@ -11,30 +11,30 @@ import { useDatabase } from '../../sqLiteDb/useDatabase';
 import * as TaskManager from 'expo-task-manager';
 import * as BackgroundFetch from 'expo-background-fetch';
 
-const BACKGROUND_FETCH_TASK = 'background-fetch';
-TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-    const now = Date.now();
+// const BACKGROUND_FETCH_TASK = 'background-fetch';
+// TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+//     const now = Date.now();
 
-    console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
+//     console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
 
-    // Be sure to return the successful result type!
-    return BackgroundFetch.BackgroundFetchResult.NewData;
-});
+//     // Be sure to return the successful result type!
+//     return BackgroundFetch.BackgroundFetchResult.NewData;
+// });
 
 
 
-async function registerBackgroundFetchAsync() {
-    console.log(`Registering background fetch`)
-    return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-        minimumInterval: 1 * 60, // 1 min for android
-        stopOnTerminate: false, // android only,
-        startOnBoot: true, // android only
-    });
-}
+// async function registerBackgroundFetchAsync() {
+//     console.log(`Registering background fetch`)
+//     return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+//         minimumInterval: 1 * 60, // 1 min for android
+//         stopOnTerminate: false, // android only,
+//         startOnBoot: true, // android only
+//     });
+// }
 
-async function unregisterBackgroundFetchAsync() {
-    return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
-}
+// async function unregisterBackgroundFetchAsync() {
+//     return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
+// }
 const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKcal, setDistance }: any) => {
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -49,21 +49,21 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
     const [isRegistered, setIsRegistered] = React.useState(false);
     const [status, setStatus] = React.useState(null);
 
-    useEffect(() => {
-        checkStatusAsync();
-    }, []);
+    // useEffect(() => {
+    //     checkStatusAsync();
+    // }, []);
 
-    const checkStatusAsync = async () => {
-        const status = await BackgroundFetch.getStatusAsync();
-        const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
-        if (isRegistered) {
-            console.log('isRegistered', isRegistered)
-            console.log('isstatus', status)
-        }
-        await registerBackgroundFetchAsync()
-        setStatus(status);
-        setIsRegistered(isRegistered);
-    };
+    // const checkStatusAsync = async () => {
+    //     const status = await BackgroundFetch.getStatusAsync();
+    //     const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
+    //     if (isRegistered) {
+    //         console.log('isRegistered', isRegistered)
+    //         console.log('isstatus', status)
+    //     }
+    //     await registerBackgroundFetchAsync()
+    //     setStatus(status);
+    //     setIsRegistered(isRegistered);
+    // };
 
     useEffect(() => {
         initialLoad()
@@ -90,10 +90,12 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
     const initialLoad = async () => {
         try {
             const res: any = await getData(dateOnly);
+            console.log('========',res)
             if (res && res.length > 0) {
                 setCurrentStepCount(res[0].footsteps);
                 setKcal(res[0].energy);
                 setDistance(res[0].distance);
+                // setTarget(res[0].targetset);
             } else {
                 // If no data for the current date, insert a new row
                 insertData(dateOnly, currentStepCount, kcal, distance).then(() => {
@@ -196,9 +198,9 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
                     {/* <Text>Icon</Text> */}
                     <MaterialCommunityIcons name="shoe-cleat" size={24} color="grey" />
                     <Text style={{ fontSize: 12, }}>{dateOnly}</Text>
-                    <TouchableOpacity onPress={() => { setCurrentStepCount(currentStepCount + 1) }}>
-                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{currentStepCount}</Text>
-                    </TouchableOpacity>
+                    {/* <TouchableOpacity onPress={() => { setCurrentStepCount(currentStepCount + 1) }}> */}
+                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{currentStepCount}</Text>
+                    {/* </TouchableOpacity> */}
                     <Text style={{ fontSize: 12, }}>/{target}</Text>
                     {/* <Text onPress={() => setIsSimulating(!isSimulating)}>
                         {isSimulating ? 'Stop Simulation' : 'Start Simulation'}
@@ -248,4 +250,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default Progress
+export default Progress 

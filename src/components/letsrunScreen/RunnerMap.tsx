@@ -1,49 +1,90 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import React, { useEffect, useState, useRef } from 'react';
+import MapView, { Marker, Polyline, Callout } from 'react-native-maps';
 import * as Location from 'expo-location';
-import MapViewDirections from 'react-native-maps-directions';
+
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
-
-const origin = { latitude: 37.3318456, longitude: -122.0296002 };
-const destination = { latitude: 37.771707, longitude: -122.4053769 };
-const GOOGLE_MAPS_APIKEY = 'AIzaSyB3qROyryNhLU9zE1pGs13HOtNCjRIjWoM';
 
 const RunnerMap = () => {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
-
+    const [routeCoordinates, setRouteCoordinates] = useState([]);
+    const mapRef = useRef(null);
 
     useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                setErrorMsg('Permission to access location was denied');
-                return;
+        const getPermissions = async () => {
+            try {
+                let { status } = await Location.requestForegroundPermissionsAsync();
+                if (status !== 'granted') {
+                    setErrorMsg('Permission to access location was denied');
+                    return;
+                }
+
+                // Start tracking location
+                Location.watchPositionAsync(
+                    { accuracy: Location.Accuracy.High, timeInterval: 1000, distanceInterval: 1 },
+                    (newLocation) => {
+                        const { latitude, longitude } = newLocation.coords;
+
+                        // Update location and route
+                        setLocation(newLocation);
+                        setRouteCoordinates((prev) => [...prev, { latitude, longitude }]);
+
+                        // Center map on the new location
+                        if (mapRef.current) {
+                            mapRef.current.animateToRegion({
+                                latitude,
+                                longitude,
+                                latitudeDelta: 0.01,
+                                longitudeDelta: 0.01,
+                            });
+                        }
+                    }
+                );
+            } catch (error) {
+                setErrorMsg('Failed to get location permissions');
             }
+        };
 
-            // Get current position
-            let location = await Location.getCurrentPositionAsync({});
-            console.log('Location', location)
-            setLocation(location.coords);
-        })();
+        getPermissions();
     }, []);
-
 
     return (
         <View style={styles.container}>
-            <MapView style={styles.map}>
-                <MapViewDirections
-                    origin={origin}
-                    destination={destination}
-                    apikey={GOOGLE_MAPS_APIKEY}
-                    mode='WALKING'
-                    strokeWidth={3}
-                    strokeColor="hotpink"
-                />
-            </MapView>
-        </View >
+            {errorMsg ? (
+                <Text>{errorMsg}</Text>
+            ) : (
+                <MapView
+                    ref={mapRef}
+                    style={styles.map}
+                    provider={MapView.PROVIDER_GOOGLE}
+                    initialRegion={{
+                        latitude: location?.coords?.latitude || 37.78825,
+                        longitude: location?.coords?.longitude || -122.4324,
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01,
+                    }}
+                    showsUserLocation={true}
+                >
+                    {location && (
+                        <>
+                            <Marker coordinate={location.coords}>
+                                <Callout>
+                                    <Text>Current Location</Text>
+                                </Callout>
+                            </Marker>
+
+                            <Polyline
+                                coordinates={routeCoordinates}
+                                strokeColor="#FF0000"
+                                strokeWidth={5}
+                            />
+                        </>
+                    )}
+                </MapView>
+            )}
+        </View>
     );
 };
 
@@ -51,14 +92,20 @@ export default RunnerMap;
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10
+        // flex: 1,
     },
     map: {
-        width: screenWidth - 20,
+        width: screenWidth,
         height: screenHeight / 2 - 10,
     },
-    paragraph: {
-        fontSize: 18,
+    calloutView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 200,
+    },
+    calloutText: {
+        fontSize: 14,
         textAlign: 'center',
     },
 });

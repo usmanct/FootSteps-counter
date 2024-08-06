@@ -15,6 +15,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.usmanct.FootStepscounter",
       "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app uses your location to track your steps.",
+        "NSLocationAlwaysUsageDescription": "This app uses your location to track your steps even when the app is in the background.",
         "UIBackgroundModes": [
           "fetch"
         ]
@@ -30,7 +32,6 @@
         "BACKGROUND_FETCH",
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION",
         "ACCESS_BACKGROUND_LOCATION"
       ],
       "package": "com.usmanct.FootStepscounter",
@@ -49,8 +50,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
-          "isAndroidBackgroundLocationEnabled": "true"
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
     ],
