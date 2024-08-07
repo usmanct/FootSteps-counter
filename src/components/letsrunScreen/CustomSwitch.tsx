@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
 
-const CustomSwitch = ({ isEnabled, onValueChange }) => {
+const CustomSwitch = ({ isEnabled, onValueChange, rowTitle }) => {
     const [thumbPosition] = useState(new Animated.Value(isEnabled ? 1 : 0));
     const trackWidth = 50; // Adjust this based on your design
     const thumbSize = 20;  // Adjust this based on your design
@@ -17,10 +17,15 @@ const CustomSwitch = ({ isEnabled, onValueChange }) => {
             useNativeDriver: false,
         }).start();
     };
+    useEffect(() => {
+        if (rowTitle === 'Daily Step Reminder')
+            toggleSwitch();
+    }, [])
+
 
     const thumbTranslateX = thumbPosition.interpolate({
         inputRange: [0, 1],
-        outputRange: [3, trackWidth - thumbSize -3],
+        outputRange: [3, trackWidth - thumbSize - 3],
     });
 
     return (

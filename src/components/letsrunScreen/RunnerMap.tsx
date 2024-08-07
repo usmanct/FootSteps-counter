@@ -28,6 +28,7 @@ const RunnerMap = () => {
                         const { latitude, longitude } = newLocation.coords;
 
                         // Update location and route
+                        // console.log(latitude, longitude)
                         setLocation(newLocation);
                         setRouteCoordinates((prev) => [...prev, { latitude, longitude }]);
 
@@ -75,11 +76,11 @@ const RunnerMap = () => {
                                 </Callout>
                             </Marker>
 
-                            <Polyline
+                            {/* <Polyline
                                 coordinates={routeCoordinates}
                                 strokeColor="#FF0000"
                                 strokeWidth={5}
-                            />
+                            /> */}
                         </>
                     )}
                 </MapView>

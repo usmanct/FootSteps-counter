@@ -7,7 +7,7 @@ import ScreenNavigation from './src/stackNavigation/ScreenNavigation';
 import { AppProvider } from './src/contextApi/AppContext';
 import { BottomTabs } from './src/bottomNavigation/BottomTabs';
 import { useEffect } from 'react';
-
+import { NotificationProvider } from './src/components/notifications/NotificationContext';
 
 
 export default function App() {
@@ -15,12 +15,14 @@ export default function App() {
 
 
   return (
-      <AppProvider>
-        <SafeAreaView style={styles.container}>
+    <AppProvider>
+      <SafeAreaView style={styles.container}>
+        <NotificationProvider>
           {/* <ScreenNavigation /> */}
           <BottomTabs />
-        </SafeAreaView>
-      </AppProvider>
+        </NotificationProvider>
+      </SafeAreaView>
+    </AppProvider>
   );
 }
 

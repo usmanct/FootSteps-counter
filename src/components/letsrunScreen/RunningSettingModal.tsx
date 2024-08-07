@@ -2,13 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 
-const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType }) => {
+const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType, reminderTime, setReminderTime }) => {
+    const formatNumber = (num) => num.toString().padStart(2, '0');
 
-    const dataMin: any = Array.from({ length: 61 }, (_, i) => i);
-    const dataHour: any = Array.from({ length: 25 }, (_, i) => i);
+    const dataMin: any = Array.from({ length: 60 }, (_, i) => i);
+    const dataHour: any = Array.from({ length: 24 }, (_, i) => i);
     const datakm: any = Array.from({ length: 21 }, (_, i) => i);
     const datakcal: any = Array.from({ length: 401 }, (_, i) => i);
     const [inputValue, setInputValue] = useState<any>({});
+    const [timeValue, setTimeValue] = useState<any>({
+        hour: 0,
+        hindex: 0,
+        minute: 0,
+        mindex: 0,
+    })
+    const [defaultIndexTime, setDefaultIndexTime] = useState({
+        hour: 0,
+        minute: 0
+    });
     const [defaultIndex, setDefaultIndex] = useState(0);
 
     // useEffect(() => {
@@ -19,6 +30,18 @@ const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType })
     const saveChanges = () => {
         // setTarget(inputValue.value);
         // setDefaultIndex(inputValue.i);
+
+        if (modalType === 'duration' || modalType === 'account') {
+            console.log("================================")
+            setDefaultIndexTime({
+                hour: timeValue.hindex,
+                minute: timeValue.mindex
+            })
+            setReminderTime({
+                h: timeValue.hour,
+                m: timeValue.minute
+            })
+        }
         setModalVisible(!modalVisible);
         setModalType('')
     };
@@ -32,18 +55,19 @@ const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType })
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        {modalType === 'duration'
+                        {modalType === 'duration' || modalType === 'account'
                             ?
                             <View style={styles.wheelRow}>
                                 <View style={styles.pickerContainer}>
                                     <WheelPickerExpo
                                         height={150}
                                         width={50}
-                                        initialSelectedIndex={defaultIndex}
+                                        initialSelectedIndex={defaultIndexTime.hour}
                                         items={dataHour.map(name => ({ label: name, value: '' }))}
                                         onChange={
                                             ({ item, index }) => {
-                                                setInputValue(prev => ({ ...prev, value: item.label, i: index }));
+                                                console.log(item, index)
+                                                setTimeValue(prev => ({ ...prev, hour: item.label, hindex: index }));
                                             }
                                         }
                                         selectedStyle={styles.selectedItem}
@@ -55,11 +79,11 @@ const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType })
 
                                         height={150}
                                         width={50}
-                                        initialSelectedIndex={defaultIndex}
+                                        initialSelectedIndex={defaultIndexTime.minute}
                                         items={dataMin.map(name => ({ label: name, value: '' }))}
                                         onChange={
                                             ({ item, index }) => {
-                                                setInputValue(prev => ({ ...prev, value: item.label, i: index }));
+                                                setTimeValue(prev => ({ ...prev, minute: item.label, mindex: index }));
                                             }
                                         }
                                         selectedStyle={styles.selectedItem}

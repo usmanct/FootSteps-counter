@@ -19,8 +19,8 @@ const RunnerActions = ({ timeDuration, settimeDuration, distanceCovered, setDsit
 
   return (
     <View style={styles.container}>
-      <RunningSettingModal modalVisible={modalVisible} setModalVisible={setModalVisible} modalType={modalType} setModalType={setModalType} />
-      <SoundNotification rowTitle={'Sound Notifications'} />
+      <RunningSettingModal modalVisible={modalVisible} setModalVisible={setModalVisible} modalType={modalType} setModalType={setModalType} reminderTime={undefined} setReminderTime={undefined} />
+      <SoundNotification rowTitle={'Sound Notifications'} reminderTime={undefined} setReminderTime={undefined} reminderFlag={undefined} setReminderFlag={undefined} />
       <LetsRunRow title={'Duration'} subtil={`${timeDuration.h} hour ${timeDuration.m} mins`} onpress={() => toggleModal('duration')} />
       <LetsRunRow title={'Distance'} subtil={`${distanceCovered} km`} onpress={() => toggleModal('distance')} />
       <LetsRunRow title={'Calories'} subtil={`${kcalBurn} kcal`} onpress={() => toggleModal('calories')} />

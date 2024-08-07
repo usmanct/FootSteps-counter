@@ -10,6 +10,7 @@ const DataBaseInitialization = async () => {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 date TEXT NOT NULL,
                 footsteps INTEGER NOT NULL,
+                goal INTEGER NOT NULL,
                 flag BOOLEAN NOT NULL,
                 distance REAL NOT NULL,
                 energy REAL NOT NULL

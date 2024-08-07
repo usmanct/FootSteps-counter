@@ -4,33 +4,18 @@ import { AppContext } from '../contextApi/AppContext';
 
 export const useDatabase = () => {
     const {
-        state,
-        setState,
-        setIsLoading,
         setRecord,
-        waterRecord,
-        setWaterRecord,
-        setWaterState,
-        waterState,
-        waterHistory,
         setWaterHistory,
-        setwaterdrinked,
-        MAX_HEIGHT,
-        drinkGoal,
-        setDrinkGoal,
-        setCupCapacity,
-        waterdrinked,
-        cupCapacity
     }: any = useContext(AppContext);
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
     //Inserting the footsteps data into the data
-    const insertData = async (s, currentStepCount, kcal, distance) => {
+    const insertData = async (s, currentStepCount, target, kcal, distance) => {
 
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
-            await db.runAsync('INSERT INTO step_data (date, footsteps, flag, distance, energy) VALUES (?, ?, ?, ?, ?)',
-                s, currentStepCount, 1, distance, kcal);
+            await db.runAsync('INSERT INTO step_data (date, footsteps,goal, flag, distance, energy) VALUES (?, ?, ?,?, ?, ?)',
+                s, currentStepCount, target, 1, distance, kcal);
         } catch (error) {
             console.error("Insertion Step Data Error", error);
         }
@@ -42,7 +27,7 @@ export const useDatabase = () => {
         try {
             const result = await db.getAllAsync('SELECT * FROM step_data WHERE date = ?', s);
             if (result) {
-                // console.log('getData====', result);
+                console.log('getData====', result);
                 setRecord([...result]);
             }
             return result;
@@ -116,11 +101,11 @@ export const useDatabase = () => {
     };
 
     //Function for updating the footstep Data
-    const updateFootStepRecord = async (s, currentStepCount, kcal, distance) => {
+    const updateFootStepRecord = async (s, currentStepCount, goal, kcal, distance) => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
-            const result = await db.runAsync('UPDATE step_data SET footsteps = ? , distance=? , energy=?   WHERE date = ?',
-                [currentStepCount, distance, kcal, s]);
+            const result = await db.runAsync('UPDATE step_data SET footsteps = ? ,goal =?, distance=? , energy=?   WHERE date = ?',
+                [currentStepCount, goal, distance, kcal, s]);
             if (result) {
                 // console.log('rrrrr', result)
             }
@@ -128,6 +113,7 @@ export const useDatabase = () => {
             console.error("Water Update  Error", error)
         }
     }
+
 
 
     return {
@@ -138,6 +124,6 @@ export const useDatabase = () => {
         getWaterData,
         getALLWaterData,
         updateWaterRecord,
-        updateFootStepRecord
+        updateFootStepRecord,
     };
 };
