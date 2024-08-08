@@ -8,11 +8,22 @@ import { AppProvider } from './src/contextApi/AppContext';
 import { BottomTabs } from './src/bottomNavigation/BottomTabs';
 import { useEffect } from 'react';
 import { NotificationProvider } from './src/components/notifications/NotificationContext';
-
+import { registerBackgroundFetchAsync } from './src/BackgroundServices'
+import * as Notifications from 'expo-notifications';
 
 export default function App() {
 
-
+  async function requestPermissions() {
+    const { status } = await Notifications.requestPermissionsAsync();
+    console.log(status);
+    if (status !== 'granted') {
+        alert('Permission to access notifications was denied');
+    }
+}
+  useEffect(() => {
+    registerBackgroundFetchAsync()
+    requestPermissions()
+  }, []);
 
   return (
     <AppProvider>

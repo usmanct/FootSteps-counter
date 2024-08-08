@@ -1,18 +1,31 @@
-import BackgroundService from 'react-native-background-actions';
+import * as TaskManager from 'expo-task-manager';
+import * as BackgroundFetch from 'expo-background-fetch';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const sleep = (time) => new Promise<void>((resolve) => setTimeout(() => resolve(), time));
+const BACKGROUND_FETCH_TASK = 'background-fetch';
 
-// You can do anything in your task such as network requests, timers and so on,
-// as long as it doesn't touch UI. Once your task completes (i.e. the promise is resolved),
-// React Native will go into "paused" mode (unless there are other tasks running,
-// or there is a foreground app).
-export const veryIntensiveTask = async (taskDataArguments) => {
-    // Example of an infinite loop task
-    const { delay } = taskDataArguments;
-    await new Promise( async (resolve) => {
-        for (let i = 0; BackgroundService.isRunning(); i++) {
-            console.log(i);
-            await sleep(delay);
-        }
+TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+    const newdataf = 'Usman Khalil' + Math.random();
+    try {
+        const reminderTime = await AsyncStorage.getItem('reminderTime');
+        const reminderFlag = await AsyncStorage.getItem('reminderFlag');
+
+        return newdataf ? BackgroundFetch.BackgroundFetchResult.NewData : BackgroundFetch.BackgroundFetchResult.NoData;
+    } catch (error) {
+        console.error('Background fetch failed:', error);
+        return BackgroundFetch.BackgroundFetchResult.Failed;
+    }
+});
+
+export async function registerBackgroundFetchAsync() {
+    console.log('background Registration')
+    return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+        minimumInterval: 60, // 15 minutes
+        stopOnTerminate: false,
+        startOnBoot: true,
     });
-};
+}
+
+export async function unregisterBackgroundFetchAsync() {
+    return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
+}

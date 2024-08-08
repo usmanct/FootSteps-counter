@@ -8,6 +8,7 @@ import Profile from './Profile'
 import RunningSettingModal from '../components/letsrunScreen/RunningSettingModal'
 import { useNotification } from '../components/notifications/NotificationContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { registerBackgroundFetchAsync } from '../BackgroundServices'
 
 const Account = () => {
 
@@ -20,6 +21,7 @@ const Account = () => {
     m: 0
   })
   const [reminderFlag, setReminderFlag] = useState(false)
+
 
 
   useEffect(() => {
@@ -61,10 +63,13 @@ const Account = () => {
   useEffect(() => {
     console.log('Reminder', reminderFlag)
     if (reminderFlag) {
+      console.log('tttt')
       const interval = setInterval(() => {
         const currentTime = new Date();
+        // console.log('currentTime', currentTime.getHours(), currentTime.getMinutes())
         if (currentTime.getHours() === reminderTime.h && currentTime.getMinutes() === reminderTime.m) {
-          schedulePushNotification('Foot-Steps Counter', 'Lets running for better health!');
+          console.log('fffff')
+          schedulePushNotification('Foot-Steps Counter', 'Let\'s running for better health!', 'Account');
           clearInterval(interval);
         }
       }, 1000);
@@ -73,7 +78,13 @@ const Account = () => {
     }
   }, [reminderFlag, reminderTime]);
 
-
+  useEffect(() => {
+    registerBackgroundFetchAsync().then(() => {
+      console.log('Background fetch registered================================================================');
+    }).catch(() => {
+      console.log('Background fetch not registered================================================================')
+    })
+  }, [])
 
 
 

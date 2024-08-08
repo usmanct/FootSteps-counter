@@ -37,8 +37,9 @@ export const NotificationProvider = ({ children }) => {
     });
     const subscription = Notifications.addNotificationResponseReceivedListener(response => {
       const screen = response.notification.request.content.data.screen;
+      console.log('screen', screen);
       if (screen) {
-        Linking.openURL(`myapp://${screen}`);
+        Linking.openURL(`${screen}`);
       }
     });
 
@@ -50,11 +51,12 @@ export const NotificationProvider = ({ children }) => {
     };
   }, []);
 
-  const schedulePushNotification = async (title, body) => {
+  const schedulePushNotification = async (title, body, screen) => {
     await Notifications.scheduleNotificationAsync({
       content: {
         title,
-        body
+        body,
+        data: { screen }
       },
       trigger: { seconds: 1 },
     });
