@@ -12,19 +12,6 @@ import { registerBackgroundFetchAsync } from './src/BackgroundServices'
 import * as Notifications from 'expo-notifications';
 
 export default function App() {
-
-  async function requestPermissions() {
-    const { status } = await Notifications.requestPermissionsAsync();
-    console.log(status);
-    if (status !== 'granted') {
-        alert('Permission to access notifications was denied');
-    }
-}
-  useEffect(() => {
-    registerBackgroundFetchAsync()
-    requestPermissions()
-  }, []);
-
   return (
     <AppProvider>
       <SafeAreaView style={styles.container}>

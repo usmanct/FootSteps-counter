@@ -51,7 +51,7 @@ export const NotificationProvider = ({ children }) => {
     };
   }, []);
 
-  const schedulePushNotification = async (title, body, screen) => {
+   const schedulePushNotification = async (title, body, screen) => {
     await Notifications.scheduleNotificationAsync({
       content: {
         title,

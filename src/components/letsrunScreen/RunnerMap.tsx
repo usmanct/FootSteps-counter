@@ -12,44 +12,44 @@ const RunnerMap = () => {
     const [routeCoordinates, setRouteCoordinates] = useState([]);
     const mapRef = useRef(null);
 
-    useEffect(() => {
-        const getPermissions = async () => {
-            try {
-                let { status } = await Location.requestForegroundPermissionsAsync();
-                if (status !== 'granted') {
-                    setErrorMsg('Permission to access location was denied');
-                    return;
-                }
+    // useEffect(() => {
+    //     const getPermissions = async () => {
+    //         try {
+    //             let { status } = await Location.requestForegroundPermissionsAsync();
+    //             if (status !== 'granted') {
+    //                 setErrorMsg('Permission to access location was denied');
+    //                 return;
+    //             }
 
-                // Start tracking location
-                Location.watchPositionAsync(
-                    { accuracy: Location.Accuracy.High, timeInterval: 1000, distanceInterval: 1 },
-                    (newLocation) => {
-                        const { latitude, longitude } = newLocation.coords;
+    //             // Start tracking location
+    //             Location.watchPositionAsync(
+    //                 { accuracy: Location.Accuracy.High, timeInterval: 1000, distanceInterval: 1 },
+    //                 (newLocation) => {
+    //                     const { latitude, longitude } = newLocation.coords;
 
-                        // Update location and route
-                        // console.log(latitude, longitude)
-                        setLocation(newLocation);
-                        setRouteCoordinates((prev) => [...prev, { latitude, longitude }]);
+    //                     // Update location and route
+    //                     // console.log(latitude, longitude)
+    //                     setLocation(newLocation);
+    //                     setRouteCoordinates((prev) => [...prev, { latitude, longitude }]);
 
-                        // Center map on the new location
-                        if (mapRef.current) {
-                            mapRef.current.animateToRegion({
-                                latitude,
-                                longitude,
-                                latitudeDelta: 0.01,
-                                longitudeDelta: 0.01,
-                            });
-                        }
-                    }
-                );
-            } catch (error) {
-                setErrorMsg('Failed to get location permissions');
-            }
-        };
+    //                     // Center map on the new location
+    //                     if (mapRef.current) {
+    //                         mapRef.current.animateToRegion({
+    //                             latitude,
+    //                             longitude,
+    //                             latitudeDelta: 0.01,
+    //                             longitudeDelta: 0.01,
+    //                         });
+    //                     }
+    //                 }
+    //             );
+    //         } catch (error) {
+    //             setErrorMsg('Failed to get location permissions');
+    //         }
+    //     };
 
-        getPermissions();
-    }, []);
+    //     getPermissions();
+    // }, []);
 
     return (
         <View style={styles.container}>
@@ -68,21 +68,6 @@ const RunnerMap = () => {
                     }}
                     showsUserLocation={true}
                 >
-                    {location && (
-                        <>
-                            <Marker coordinate={location.coords}>
-                                <Callout>
-                                    <Text>Current Location</Text>
-                                </Callout>
-                            </Marker>
-
-                            {/* <Polyline
-                                coordinates={routeCoordinates}
-                                strokeColor="#FF0000"
-                                strokeWidth={5}
-                            /> */}
-                        </>
-                    )}
                 </MapView>
             )}
         </View>

@@ -1,56 +1,62 @@
-import { StyleSheet, Text, View, Switch } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import CustomSwitch from './CustomSwitch';
-import { useNotification } from '../notifications/NotificationContext';
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import SwitchToggle from 'react-native-switch-toggle';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFlag, setReminderFlag }) => {
-    const [isEnabled, setIsEnabled] = useState(false);
+    const [isEnabled, setIsEnabled] = useState(reminderFlag || false);
+
+    useEffect(() => {
+        const saveSettings = async () => {
+            try {
+                // Ensure reminderFlag is either true or false
+                const valueToStore = reminderFlag !== undefined ? JSON.stringify(reminderFlag) : 'false';
+                await AsyncStorage.setItem('reminderFlag', valueToStore);
+            } catch (e) {
+                console.error("Failed to save settings to AsyncStorage", e);
+            }
+        };
+
+        saveSettings();
+    }, [reminderFlag]);
+
     const toggleSwitch = () => {
-        // schedulePushNotification('Foot-Steps Counter', 'Lets running for better health!');
-        setIsEnabled(previousState => !previousState)
-        setReminderFlag(previousState => !previousState);
+        // Toggle switch and update reminderFlag state
+        const newState = !isEnabled;
+        setIsEnabled(newState);
+        if (rowTitle === 'Daily Step Reminder') {
+            setReminderFlag(newState);
+        }
     };
-
-    // useEffect(() => {
-    //     const loadSettings = async () => {
-    //         try {
-    //             const savedisEnabled = await AsyncStorage.getItem('isEnabled');
-
-    //             if (savedisEnabled) {
-    //                 console.log('Rrrr')
-    //                 setIsEnabled(JSON.parse(savedisEnabled));
-    //             }
-    //         } catch (e) {
-    //             console.error("Failed to load settings from AsyncStorage", e);
-    //         }
-    //     };
-
-    //     loadSettings();
-    // }, []);
-    // useEffect(() => {
-    //     const saveSettings = async () => {
-    //         try {
-    //             await AsyncStorage.setItem('isEnabled', JSON.stringify(isEnabled));
-    //         } catch (e) {
-    //             console.error("Failed to save settings to AsyncStorage", e);
-    //         }
-    //     };
-
-    //     saveSettings();
-    // }, [isEnabled]);
-
 
     return (
         <View style={styles.row}>
             <Text style={styles.rowText}>{rowTitle}</Text>
-            <CustomSwitch isEnabled={isEnabled} onValueChange={toggleSwitch}  rowTitle={rowTitle}/>
+            <SwitchToggle
+                switchOn={isEnabled}
+                onPress={toggleSwitch}
+                circleColorOff='#fff'
+                circleColorOn='#2ecc71'
+                backgroundColorOn='#6D6D6D'
+                backgroundColorOff='#C4C4C4'
+                containerStyle={{
+                    marginTop: 16,
+                    width: 60,
+                    height: 30,
+                    borderRadius: 25,
+                    padding: 5,
+                }}
+                circleStyle={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 10,
+                }}
+            />
         </View>
-    )
-}
+    );
+};
 
-export default SoundNotification
+export default SoundNotification;
 
 const styles = StyleSheet.create({
     row: {
@@ -67,6 +73,6 @@ const styles = StyleSheet.create({
     },
     rowText: {
         fontSize: 18,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     }
-})
+});

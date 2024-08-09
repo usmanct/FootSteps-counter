@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import SoundNotification from '../components/letsrunScreen/SoundNotification'
@@ -31,12 +31,12 @@ const Account = () => {
         const savedReminderFlag = await AsyncStorage.getItem('reminderFlag');
 
         if (savedReminderTime) {
-          console.log('R', savedReminderTime)
+          console.log('R---', savedReminderTime)
           setReminderTime(JSON.parse(savedReminderTime));
         }
 
         if (savedReminderFlag) {
-          console.log('p', savedReminderFlag)
+          console.log('p---', savedReminderFlag)
           setReminderFlag(JSON.parse(savedReminderFlag));
         }
       } catch (e) {
@@ -49,9 +49,8 @@ const Account = () => {
   useEffect(() => {
     const saveSettings = async () => {
       try {
-        console.log("Befrore0,", reminderTime)
+        console.log("Befrore0,", reminderTime , reminderFlag)
         await AsyncStorage.setItem('reminderTime', JSON.stringify(reminderTime));
-        await AsyncStorage.setItem('reminderFlag', JSON.stringify(reminderFlag));
       } catch (e) {
         console.error("Failed to save settings to AsyncStorage", e);
       }
@@ -69,6 +68,18 @@ const Account = () => {
         // console.log('currentTime', currentTime.getHours(), currentTime.getMinutes())
         if (currentTime.getHours() === reminderTime.h && currentTime.getMinutes() === reminderTime.m) {
           console.log('fffff')
+            Alert.alert('Alert Title', 'My Alert Msg', [
+      {
+        text: 'Ask me later',
+        onPress: () => console.log('Ask me later pressed'),
+      },
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => console.log('OK Pressed')},
+    ]);
           schedulePushNotification('Foot-Steps Counter', 'Let\'s running for better health!', 'Account');
           clearInterval(interval);
         }
