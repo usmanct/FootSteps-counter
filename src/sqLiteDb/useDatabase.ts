@@ -10,7 +10,7 @@ export const useDatabase = () => {
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
     //Inserting the footsteps data into the data
-    const insertData = async (s, currentStepCount, target, kcal, distance) => {
+    const insertData = async (s: string | number | boolean | Uint8Array | null, currentStepCount: string | number | boolean | Uint8Array | null, target: string | number | boolean | Uint8Array | null, kcal: string | number | boolean | Uint8Array | null, distance: string | number | boolean | Uint8Array | null) => {
 
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
@@ -48,7 +48,7 @@ export const useDatabase = () => {
 
 
     //Update the water Record
-    const updateWaterRecord = async (s, drinkGoal, cupCapacity, waterdrinked) => {
+    const updateWaterRecord = async (s: string | number | boolean | Uint8Array | null, drinkGoal: string | number | boolean | Uint8Array | null, cupCapacity: string | number | boolean | Uint8Array | null, waterdrinked: string | number | boolean | Uint8Array | null) => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
             // console.log("sdsd", waterdrinked, drinkGoal, cupCapacity)
@@ -76,7 +76,7 @@ export const useDatabase = () => {
     }
 
     //insertion of single Water Record into the table
-    const insertWaterData = async (dateOnly, waterdrinked, cupCapacity, drinkGoal) => {
+    const insertWaterData = async (dateOnly: string | number | boolean | Uint8Array | null, waterdrinked: string | number | boolean | Uint8Array | null, cupCapacity: string | number | boolean | Uint8Array | null, drinkGoal: string | number | boolean | Uint8Array | null) => {
 
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
@@ -101,7 +101,7 @@ export const useDatabase = () => {
     };
 
     //Function for updating the footstep Data
-    const updateFootStepRecord = async (s, currentStepCount, goal, kcal, distance) => {
+    const updateFootStepRecord = async (s: string | number | boolean | Uint8Array | null, currentStepCount: string | number | boolean | Uint8Array | null, goal: string | number | boolean | Uint8Array | null, kcal: string | number | boolean | Uint8Array | null, distance: string | number | boolean | Uint8Array | null) => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
             const result = await db.runAsync('UPDATE step_data SET footsteps = ? ,goal =?, distance=? , energy=?   WHERE date = ?',

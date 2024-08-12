@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import SwitchToggle from 'react-native-switch-toggle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFlag, setReminderFlag }) => {
+const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFlag, setReminderFlag }: any) => {
     const [isEnabled, setIsEnabled] = useState(reminderFlag || false);
 
     useEffect(() => {

@@ -24,7 +24,7 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
             await Notifications.scheduleNotificationAsync({
                 content: {
                     title: "Reminder",
-                    body: "It's time to do something!",
+                    body: "It's time to do something!----",
                 },
                 trigger: null,
             });

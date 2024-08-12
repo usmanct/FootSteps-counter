@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 
-const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType, reminderTime, setReminderTime }) => {
-    const formatNumber = (num) => num.toString().padStart(2, '0');
+const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType, reminderTime, setReminderTime , settimeDuration , setDsitanceCovered , setkcalBurn } : any) => {
+    const formatNumber = (num: { toString: () => string; }) => num.toString().padStart(2, '0');
 
     const dataMin: any = Array.from({ length: 60 }, (_, i) => i);
     const dataHour: any = Array.from({ length: 24 }, (_, i) => i);
@@ -31,8 +31,8 @@ const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType, r
         // setTarget(inputValue.value);
         // setDefaultIndex(inputValue.i);
 
-        if (modalType === 'duration' || modalType === 'account') {
-            console.log("================================")
+        if (modalType === 'account') {
+            console.log("account--------")
             setDefaultIndexTime({
                 hour: timeValue.hindex,
                 minute: timeValue.mindex
@@ -41,6 +41,27 @@ const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType, r
                 h: timeValue.hour,
                 m: timeValue.minute
             })
+        }
+        else if(modalType === 'duration') {
+            console.log("duration---------")
+            setDefaultIndexTime({
+                hour: timeValue.hindex,
+                minute: timeValue.mindex
+            })
+            settimeDuration({
+                h: timeValue.hour,
+                m: timeValue.minute
+            })
+        }
+        else if(modalType === 'distance'){
+            console.log('distance-------')
+            setDefaultIndex(inputValue.i)
+            setDsitanceCovered(inputValue.value)
+        }
+        else{
+            console.log('distance-------')
+            setDefaultIndex(inputValue.i)
+            setkcalBurn(inputValue.value)
         }
         setModalVisible(!modalVisible);
         setModalType('')
@@ -63,11 +84,11 @@ const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType, r
                                         height={150}
                                         width={50}
                                         initialSelectedIndex={defaultIndexTime.hour}
-                                        items={dataHour.map(name => ({ label: name, value: '' }))}
+                                        items={dataHour.map((name: any) => ({ label: name, value: '' }))}
                                         onChange={
                                             ({ item, index }) => {
                                                 console.log(item, index)
-                                                setTimeValue(prev => ({ ...prev, hour: item.label, hindex: index }));
+                                                setTimeValue((prev: any) => ({ ...prev, hour: item.label, hindex: index }));
                                             }
                                         }
                                         selectedStyle={styles.selectedItem}
@@ -80,10 +101,10 @@ const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType, r
                                         height={150}
                                         width={50}
                                         initialSelectedIndex={defaultIndexTime.minute}
-                                        items={dataMin.map(name => ({ label: name, value: '' }))}
+                                        items={dataMin.map((name: any) => ({ label: name, value: '' }))}
                                         onChange={
                                             ({ item, index }) => {
-                                                setTimeValue(prev => ({ ...prev, minute: item.label, mindex: index }));
+                                                setTimeValue((prev: any) => ({ ...prev, minute: item.label, mindex: index }));
                                             }
                                         }
                                         selectedStyle={styles.selectedItem}
@@ -97,10 +118,10 @@ const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType, r
                                     height={150}
                                     width={50}
                                     initialSelectedIndex={defaultIndex}
-                                    items={modalType === 'distance' ? datakm.map(name => ({ label: name, value: '' })) : datakcal.map(name => ({ label: name, value: '' }))}
+                                    items={modalType === 'distance' ? datakm.map((name: any) => ({ label: name, value: '' })) : datakcal.map((name: any) => ({ label: name, value: '' }))}
                                     onChange={
                                         ({ item, index }) => {
-                                            setInputValue(prev => ({ ...prev, value: item.label, i: index }));
+                                            setInputValue((prev: any) => ({ ...prev, value: item.label, i: index }));
                                         }
                                     }
                                     selectedStyle={styles.selectedItem}

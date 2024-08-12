@@ -7,6 +7,7 @@ import Results from '../components/homeScreen/Results'
 import LetsRun from '../screens/LetsRun'
 
 import Account from '../screens/Account'
+import Runningresult from '../components/letsrunScreen/Runningresult'
 
 const Stack = createNativeStackNavigator()
 
@@ -32,6 +33,7 @@ const ScreenNavigation = () => {
             <Stack.Screen name='BmiCalculations' component={BmiCalculations} />
             <Stack.Screen name='BmiResult' component={BmiResult} />
             <Stack.Screen name='Results' component={Results} />
+            <Stack.Screen name='Runningresult' component={Runningresult} />
         </Stack.Navigator>
     )
 }

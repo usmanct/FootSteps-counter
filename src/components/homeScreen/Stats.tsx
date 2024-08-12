@@ -6,7 +6,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { AppContext } from '../../contextApi/AppContext';
 
-const Stats = ({ setCurrentStepCount, currentStepCount, kcal, setKcal, distance, setDistance }) => {
+const Stats = ({ setCurrentStepCount, currentStepCount, kcal, setKcal, distance, setDistance } : any) => {
     const [time, setTime] = useState(new Date());
     const { state, setState }: any = useContext(AppContext);
 

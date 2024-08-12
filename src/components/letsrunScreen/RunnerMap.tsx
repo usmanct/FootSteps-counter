@@ -1,16 +1,15 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
-import MapView, { Marker, Polyline, Callout } from 'react-native-maps';
-import * as Location from 'expo-location';
+import MapView, { Marker, Polyline } from 'react-native-maps';
+
 
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 
-const RunnerMap = () => {
-    const [location, setLocation] = useState(null);
-    const [errorMsg, setErrorMsg] = useState(null);
-    const [routeCoordinates, setRouteCoordinates] = useState([]);
-    const mapRef = useRef(null);
+const RunnerMap = ({ totalDistance, setTotalDistance, mapRef, errorMsg, location, routeCoordinates }: any) => {
+
+
+
 
     // useEffect(() => {
     //     const getPermissions = async () => {
@@ -28,9 +27,19 @@ const RunnerMap = () => {
     //                     const { latitude, longitude } = newLocation.coords;
 
     //                     // Update location and route
-    //                     // console.log(latitude, longitude)
     //                     setLocation(newLocation);
-    //                     setRouteCoordinates((prev) => [...prev, { latitude, longitude }]);
+    //                     setRouteCoordinates((prev: any) => {
+    //                         const newCoordinates = [...prev, { latitude, longitude }];
+
+    //                         // Calculate the distance covered
+    //                         if (newCoordinates.length > 1) {
+    //                             const lastPoint = newCoordinates[newCoordinates.length - 2];
+    //                             const distance = getDistance(lastPoint, { latitude, longitude });
+    //                             setTotalDistance(prevDistance => prevDistance + distance);
+    //                         }
+
+    //                         return newCoordinates;
+    //                     });
 
     //                     // Center map on the new location
     //                     if (mapRef.current) {
@@ -59,7 +68,6 @@ const RunnerMap = () => {
                 <MapView
                     ref={mapRef}
                     style={styles.map}
-                    provider={MapView.PROVIDER_GOOGLE}
                     initialRegion={{
                         latitude: location?.coords?.latitude || 37.78825,
                         longitude: location?.coords?.longitude || -122.4324,
@@ -68,30 +76,42 @@ const RunnerMap = () => {
                     }}
                     showsUserLocation={true}
                 >
+                    <Marker coordinate={{
+                        latitude: location?.coords?.latitude || 37.78825,
+                        longitude: location?.coords?.longitude || -122.4324,
+                    }} />
+                    <Polyline
+                        coordinates={routeCoordinates}
+                        strokeColor="#000"
+                        strokeWidth={6}
+                    />
                 </MapView>
             )}
+            {/* <View style={styles.distanceContainer}>
+                <Text style={styles.distanceText}>
+                    Distance Covered: {(totalDistance / 1000).toFixed(2)} km
+                </Text>
+            </View> */}
         </View>
     );
 };
 
-export default RunnerMap;
-
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
+        flex: 1,
+        // backgroundColor:'yellow'
     },
     map: {
         width: screenWidth,
-        height: screenHeight / 2 - 10,
+        height: screenHeight / 2 - 20,
     },
-    calloutView: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 200,
+    distanceContainer: {
+        padding: 10,
     },
-    calloutText: {
-        fontSize: 14,
-        textAlign: 'center',
+    distanceText: {
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
+
+export default RunnerMap;

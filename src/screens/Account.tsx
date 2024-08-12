@@ -68,18 +68,18 @@ const Account = () => {
         // console.log('currentTime', currentTime.getHours(), currentTime.getMinutes())
         if (currentTime.getHours() === reminderTime.h && currentTime.getMinutes() === reminderTime.m) {
           console.log('fffff')
-            Alert.alert('Alert Title', 'My Alert Msg', [
-      {
-        text: 'Ask me later',
-        onPress: () => console.log('Ask me later pressed'),
-      },
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      {text: 'OK', onPress: () => console.log('OK Pressed')},
-    ]);
+    //         Alert.alert('Alert Title', 'My Alert Msg', [
+    //   {
+    //     text: 'Ask me later',
+    //     onPress: () => console.log('Ask me later pressed'),
+    //   },
+    //   {
+    //     text: 'Cancel',
+    //     onPress: () => console.log('Cancel Pressed'),
+    //     style: 'cancel',
+    //   },
+    //   {text: 'OK', onPress: () => console.log('OK Pressed')},
+    // ]);
           schedulePushNotification('Foot-Steps Counter', 'Let\'s running for better health!', 'Account');
           clearInterval(interval);
         }
