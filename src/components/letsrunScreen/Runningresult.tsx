@@ -1,23 +1,26 @@
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useRef } from 'react'
 import Header from '../Header'
-import MapView from 'react-native-maps';
+import MapView , {PROVIDER_GOOGLE} from 'react-native-maps';
 import StatsCard from '../homeScreen/StatsCard';
 import { useNavigation } from '@react-navigation/native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-
+import Ionicons from '@expo/vector-icons/Ionicons';
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 
 const Runningresult = ({ route }: any) => {
 
     const navigation = useNavigation();
-    const { mapRef, errorMsg, location, routeCoordinates, kcalBurn, distanceCovered, time }: any = route.params
+    const { mapRef, errorMsg, location, routeCoordinates, kcalBurn, distanceCovered, time, speed, setSpeed, totalDistance, setkcalBurn, setTotalDistance }: any = route.params
 
     const runAgainHandler = () => {
         navigation.navigate('LetsRun' as never)
+        setSpeed(0)
+        setkcalBurn(0)
+        setTotalDistance(0)
     }
 
     const formatTime = (seconds: number) => {
@@ -25,12 +28,15 @@ const Runningresult = ({ route }: any) => {
         const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
         const sec = String(seconds % 60).padStart(2, '0');
         return `${hours}:${minutes}:${sec}`;
-      };
+    };
 
 
-    return (
+    return (<>
+        <Header />
         <View style={styles.container}>
-            <Header />
+            <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Results</Text>
+            </View>
             <MapView
                 ref={mapRef}
                 style={styles.map}
@@ -40,22 +46,24 @@ const Runningresult = ({ route }: any) => {
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01,
                 }}
+                provider={PROVIDER_GOOGLE}
                 showsUserLocation={true}
             >
                 {/* <Marker coordinate={{
                         latitude: location?.coords?.latitude || 37.78825,
                         longitude: location?.coords?.longitude || -122.4324,
-                    }} />
-                    <Polyline
+                        }} />
+                        <Polyline
                         coordinates={routeCoordinates}
                         strokeColor="#000"
                         strokeWidth={6}
-                    /> */}
+                        /> */}
             </MapView>
             <View style={styles.container1}>
-                <StatsCard icon={<AntDesign name="clockcircleo" size={14} color="red" />} value={formatTime(time)} unit={'time'} isFirst={true} />
-                <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} value={kcalBurn} unit={'kcal'} isFirst={undefined} />
-                <StatsCard icon={<Octicons name="location" size={14} color="green" />} value={distanceCovered} unit={'km'} isFirst={undefined} />
+                <StatsCard isFirst={true} icon={<Ionicons name="speedometer" size={14} color="blue" />} unit={'speed m/s'} value={speed} />
+                <StatsCard icon={<AntDesign name="clockcircleo" size={14} color="red" />} value={formatTime(time)} unit={'time'} isFirst={undefined} />
+                <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} value={(kcalBurn).toFixed(2)} unit={'kcal'} isFirst={undefined} />
+                <StatsCard icon={<Octicons name="location" size={14} color="green" />} value={(totalDistance / 1000).toFixed(2)} unit={'km'} isFirst={undefined} />
             </View>
             <View style={{ alignItems: 'center' }}>
                 <Pressable
@@ -65,6 +73,7 @@ const Runningresult = ({ route }: any) => {
                 </Pressable>
             </View>
         </View>
+    </>
     )
 }
 export default Runningresult

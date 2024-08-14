@@ -2,7 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 
-const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType, reminderTime, setReminderTime , settimeDuration , setDsitanceCovered , setkcalBurn } : any) => {
+const TargetModal = (
+    {
+        modalVisible,
+        setModalVisible,
+        modalType,
+        setModalType,
+        reminderTime,
+        setReminderTime,
+        settimeDuration,
+        setDsitanceCovered,
+        settargetKcalBurn
+    }: any) => {
     const formatNumber = (num: { toString: () => string; }) => num.toString().padStart(2, '0');
 
     const dataMin: any = Array.from({ length: 60 }, (_, i) => i);
@@ -42,7 +53,7 @@ const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType, r
                 m: timeValue.minute
             })
         }
-        else if(modalType === 'duration') {
+        else if (modalType === 'duration') {
             console.log("duration---------")
             setDefaultIndexTime({
                 hour: timeValue.hindex,
@@ -53,15 +64,15 @@ const TargetModal = ({ modalVisible, setModalVisible, modalType, setModalType, r
                 m: timeValue.minute
             })
         }
-        else if(modalType === 'distance'){
+        else if (modalType === 'distance') {
             console.log('distance-------')
             setDefaultIndex(inputValue.i)
             setDsitanceCovered(inputValue.value)
         }
-        else{
+        else {
             console.log('distance-------')
             setDefaultIndex(inputValue.i)
-            setkcalBurn(inputValue.value)
+            settargetKcalBurn(inputValue.value)
         }
         setModalVisible(!modalVisible);
         setModalType('')

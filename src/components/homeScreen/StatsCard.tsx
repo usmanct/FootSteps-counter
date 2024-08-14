@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 
-const StatsCard = ({ icon, value, unit, isFirst }) => {
+const StatsCard = ({ icon, value, unit, isFirst } : any) => {
     
     return (
         <View style={isFirst ? [styles.container, styles.firstContainer] : styles.container}>
@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
         borderLeftWidth: 1,
         borderLeftColor: 'grey',
         gap: 7,
+        justifyContent: 'center',
     },
     firstContainer: {
         borderLeftWidth: 0,

@@ -18,13 +18,18 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
     try {
         const reminderTime = await AsyncStorage.getItem('reminderTime');
         const reminderFlag = await AsyncStorage.getItem('reminderFlag');
-        const shouldSendNotification = true; // Replace with actual logic
+        
+        // Parse the reminderTime to an integer
+        const reminderTimeInt = parseInt(reminderTime, 10);
+        const currentTime = new Date().getTime();
 
-        if (shouldSendNotification) {
+        // Check if both reminderFlag is true and the current time is close to the reminder time
+        const timeMargin = 60000; // 1 minute margin (adjust as needed)
+        if (reminderFlag === 'true' && Math.abs(currentTime - reminderTimeInt) <= timeMargin) {
             await Notifications.scheduleNotificationAsync({
                 content: {
                     title: "Reminder",
-                    body: "It's time to do something!----",
+                    body: "It's time to do something!!!!!",
                 },
                 trigger: null,
             });
@@ -38,9 +43,9 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
 });
 
 export async function registerBackgroundFetchAsync() {
-    console.log('background Registration')
+    console.log('background Registration');
     return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-        minimumInterval: 60 * 1, // 15 minutes
+        minimumInterval: 60, // 1 minute interval
         stopOnTerminate: false,
         startOnBoot: true,
     });

@@ -7,6 +7,7 @@ import RunningSettingModal from './RunningSettingModal'
 import StatsCard from '../homeScreen/StatsCard'
 import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Octicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 const RunnerActions = ({
@@ -21,15 +22,22 @@ const RunnerActions = ({
   mapRef,
   errorMsg,
   location,
-  routeCoordinates
-
+  routeCoordinates,
+  speed,
+  setSpeed,
+  totalDistance,
+  settargetKcalBurn,
+  targetKcalBurn,
+  setTotalDistance,
+  runningState,
+  setRunningState
 }: any) => {
 
   const [modalVisible, setModalVisible] = useState(false)
   const navigation = useNavigation();
   const [modalType, setModalType] = useState('')
-  const [time, setTime] = useState(0);
-  const [runningState, setRunningState] = useState<boolean>(false)
+  const [time, setTime] = useState(1);
+
 
 
   useEffect(() => {
@@ -45,6 +53,16 @@ const RunnerActions = ({
 
     return () => clearInterval(interval);
   }, [IsRunning, runningState]);
+
+
+  useEffect(() => {
+    // I assume here Weight is 72
+    const kcalPerKm = 72 * 1.036
+    const totalKcal = kcalPerKm * totalDistance / 1000
+    setkcalBurn(totalKcal)
+    const pace = totalDistance / time
+    setSpeed(pace.toFixed(2))
+  }, [totalDistance, time])
 
 
 
@@ -70,7 +88,21 @@ const RunnerActions = ({
   const onStopHandler = () => {
     setIsRunning(false)
     setRunningState(false)
-    navigation.navigate('Runningresult', { mapRef, errorMsg, location, routeCoordinates, kcalBurn, distanceCovered, time } as never)
+    navigation.navigate('Runningresult',
+      {
+        mapRef,
+        errorMsg,
+        location,
+        routeCoordinates,
+        kcalBurn,
+        distanceCovered,
+        time,
+        speed,
+        setSpeed,
+        totalDistance,
+        setkcalBurn,
+        setTotalDistance
+      } as never)
   }
 
   // Format time as HH:MM:SS
@@ -93,12 +125,12 @@ const RunnerActions = ({
           setReminderTime={undefined}
           settimeDuration={settimeDuration}
           setDsitanceCovered={setDsitanceCovered}
-          setkcalBurn={setkcalBurn}
+          settargetKcalBurn={settargetKcalBurn}
         />
         <SoundNotification rowTitle={'Sound Notifications'} reminderTime={undefined} setReminderTime={undefined} reminderFlag={undefined} setReminderFlag={undefined} />
         <LetsRunRow title={'Duration'} subtil={`${timeDuration.h} hour ${timeDuration.m} mins`} onpress={() => toggleModal('duration')} />
         <LetsRunRow title={'Distance'} subtil={`${distanceCovered} km`} onpress={() => toggleModal('distance')} />
-        <LetsRunRow title={'Calories'} subtil={`${kcalBurn} kcal`} onpress={() => toggleModal('calories')} />
+        <LetsRunRow title={'Calories'} subtil={`${targetKcalBurn} kcal`} onpress={() => toggleModal('calories')} />
         <View style={{ alignItems: 'center' }}>
           <Pressable
             style={[styles.button]}
@@ -110,9 +142,10 @@ const RunnerActions = ({
     ) : (
       <View style={styles.container}>
         <View style={styles.container1}>
-          <StatsCard isFirst={true} icon={<AntDesign name="clockcircleo" size={14} color="red" />} unit={'time'} value={formatTime(time)} />
-          <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} unit={'kcal'} isFirst={undefined} value={kcalBurn} />
-          <StatsCard icon={<Octicons name="location" size={14} color="green" />} unit={'km'} isFirst={undefined} value={distanceCovered} />
+          <StatsCard isFirst={true} icon={<Ionicons name="speedometer" size={14} color="blue" />} unit={'speed m/s'} value={speed} />
+          <StatsCard isFirst={undefined} icon={<AntDesign name="clockcircleo" size={14} color="red" />} unit={'time'} value={formatTime(time)} />
+          <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} unit={'kcal'} isFirst={undefined} value={(kcalBurn).toFixed(2)} />
+          <StatsCard icon={<Octicons name="location" size={14} color="green" />} unit={'km'} isFirst={undefined} value={(totalDistance / 1000).toFixed(2)} />
         </View>
         <View style={styles.btnRow}>
           <Pressable

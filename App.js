@@ -1,17 +1,30 @@
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import CircularProgress from 'react-native-circular-progress-indicator';
-import Header from './src/components/Header';
-import Home from './src/screens/Home';
-import ScreenNavigation from './src/stackNavigation/ScreenNavigation';
+import { SafeAreaView, StyleSheet } from 'react-native';
+import { useEffect } from 'react';
 import { AppProvider } from './src/contextApi/AppContext';
 import { BottomTabs } from './src/bottomNavigation/BottomTabs';
-import { useEffect } from 'react';
 import { NotificationProvider } from './src/components/notifications/NotificationContext';
-import { registerBackgroundFetchAsync } from './src/BackgroundServices'
-import * as Notifications from 'expo-notifications';
+import * as Location from 'expo-location';
+
 
 export default function App() {
+
+
+  //Reuesting to Access the Location of the device 
+  const getPermission = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    console.log('status', status);
+    if (status !== 'granted') {
+      console.error('Permissons are not allowed')
+      return;
+    }
+  }
+
+
+  useEffect(() => {
+    getPermission();
+  }, []);
+
+
   return (
     <AppProvider>
       <SafeAreaView style={styles.container}>

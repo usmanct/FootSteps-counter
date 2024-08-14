@@ -16,6 +16,10 @@ export const AppProvider = ({ children }) => {
     const [waterHistory, setWaterHistory] = useState([])
     const [fetchData, setFetchData] = useState([])
     const [fillcontainer, setFillContainer] = useState<any>(0)
+    const [currentStepCount, setCurrentStepCount] = useState(0);
+    const [kcal, setKcal] = useState<any>(0);
+    const [distance, setDistance] = useState<any>(0);
+    const [target, setTarget] = useState(100)
 
 
     const MAX_HEIGHT = 200
@@ -42,6 +46,14 @@ export const AppProvider = ({ children }) => {
             setFetchData,
             fillcontainer,
             setFillContainer,
+            currentStepCount,
+            setCurrentStepCount,
+            kcal,
+            setKcal,
+            distance,
+            setDistance,
+            target,
+            setTarget,
         }}>
             {children}
         </AppContext.Provider>

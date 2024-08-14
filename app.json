@@ -37,7 +37,12 @@
         "NOTIFICATIONS"
       ],
       "package": "com.usmanct.FootStepscounter",
-      "versionCode": 1
+      "versionCode": 1,
+      "config":{
+      "googleMaps":{
+        "apiKey":"AIzaSyCX9hB-jjvDBETh5vVHjAKbgh085P-1HeQ"
+      }
+    }
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -10,35 +10,19 @@ import DataBaseInitialization from '../../sqLiteDb/DataBaseInitialization';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
 import * as TaskManager from 'expo-task-manager';
 import * as BackgroundFetch from 'expo-background-fetch';
+import { updateService } from '../../ForegroundService';
 
-// const BACKGROUND_FETCH_TASK = 'background-fetch';
-// TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-//     const now = Date.now();
 
-//     console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
-
-//     // Be sure to return the successful result type!
-//     return BackgroundFetch.BackgroundFetchResult.NewData;
-// });
+const BACKGROUND_FETCH_TASK = 'background-fetch';
 
 
 
-// async function registerBackgroundFetchAsync() {
-//     console.log(`Registering background fetch`)
-//     return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-//         minimumInterval: 1 * 60, // 1 min for android
-//         stopOnTerminate: false, // android only,
-//         startOnBoot: true, // android only
-//     });
-// }
 
-// async function unregisterBackgroundFetchAsync() {
-//     return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
-// }
-const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKcal, setDistance , target ,setTarget }: any) => {
+
+const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKcal, setDistance, target, setTarget }: any) => {
 
     const [modalVisible, setModalVisible] = useState(false);
-    
+
     const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
     const [IsTargetReached, setIsTargetReached] = useState<any>(false);
 
@@ -48,7 +32,36 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
     const [isRegistered, setIsRegistered] = React.useState(false);
     const [status, setStatus] = React.useState(null);
 
-  
+    useEffect(() => {
+        const updateBackground = async () => {
+            await updateService(currentStepCount, kcal)
+        }
+        updateBackground()
+    }, [currentStepCount, kcal])
+    // async function registerBackgroundFetchAsync() {
+    //     console.log(`Registering background fetch`)
+    //     return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+    //         minimumInterval: 60, // 1 min for android
+    //         stopOnTerminate: false, // android only,
+    //         startOnBoot: true, // android only
+    //     });
+    // }
+
+
+    // TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+    //     const now = Date.now();
+
+    //     console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
+    //     await countStepsInBackground()
+    //     // Be sure to return the successful result type!
+    //     return BackgroundFetch.BackgroundFetchResult.NewData;
+    // });
+
+    // async function unregisterBackgroundFetchAsync() {
+    //     return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
+    // }
+
+    // useEffect(() => { registerBackgroundFetchAsync() }, [])
 
     useEffect(() => {
         if (currentStepCount >= target) {
@@ -62,7 +75,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
     }, [target, currentStepCount]);
 
 
-   
+
     //     updateFootStepRecord(dateOnly, currentStepCount, target, kcal, distance)
     //     getData(dateOnly)
     // }, [currentStepCount, kcal, distance])
@@ -112,6 +125,25 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
         setModalVisible(!modalVisible)
     }
 
+    const countStepsInBackground = async () => {
+        console.log("CountStepsInBackground")
+        await updateService(currentStepCount, kcal)
+        Pedometer.watchStepCount((result) => {
+            console.log("result", result.steps)
+            setCurrentStepCount((preCount: any) => {
+                console.log("preCount", preCount);
+                const newCount = preCount > 1 ? result.steps + preCount - 1 : result.steps;
+                // const newCount = result.steps;
+
+                if (newCount >= target) {
+                    setIsTargetReached(true);
+                    return target;
+                }
+                return newCount;
+            });
+        });
+    }
+
     useEffect(() => {
         let subscription;
         // let lastSteps = 0;
@@ -132,8 +164,11 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
             })
         subscription = Pedometer.watchStepCount((result) => {
             console.log("result", result.steps)
-            setCurrentStepCount((preCount) => {
-                const newCount = result.steps +1
+            setCurrentStepCount((preCount: any) => {
+                console.log("preCount", preCount);
+                const newCount = preCount > 1 ? result.steps + preCount - 1 : result.steps;
+                // const newCount = result.steps;
+
                 if (newCount >= target) {
                     setIsTargetReached(true);
                     return target;
