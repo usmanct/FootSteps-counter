@@ -17,7 +17,6 @@
     "@react-navigation/native-stack": "^6.10.0",
     "@react-navigation/stack": "^6.4.0",
     "@shopify/react-native-skia": "^1.3.8",
-    "@voximplant/react-native-foreground-service": "^3.0.2",
     "date-fns": "^3.6.0",
     "expo": "~51.0.21",
     "expo-background-fetch": "~12.0.1",
