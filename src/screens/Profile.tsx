@@ -1,7 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import BmiModal from '../components/bmiScreen/BmiModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Profile = () => {
 
 
@@ -13,6 +14,25 @@ const Profile = () => {
         weight: '70',
 
     })
+
+    
+    useEffect(() => {
+        initialLoad()
+    }, [])
+
+
+    const initialLoad = async () => {
+        try {
+            const res = await AsyncStorage.getItem('userData');
+            if (res) {
+              const userData = JSON.parse(res);
+              setUserData(userData); // Update the state with the retrieved data
+            }
+          } catch (error) {
+            console.error('Failed to load user data', error);
+          }
+    }
+
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState('')
 

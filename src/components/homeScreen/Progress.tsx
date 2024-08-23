@@ -1,125 +1,41 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, } from 'react-native'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { CircularProgressBase } from 'react-native-circular-progress-indicator';
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import TargetModal from '../TargetModal';
 import { Pedometer } from 'expo-sensors';
-import { AppContext } from '../../contextApi/AppContext';
-import DataBaseInitialization from '../../sqLiteDb/DataBaseInitialization';
-import { useDatabase } from '../../sqLiteDb/useDatabase';
-import * as TaskManager from 'expo-task-manager';
-import * as BackgroundFetch from 'expo-background-fetch';
-import { updateService } from '../../ForegroundService';
-
-
-const BACKGROUND_FETCH_TASK = 'background-fetch';
-
-
-
-
 
 const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKcal, setDistance, target, setTarget }: any) => {
 
     const [modalVisible, setModalVisible] = useState(false);
 
     const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
-    const [IsTargetReached, setIsTargetReached] = useState<any>(false);
+    // const [IsTargetReached, setIsTargetReached] = useState<any>(false);
 
 
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
-    const [isRegistered, setIsRegistered] = React.useState(false);
-    const [status, setStatus] = React.useState(null);
 
-    useEffect(() => {
-        const updateBackground = async () => {
-            await updateService(currentStepCount, kcal)
-        }
-        updateBackground()
-    }, [currentStepCount, kcal])
-    // async function registerBackgroundFetchAsync() {
-    //     console.log(`Registering background fetch`)
-    //     return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-    //         minimumInterval: 60, // 1 min for android
-    //         stopOnTerminate: false, // android only,
-    //         startOnBoot: true, // android only
-    //     });
-    // }
-
-
-    // TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-    //     const now = Date.now();
-
-    //     console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
-    //     await countStepsInBackground()
-    //     // Be sure to return the successful result type!
-    //     return BackgroundFetch.BackgroundFetchResult.NewData;
-    // });
-
-    // async function unregisterBackgroundFetchAsync() {
-    //     return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
-    // }
-
-    // useEffect(() => { registerBackgroundFetchAsync() }, [])
-
-    useEffect(() => {
-        if (currentStepCount >= target) {
-            setCurrentStepCount(target)
-            setIsTargetReached(true);
-        }
-        else {
-            setIsTargetReached(false);
-        }
-        // console.log("Inside Target:state", state);
-    }, [target, currentStepCount]);
-
-
-
-    //     updateFootStepRecord(dateOnly, currentStepCount, target, kcal, distance)
-    //     getData(dateOnly)
-    // }, [currentStepCount, kcal, distance])
-
-
-    // const initialLoad = async () => {
-    //     console.log("initialLoad")
-    //     try {
-    //         const res: any = await getData(dateOnly);
-    //         console.log('========', res)
-    //         if (res && res.length > 0) {
-    //             setCurrentStepCount(res[0].footsteps);
-    //             setKcal(res[0].energy);
-    //             setDistance(res[0].distance);
-    //             setTarget(res[0].goal);
-    //         } else {
-    //             // If no data for the current date, insert a new row
-    //             insertData(dateOnly, currentStepCount, kcal, distance).then(() => {
-    //                 // console.log('New data inserted for the current date');
-    //             }).catch(error => {
-    //                 console.error('Error inserting new data:', error);
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.error('Failed to load initial data', error);
+    //Updaeting the Notification in the Background
+    // useEffect(() => {
+    //     const updateBackground = async () => {
+    //         await updateService(currentStepCount, kcal)
     //     }
-    // };
+    //     updateBackground()
+    // }, [currentStepCount, kcal])
+
 
     // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         const newNow = new Date();
-    //         const newDateOnly = newNow.toLocaleDateString();
-    //         if (newDateOnly !== dateOnly) {
-    //             insertData(newDateOnly, currentStepCount, kcal, distance).then(() => {
-    //                 // console.log('Data inserted successfully');
-    //             }).catch(error => {
-    //                 console.error('Error inserting data:', error);
-    //             });
-    //             setCurrentStepCount(0); // Reset the steps for the new day
-    //         }
-    //     }, 60000); // Check every minute
-
-    //     return () => clearInterval(interval); // Clean up the interval on unmount
-    // }, [dateOnly]);
+    //     if (currentStepCount >= target) {
+    //         setCurrentStepCount(target)
+    //         setIsTargetReached(true);
+    //     }
+    //     else {
+    //         setIsTargetReached(false);
+    //     }
+    //     // console.log("Inside Target:state", state);
+    // }, [target, currentStepCount]);
 
     const openTargetModal = () => {
         setModalVisible(!modalVisible)
@@ -127,25 +43,26 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
 
     const countStepsInBackground = async () => {
         console.log("CountStepsInBackground")
-        await updateService(currentStepCount, kcal)
-        Pedometer.watchStepCount((result) => {
-            console.log("result", result.steps)
-            setCurrentStepCount((preCount: any) => {
-                console.log("preCount", preCount);
-                const newCount = preCount > 1 ? result.steps + preCount - 1 : result.steps;
-                // const newCount = result.steps;
+        // await updateService(currentStepCount, kcal)
+        // Pedometer.watchStepCount((result) => {
+        //     console.log("result", result.steps)
+        //     setCurrentStepCount((preCount: any) => {
+        //         // console.log("preCount", preCount);
+        //         // const newCount = preCount > 1 ? result.steps + preCount - 1 : result.steps;
+        //         const newCount = result.steps;
 
-                if (newCount >= target) {
-                    setIsTargetReached(true);
-                    return target;
-                }
-                return newCount;
-            });
-        });
+        //         if (newCount >= target) {
+        //             // setIsTargetReached(true);
+        //             return target;
+        //         }
+        //         return newCount;
+        //     });
+        // });
     }
 
     useEffect(() => {
         let subscription;
+        console.log("Subscription")
         // let lastSteps = 0;
         Pedometer.isAvailableAsync().then(
             (result) => {
@@ -166,11 +83,11 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
             console.log("result", result.steps)
             setCurrentStepCount((preCount: any) => {
                 console.log("preCount", preCount);
-                const newCount = preCount > 1 ? result.steps + preCount - 1 : result.steps;
-                // const newCount = result.steps;
+                // const newCount = preCount > 1 ? result.steps + preCount - 1 : result.steps;
+                const newCount = result.steps;
 
                 if (newCount >= target) {
-                    setIsTargetReached(true);
+                    // setIsTargetReached(true);
                     return target;
                 }
                 return newCount;
@@ -219,18 +136,12 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
                         <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{currentStepCount}</Text>
                     </TouchableOpacity>
                     <Text style={{ fontSize: 12, }}>/{target}</Text>
-                    {/* <Text onPress={() => setIsSimulating(!isSimulating)}>
-                        {isSimulating ? 'Stop Simulation' : 'Start Simulation'}
-                    </Text> */}
-
                 </View>
-
             </CircularProgressBase>
-        </View>
+        </View> 
+        
     )
 }
-
-
 const styles = StyleSheet.create({
     container: {
 
@@ -263,8 +174,6 @@ const styles = StyleSheet.create({
     btnText: {
         fontSize: 12,
     }
-
-
 })
 
 export default Progress 

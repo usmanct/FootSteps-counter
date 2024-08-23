@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import BmiModal from '../components/bmiScreen/BmiModal';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BmiCalculations = () => {
     const navigation = useNavigation();
@@ -18,26 +19,52 @@ const BmiCalculations = () => {
         weight: '70',
 
     })
+
+
+
+    useEffect(() => {
+        initialLoad()
+    }, [])
+
+
+    const initialLoad = async () => {
+        try {
+            const res = await AsyncStorage.getItem('userData');
+            if (res) {
+              const userData = JSON.parse(res);
+              setUserData(userData); // Update the state with the retrieved data
+            }
+          } catch (error) {
+            console.error('Failed to load user data', error);
+          }
+    }
+
     // function calculateBMI(weight, heightCm) {
-        
+
     //   }
-      
+
     //   // Example usage:
     //   const weight = 70; // weight in kilograms
     //   const heightCm = 175; // height in centimeters
     //   const bmi = calculateBMI(weight, heightCm);
     //   console.log(bmi); // Output: 22.857142857142858
-      
 
-    
-    
 
-    const calculateBMI = () => {
+
+
+
+    const calculateBMI = async () => {
+        try {
+            await AsyncStorage.setItem('userData', JSON.stringify(userData));
+            console.log('User data saved!');
+        } catch (error) {
+            console.error('Failed to save user data', error);
+        }
         const heightM = parseFloat(userData.height) / 100;
         const widthM = parseFloat(userData.weight)
-        const res =  (widthM / (heightM * heightM)).toFixed(2);
+        const res = (widthM / (heightM * heightM)).toFixed(2);
         setBmiValue(res)
-        navigation.navigate('BmiResult' , {res} )
+        navigation.navigate('BmiResult', { res })
     }
 
     const toggleModal = (e: any) => {
@@ -50,7 +77,7 @@ const BmiCalculations = () => {
     }
     useEffect(() => {
         console.log(bmivalue)
-    },[bmivalue])
+    }, [bmivalue])
 
     return (
         <View style={styles.container}>

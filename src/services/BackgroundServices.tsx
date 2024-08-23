@@ -16,7 +16,7 @@ const BACKGROUND_FETCH_TASK = 'background-fetch';
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
     const newdataf = 'Usman Khalil' + Math.random();
     try {
-        const reminderTime = await AsyncStorage.getItem('reminderTime');
+        const reminderTime : any = await AsyncStorage.getItem('reminderTime');
         const reminderFlag = await AsyncStorage.getItem('reminderFlag');
         
         // Parse the reminderTime to an integer

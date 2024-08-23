@@ -1,11 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import SwitchToggle from 'react-native-switch-toggle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppContext } from '../../contextApi/AppContext';
 
-const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFlag, setReminderFlag }: any) => {
+const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFlag, setReminderFlag, setToggleService, toggleService }: any) => {
     const [isEnabled, setIsEnabled] = useState(reminderFlag || false);
-
+    const {
+        currentStepCount,
+        setCurrentStepCount,
+    }: any = useContext(AppContext)
     useEffect(() => {
         const saveSettings = async () => {
             try {
@@ -20,12 +24,28 @@ const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFl
         saveSettings();
     }, [reminderFlag]);
 
+    useEffect(() => {
+        if (rowTitle === 'StepCounter') {
+            setIsEnabled(toggleService)
+        }
+    }, [])
+
     const toggleSwitch = () => {
         // Toggle switch and update reminderFlag state
-        const newState = !isEnabled;
-        setIsEnabled(newState);
+
         if (rowTitle === 'Daily Step Reminder') {
+            const newState = !isEnabled;
+            setIsEnabled(newState);
             setReminderFlag(newState);
+        }
+        else if (rowTitle === 'StepCounter') {
+            setIsEnabled(toggleService)
+            if (toggleService) {
+            
+            }
+            else {
+
+            }
         }
     };
 

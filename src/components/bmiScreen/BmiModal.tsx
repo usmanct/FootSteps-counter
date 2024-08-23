@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 
-const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData }) => {
+const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData } : any) => {
     const CITIES = 'Jakarta,Bandung,Sumbawa,Taliwang,Lombok,Bima'.split(',');
     const gender = 'male,female,other'.split(',');
     const ageArray = Array.from({ length: 200 }, (_, index) => index + 1);
@@ -16,16 +16,16 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData 
 
     const saveChanges = () => {
         if (title === 'Gender') {
-            setUserData((pre) => ({ ...pre, gender: obj.gender }));
+            setUserData((pre: any) => ({ ...pre, gender: obj.gender }));
             setDefaultIndex((pre) => ({ ...pre, gender: obj.gindex }));
         } else if (title === 'Age') {
-            setUserData((pre) => ({ ...pre, age: obj.age }));
+            setUserData((pre: any) => ({ ...pre, age: obj.age }));
             setDefaultIndex((pre) => ({ ...pre, age: obj.aindex }));
         } else if (title === 'Height') {
-            setUserData((pre) => ({ ...pre, height: obj.height }));
+            setUserData((pre: any) => ({ ...pre, height: obj.height }));
             setDefaultIndex((pre) => ({ ...pre, height: obj.hindex }));
         } else {
-            setUserData((pre) => ({ ...pre, weight: obj.weight }));
+            setUserData((pre: any) => ({ ...pre, weight: obj.weight }));
             setDefaultIndex((pre) => ({ ...pre, weight: obj.windex }));
         }
 
@@ -66,13 +66,13 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData 
                             onChange={
                                 ({ item, index }) => {
                                     if (title === 'Gender') {
-                                        setObj((pre) => ({ ...pre, gender: item.label, gindex: index }));
+                                        setObj((pre: any) => ({ ...pre, gender: item.label, gindex: index }));
                                     } else if (title === 'Age') {
-                                        setObj((pre) => ({ ...pre, age: item.label, aindex: index }));
+                                        setObj((pre: any) => ({ ...pre, age: item.label, aindex: index }));
                                     } else if (title === 'Height') {
-                                        setObj((pre) => ({ ...pre, height: item.label, hindex: index }));
+                                        setObj((pre: any) => ({ ...pre, height: item.label, hindex: index }));
                                     } else {
-                                        setObj((pre) => ({ ...pre, weight: item.label, windex: index }));
+                                        setObj((pre: any) => ({ ...pre, weight: item.label, windex: index }));
                                     }
                                 }
 

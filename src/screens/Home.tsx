@@ -1,5 +1,5 @@
 import { View, Text, ScrollView } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Progress from '../components/homeScreen/Progress'
 import Stats from '../components/homeScreen/Stats'
 import Bmi from '../components/homeScreen/Bmi'
@@ -7,9 +7,11 @@ import History from '../components/homeScreen/History'
 import Header from '../components/Header'
 import { useDatabase } from '../sqLiteDb/useDatabase'
 import DataBaseInitialization from '../sqLiteDb/DataBaseInitialization'
-
+import { AppState } from 'react-native';
 import { AppContext } from '../contextApi/AppContext'
-import { startStepCountingService, stopService } from '../ForegroundService'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import StepCountingServiceComponent from '../services/ForegroundService'
+import * as Location from 'expo-location';
 const Home = () => {
 
 
@@ -23,23 +25,48 @@ const Home = () => {
     setDistance,
     target,
     setTarget,
-}: any = useContext(AppContext)
+  }: any = useContext(AppContext)
   const now = new Date();
   const dateOnly = now.toLocaleDateString();
+  const { startService, stopService } = StepCountingServiceComponent()
+  const isFocused = useIsFocused();
 
-  
   const { insertData, getData, updateFootStepRecord } = useDatabase();
-  //@ts-ignore
+  const [appState, setAppState] = useState(AppState.currentState);
   useEffect(() => {
     DataBaseInitialization()
     initialLoad()
-    startStepCountingService(currentStepCount)
+    // const subscription = AppState.addEventListener('change', handleAppStateChange);
 
-    return () => {
-      stopService()
+    // return () => {
+    //   subscription.remove();
+    // };
+    const getLocationPermission = async () => {
+
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      console.log('Location Status', status)
+      if (status !== 'granted') {
+        return;
+      }
     }
 
+
   }, [])
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     initialLoad();
+  //   }, [])
+  // );
+
+  // const handleAppStateChange = (nextAppState: string) => {
+  //   if (nextAppState === 'background') {
+  //     // Start the background service when the app goes to the background
+  //     startService();
+  //   } else if (nextAppState === 'active') {
+  //     // Stop the background service when the app comes to the foreground
+  //     stopService();
+  //   }
+  // };
 
 
   useEffect(() => {
@@ -48,6 +75,7 @@ const Home = () => {
     }).catch((e) => {
       console.error('Error=====:', e);
     })
+
   }, [currentStepCount, kcal, distance, target])
 
 
@@ -108,9 +136,23 @@ const Home = () => {
         target={target}
         setTarget={setTarget}
       />
-      <Stats currentStepCount={currentStepCount} setCurrentStepCount={setCurrentStepCount} kcal={kcal} setKcal={setKcal} distance={distance} setDistance={setDistance} />
+      <Stats
+        currentStepCount={currentStepCount}
+        setCurrentStepCount={setCurrentStepCount}
+        kcal={kcal}
+        setKcal={setKcal}
+        distance={distance}
+        setDistance={setDistance}
+      />
       <Bmi />
-      <History currentStepCount={currentStepCount} setCurrentStepCount={setCurrentStepCount} kcal={kcal} setKcal={setKcal} distance={distance} setDistance={setDistance} />
+      <History
+        currentStepCount={currentStepCount}
+        setCurrentStepCount={setCurrentStepCount}
+        kcal={kcal}
+        setKcal={setKcal}
+        distance={distance}
+        setDistance={setDistance}
+      />
 
     </ScrollView>
   )

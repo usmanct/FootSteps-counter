@@ -16,8 +16,16 @@ const RunnerMap = ({
     setRouteCoordinates,
     setLocation,
     speed,
-    setSpeed
+    setSpeed 
 }: any) => {
+    if (!location) {
+        return (
+          <View style={styles.container}>
+            <Text>Loading map...</Text>
+          </View>
+        );
+      }
+
 
     return (
         <View style={styles.container}>
@@ -42,16 +50,11 @@ const RunnerMap = ({
                     }} />
                     <Polyline
                         coordinates={routeCoordinates}
-                        strokeColor="#000"
-                        strokeWidth={6}
+                        strokeColor="#2ecc71"
+                        strokeWidth={4}
                     />
                 </MapView>
             )}
-            <View style={styles.distanceContainer}>
-                <Text style={styles.distanceText}>
-                    Distance Covered: {(totalDistance / 1000).toFixed(2)} km
-                </Text>
-            </View>
         </View>
     );
 };

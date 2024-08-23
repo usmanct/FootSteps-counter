@@ -6,12 +6,12 @@ import LetsRunRow from '../components/letsrunScreen/LetsRunRow'
 import BmiCalculations from './BmiCalculations'
 import Profile from './Profile'
 import RunningSettingModal from '../components/letsrunScreen/RunningSettingModal'
-import { useNotification } from '../components/notifications/NotificationContext'
+
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { registerBackgroundFetchAsync } from '../BackgroundServices'
+// import { startRunningreminderService } from '../services/ForegroundService'
+
 const Account = () => {
 
-  const { schedulePushNotification }: any = useNotification();
 
   const [modalVisible, setModalVisible] = useState(false)
   const [modalType, setModalType] = useState('')
@@ -20,6 +20,7 @@ const Account = () => {
     m: 0
   })
   const [reminderFlag, setReminderFlag] = useState(false)
+  const [toggleService , setToggleService]  = useState(true)
 
 
 
@@ -67,35 +68,14 @@ const Account = () => {
         // console.log('currentTime', currentTime.getHours(), currentTime.getMinutes())
         if (currentTime.getHours() === reminderTime.h && currentTime.getMinutes() === reminderTime.m) {
           console.log('fffff')
-          //         Alert.alert('Alert Title', 'My Alert Msg', [
-          //   {
-          //     text: 'Ask me later',
-          //     onPress: () => console.log('Ask me later pressed'),
-          //   },
-          //   {
-          //     text: 'Cancel',
-          //     onPress: () => console.log('Cancel Pressed'),
-          //     style: 'cancel',
-          //   },
-          //   {text: 'OK', onPress: () => console.log('OK Pressed')},
-          // ]);
-          schedulePushNotification('Foot-Steps Counter', 'Let\'s running for better health!', 'Account');
-          clearInterval(interval);
+         //Place the Alert Logic 
+         clearInterval(interval);
         }
       }, 1000);
 
       return () => clearInterval(interval);
     }
   }, [reminderFlag, reminderTime]);
-
-  useEffect(() => {
-    registerBackgroundFetchAsync().then(() => {
-      console.log('Background fetch registered================================================================');
-    }).catch(() => {
-      console.log('Background fetch not registered================================================================')
-    })
-  }, [])
-
 
 
   const toggleModal = (s: string) => {
@@ -116,7 +96,15 @@ const Account = () => {
         setReminderTime={setReminderTime}
       />
       <View style={styles.subcontainer}>
-        <SoundNotification rowTitle={'StepCounter'} reminderTime={undefined} setReminderTime={undefined} reminderFlag={undefined} setReminderFlag={undefined} />
+        <SoundNotification
+          rowTitle={'StepCounter'}
+          reminderTime={undefined}
+          setReminderTime={undefined}
+          reminderFlag={undefined}
+          setReminderFlag={undefined}
+          toggleService={toggleService}
+          setToggleService={setToggleService}
+        />
       </View>
       <View style={styles.subcontainer}>
         <SoundNotification rowTitle={'Daily Step Reminder'}

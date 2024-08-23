@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 
-const TargetModal = ({ modalVisible, setModalVisible, target, setTarget  }) => {
+const TargetModal = ({ modalVisible, setModalVisible, target, setTarget }: any) => {
 
-    const data :  any = [10, 20,50, 100, 200, 300, 500, 600, 700, 800, 900, 1000, 2000,]
+    const data: any = [10, 20, 50, 100, 200, 300, 500, 600, 700, 800, 900, 1000, 2000,]
     const [inputValue, setInputValue] = useState<any>({})
     const [defaultIndex, setDefaultIndex] = useState(0)
 
@@ -43,16 +43,16 @@ const TargetModal = ({ modalVisible, setModalVisible, target, setTarget  }) => {
                             height={150}
                             width={150}
                             initialSelectedIndex={defaultIndex}
-                            items={data.map(name => ({ label: name, value: '' }))}
+                            items={data.map((name: any) => ({ label: name, value: '' }))}
                             onChange={
                                 ({ item, index }) => {
-                                    setInputValue(pre => ({ ...pre, value: item.label, i: index  }))
+                                    setInputValue((pre: any) => ({ ...pre, value: item.label, i: index }))
                                 }
 
                             }
                             selectedStyle={styles.selectedItem}
                         />
-                     <Pressable
+                        <Pressable
                             style={[styles.button]}
                             onPress={saveChanges}>
                             <Text style={styles.textStyle}>Save Changes</Text>
@@ -134,10 +134,10 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         fontSize: 16,
     },
-    selectedItem:{
-        borderWidth:2,
-        borderColor:'#0cf249',
-        color:'#0cf249',
+    selectedItem: {
+        borderWidth: 2,
+        borderColor: '#0cf249',
+        color: '#0cf249',
         fontWeight: 'bold',
     }
 });

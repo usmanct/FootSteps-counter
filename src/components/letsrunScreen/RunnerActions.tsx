@@ -30,7 +30,9 @@ const RunnerActions = ({
   targetKcalBurn,
   setTotalDistance,
   runningState,
-  setRunningState
+  setRunningState,
+  setTimeReached, 
+  timeReached
 }: any) => {
 
   const [modalVisible, setModalVisible] = useState(false)
@@ -49,20 +51,26 @@ const RunnerActions = ({
       }, 1000);
     } else {
       clearInterval(interval);
+      // onStopHandler() 
     }
-
+    if(timeReached){
+      onStopHandler()
+    }
     return () => clearInterval(interval);
-  }, [IsRunning, runningState]);
+  }, [IsRunning, runningState , timeReached]);
+
 
 
   useEffect(() => {
     // I assume here Weight is 72
-    const kcalPerKm = 72 * 1.036
-    const totalKcal = kcalPerKm * totalDistance / 1000
-    setkcalBurn(totalKcal)
-    const pace = totalDistance / time
-    setSpeed(pace.toFixed(2))
-  }, [totalDistance, time])
+    if (IsRunning && runningState) {
+      const kcalPerKm = 72 * 1.036
+      const totalKcal = kcalPerKm * totalDistance / 1000
+      setkcalBurn(totalKcal)
+      const pace = totalDistance / time
+      setSpeed(pace.toFixed(2))
+    }
+  }, [totalDistance, IsRunning, runningState])
 
 
 
@@ -101,7 +109,7 @@ const RunnerActions = ({
         setSpeed,
         totalDistance,
         setkcalBurn,
-        setTotalDistance
+        setTotalDistance,
       } as never)
   }
 

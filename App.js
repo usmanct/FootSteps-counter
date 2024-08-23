@@ -2,7 +2,6 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 import { useEffect } from 'react';
 import { AppProvider } from './src/contextApi/AppContext';
 import { BottomTabs } from './src/bottomNavigation/BottomTabs';
-import { NotificationProvider } from './src/components/notifications/NotificationContext';
 import * as Location from 'expo-location';
 
 
@@ -28,10 +27,8 @@ export default function App() {
   return (
     <AppProvider>
       <SafeAreaView style={styles.container}>
-        <NotificationProvider>
-          {/* <ScreenNavigation /> */}
-          <BottomTabs />
-        </NotificationProvider>
+        {/* <ScreenNavigation /> */}
+        <BottomTabs />
       </SafeAreaView>
     </AppProvider>
   );

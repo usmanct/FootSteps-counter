@@ -22,15 +22,15 @@ export const useDatabase = () => {
 
     };
     //Fetching the single Footstep data from the database
-    const getData = async (s: any) => {
+     const getData = async (s: any) => {
         const db = await SQLite.openDatabaseAsync('usmanct');
         try {
             const result = await db.getAllAsync('SELECT * FROM step_data WHERE date = ?', s);
             if (result) {
                 console.log('getData====', result);
                 setRecord([...result]);
+                return result;
             }
-            return result;
         } catch (error) {
             console.error("Step Data Fetching Error", error);
         }
@@ -126,4 +126,6 @@ export const useDatabase = () => {
         updateWaterRecord,
         updateFootStepRecord,
     };
+    
 };
+

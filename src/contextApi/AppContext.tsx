@@ -2,7 +2,7 @@ import React, { createContext, useState } from 'react';
 
 export const AppContext = createContext();
 
-export const AppProvider = ({ children }) => {
+export const AppProvider = ({ children } : any) => {
 
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
