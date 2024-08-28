@@ -1,11 +1,15 @@
 import { useContext, useEffect, useState } from 'react';
-import { Button, StyleSheet, View, Text } from 'react-native';
+import { Button, StyleSheet, View, Image, Dimensions } from 'react-native';
 import { AppContext } from '../../contextApi/AppContext';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
+import React from 'react';
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+const { width } = Dimensions.get('window');
 
 
 
-const ProgressCircle = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved, setISgoalAchieved }) => {
+
+const ProgressCircle = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved, setISgoalAchieved }: any) => {
     const {
         MAX_HEIGHT,
         setNoOfCups,
@@ -22,6 +26,22 @@ const ProgressCircle = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, 
     const dateOnly = now.toLocaleDateString();
     const [today, setToday] = useState(dateOnly)
     const { getALLWaterData, updateWaterRecord, insertWaterData, getWaterData } = useDatabase()
+    const waveOffset = useSharedValue(0)
+
+    const waveAnimation = useAnimatedStyle(() => {
+        return {
+            transform: [{ translateX: waveOffset.value }],
+        };
+    });
+
+    useEffect(() => {
+        waveOffset.value = withRepeat(
+            withTiming(-width, { duration: 2000 }),
+            -1,
+            true
+        );
+    }, []);
+
 
     useEffect(() => {
         let HEIGHT_ON_EVERY_CUP
@@ -64,7 +84,7 @@ const ProgressCircle = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, 
             setISgoalAchieved(true)
         }
         else {
-            setFillContainer((pre) => (pre + cupHeight))
+            setFillContainer((pre: number) => (pre + cupHeight))
         }
 
         return () => {
@@ -99,7 +119,12 @@ const ProgressCircle = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, 
 
     return (
         <View style={{ ...styles.container, height: MAX_HEIGHT }}>
+            <Image
+                source={require('../../../assets/waterTrackScreenAssets/water_icon.png')}
+                style={{ height: 100, width: 100 }}
+            />
             <View style={{ ...styles.fillingContainer, height: fillcontainer || 0 }}>
+            {/* <Animated.View style={[styles.ave, waveAnimation]} /> */}
             </View>
         </View>
     );
@@ -110,19 +135,26 @@ export default ProgressCircle;
 const styles = StyleSheet.create({
     container: {
         width: 200,
-        borderColor: '#0cf249',
-        borderWidth: 2,
+        borderColor: '#9f49ff',
+        borderWidth: 5,
         borderRadius: 100,
         flexDirection: 'row',
         justifyContent: 'center',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        alignItems:'center'
     },
     fillingContainer: {
         width: '100%',
-        backgroundColor: '#0cf249',
+        backgroundColor: '#9f49ff',
         position: 'absolute',
         bottom: 0,
         borderBottomLeftRadius: 4,
         borderBottomRightRadius: 4,
+    },
+    wave: {
+        width: '200%', // Double the width for seamless animation
+        height: '100%',
+        backgroundColor: '#9f49ff',
+        borderRadius: 100,
     },
 });

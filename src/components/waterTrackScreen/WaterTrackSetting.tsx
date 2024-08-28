@@ -52,19 +52,19 @@ const WaterTrackSetting = ({ route }) => {
     }
 
     return (
-        <>
+        <View style={{ backgroundColor: 'white', flex: 1 }}>
             <Header />
             <View style={styles.container}>
                 <SetDrinkTarget
                     modalVisible={modalVisible}
                     setModalVisible={setModalVisible}
                     drinkGoal={drinkGoal}
-                    setDrinkGoal={(value) => {
+                    setDrinkGoal={(value: any) => {
                         setLocalDrinkGoal(value);
                         setDrinkGoal(value);
                     }}
                     cupCapacity={localCupCapacity}
-                    setCupCapacity={(value) => {
+                    setCupCapacity={(value: any) => {
                         setLocalCupCapacity(value);
                         setCupCapacity(value);
                     }}
@@ -83,7 +83,7 @@ const WaterTrackSetting = ({ route }) => {
                 <Row title={"Cup Capacity"} subtil={localCupCapacity} onpress={cupcapacityHandler} />
                 <Row title={"Drink Goal"} subtil={localDrinkGoal} onpress={drinkgoalhandler} />
             </View>
-        </>
+        </View>
     )
 }
 
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
 
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white',
+        backgroundColor: '#e9eaee',
         margin: 10,
         paddingVertical: 15,
         borderRadius: 8,

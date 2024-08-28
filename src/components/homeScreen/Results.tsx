@@ -19,14 +19,14 @@ const Results = () => {
     }: any = useContext(AppContext);
     const [totalSteps, setTotalSteps] = useState(0);
     const { waterHistory }: any = useContext(AppContext)
-    const [fetchData, setFetchData] = useState([])
+    const [fetchData, setFetchData] = useState<any>([])
 
 
     const { getALLWaterData, dropTable, insertData } = useDatabase()
 
     useEffect(() => {
         getALLWaterData()
-        const waterDrinkedData = waterHistory.map((data) => ({ value: data.waterIntake, label: data.date }))
+        const waterDrinkedData = waterHistory.map((data: { waterIntake: any; date: any; }) => ({ value: data.waterIntake, label: data.date }))
         setFetchData([...waterDrinkedData])
         // console.log('waterDrinkedData', waterDrinkedData)
     }, [waterHistory])
@@ -37,25 +37,38 @@ const Results = () => {
             total += e.footsteps;
         });
         setTotalSteps(total);
-        
+
     }, [record]);
     return (
-        <>
+        <View style={{ flex: 1, backgroundColor: 'white' }}>
             <View>
                 <TouchableOpacity onPress={dropTable}>
                     <Text style={styles.headingText}>Results</Text>
                 </TouchableOpacity>
-                {record.length ? <Text style={styles.subHeading}>Steps</Text> : null}
                 {record.length ?
                     <View style={styles.container}>
+                        {record.length ? <Text style={styles.subHeading}>Steps</Text> : null}
                         <Text style={styles.headingText}>{totalSteps}</Text>
                         <FlatList
                             data={record}
                             renderItem={({ item }) => (
                                 <View style={styles.subContainer}>
-                                    <StatsCard icon={<AntDesign name="clockcircleo" size={14} color="red" />} value={item?.date} unit={'time'} isFirst={true} />
-                                    <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} value={item?.energy} unit={'kcal'} isFirst={undefined} />
-                                    <StatsCard icon={<Octicons name="location" size={14} color="green" />} value={item?.distance} unit={'km'} isFirst={undefined} />
+                                    <StatsCard
+                                        icon={require('../../../assets/homeScreenAssets/distance_icon.png')}
+                                        value={item?.distance}
+                                        unit={'Km'}
+                                        isFirst={undefined}
+                                    />
+                                    <StatsCard isFirst={true}
+                                        icon={require('../../../assets/homeScreenAssets/timer_icon.png')}
+                                        value={item?.date}
+                                        unit={'Timer'}
+                                    />
+                                    <StatsCard
+                                        icon={require('../../../assets/homeScreenAssets/calories_icon.png')}
+                                        value={item?.energy} unit={'Kcal'}
+                                        isFirst={undefined}
+                                    />
                                 </View>
                             )}
                             scrollEnabled={true}
@@ -67,8 +80,8 @@ const Results = () => {
                     <View style={styles.container}>
                         <Text style={styles.subHeading}>Water Track History</Text>
                         <BarChart
-                            frontColor={'#0cf249'}
-                            barWidth={70}
+                            frontColor={'#9f49ff'}
+                            barWidth={50}
                             data={fetchData}
                             yAxisLabelWidth={35}
                             isAnimated
@@ -78,7 +91,9 @@ const Results = () => {
                             maxValue={7000}
                             yAxisThickness={0}
                             xAxisThickness={0}
-                            barBorderRadius={5}
+                            // barBorderRadius={5}
+                            barBorderTopLeftRadius={5}
+                            barBorderTopRightRadius={5}
                             // height={screenHeight - 400}
                             showValuesAsTopLabel={true}
                             hideYAxisText
@@ -94,7 +109,7 @@ const Results = () => {
                     />
                 </View>
                 : null}
-        </>
+        </View>
 
     )
 }
@@ -106,7 +121,7 @@ const styles = StyleSheet.create({
 
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white',
+        backgroundColor: '#e9eaee',
         margin: 10,
         paddingVertical: 15,
         borderRadius: 8,
@@ -124,7 +139,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         flexDirection: 'row',
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         margin: 10,
         marginTop: 5,
         paddingVertical: 15,

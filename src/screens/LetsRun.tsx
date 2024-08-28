@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Image, View, Text } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Header from '../components/Header'
 import RunnerMap from '../components/letsrunScreen/RunnerMap'
@@ -153,7 +153,7 @@ const LetsRun = () => {
                 if (newCoordinates.length > 1) {
                   const lastPoint = newCoordinates[newCoordinates.length - 2];
                   const distance = getDistance(lastPoint, { latitude, longitude });
-                  const distanceInKm = distance/1000
+                  const distanceInKm = distance / 1000
                   setTotalDistance(prevDistance => prevDistance + distanceInKm);
                 }
 
@@ -185,7 +185,14 @@ const LetsRun = () => {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <View style={styles.headerRow}>
+        <Text style={styles.headingText}>Daily Step Counter </Text>
+        <Image
+          source={require('../../assets/homeScreenAssets/step_icon.png')}
+          style={{ height: 30, width: 30 }}
+          resizeMode='contain'
+        />
+      </View>
       <RunnerMap
         totalDistance={totalDistance}
         setTotalDistance={setTotalDistance}
@@ -235,9 +242,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     paddingVertical: 15,
 
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // marginBottom: 10,
+    paddingVertical: 15,
+    backgroundColor: '#e9eaee',
+    width: '100%'
+  },
+  headingText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  }
 
 })

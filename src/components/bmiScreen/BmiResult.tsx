@@ -1,7 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
-const BmiResult = ({ route }) => {
+const BmiResult = ({ route }: any) => {
     const navigation = useNavigation();
     const { res } = route.params;
 
@@ -44,34 +44,41 @@ const BmiResult = ({ route }) => {
 
     return (
         <View style={styles.container}>
+            <Image
+                source={require('../../../assets/homeScreenAssets/bmi_calculate_icon.png')}
+                style={{ height: 90, width: 90 }}
+                resizeMode='contain'
+            />
             <Text style={styles.heading}>BMI Calculator</Text>
             <Text style={styles.subHeading}>BMI Score</Text>
-            <Text style={styles.resultText}>{score}</Text>
-            <Text style={{ ...styles.subHeading, fontSize: 20, fontWeight: 'bold' }}>{remarks.a}</Text>
-            <View>
-                <View style={styles.subContainer}>
-                    <Text style={styles.commentText}>
-                        {remarks.b}
-                    </Text>
+            <View style={styles.subContainer}>
+                <Text style={styles.resultText}>{score}</Text>
+                <Text style={{ ...styles.subHeading, fontSize: 20, fontWeight: 'bold' }}>{remarks.a}</Text>
+                <View>
+                    <View style={styles.remarksContainer}>
+                        <Text style={styles.commentText}>
+                            {remarks.b}
+                        </Text>
+                    </View>
                 </View>
-            </View>
-            <View style={styles.btnRow}>
-                <TouchableOpacity
-                    style={styles.resultBtn}
-                    onPress={() => {
-                        navigation.navigate('Home' as never)
-                    }}
-                >
-                    <Text style={styles.resultBtnText}>Back to Home</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.resultBtn}
-                    onPress={() => {
-                        navigation.navigate('BmiCalculations' as never)
-                    }}
-                >
-                    <Text style={styles.resultBtnText}>Calculate Again</Text>
-                </TouchableOpacity>
+                <View style={styles.btnRow}>
+                    <TouchableOpacity
+                        style={[styles.button , styles.saveBtn]}
+                        onPress={() => {
+                            navigation.navigate('Home' as never)
+                        }}
+                    >
+                        <Text style={styles.textStyle}>Back to Home</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.button , styles.cancelBtn]}
+                        onPress={() => {
+                            navigation.navigate('BmiCalculations' as never)
+                        }}
+                    >
+                        <Text style={styles.textStyle}>Calculate Again</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     )
@@ -85,29 +92,35 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
+        backgroundColor: '#fff',
 
     },
     subContainer: {
-        backgroundColor: '#F8F8F8',
+        backgroundColor: '#f3eff8',
         borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 5,
         margin: 10,
         width: '100%',
         padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
+    remarksContainer: {
+        backgroundColor: '#ded8e8',
+        borderRadius: 10,
+        margin: 10,
+        width: '100%',
+        padding: 20,
+    }
+    ,
     heading: {
-        fontSize: 20,
+        fontSize: 34,
         fontWeight: 'bold',
         marginBottom: 20,
         color: '#333',
         textAlign: 'center',
     },
     subHeading: {
-        fontSize: 15,
+        fontSize: 20,
         marginBottom: 20,
         color: 'grey',
         textAlign: 'center',
@@ -129,14 +142,14 @@ const styles = StyleSheet.create({
     rowText: {
         fontWeight: 'bold',
     },
-    resultBtn: {
-        backgroundColor: '#0cf249',
-        paddingHorizontal: 15,
+    button: {
+        backgroundColor: '#f49913',
+        paddingHorizontal: 30,
         paddingVertical: 10,
-        borderRadius: 50,
+        borderRadius: 10,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginVertical: 20,
+        margin: 10,
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
@@ -147,24 +160,32 @@ const styles = StyleSheet.create({
         elevation: 5,
 
     },
-    resultBtnText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
+    saveBtn: {
+        backgroundColor: '#f49913',
+    },
+    cancelBtn: {
+        backgroundColor: '#0fb4fc',
     },
     resultText: {
         fontSize: 35,
         fontWeight: 'bold',
-        color: '#0cf249'
+        color: '#fc5c74',
+        textAlign: 'center'
     },
     commentText: {
-        fontSize: 15,
+        fontSize: 20,
         fontWeight: 'bold',
-        color: '#0cf249'
+        textAlign: 'center'
     },
     btnRow: {
         alignItems: 'center',
-    }
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        fontSize: 14
+    },
 
 
 

@@ -23,7 +23,7 @@ function MyTabs() {
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        tabBarActiveTintColor: '#2ecc71',
+        tabBarActiveTintColor: '#fd5b73',
         headerShown: false,
       }}
     >

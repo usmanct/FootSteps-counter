@@ -31,7 +31,7 @@ const RunnerActions = ({
   setTotalDistance,
   runningState,
   setRunningState,
-  setTimeReached, 
+  setTimeReached,
   timeReached
 }: any) => {
 
@@ -53,11 +53,11 @@ const RunnerActions = ({
       clearInterval(interval);
       // onStopHandler() 
     }
-    if(timeReached){
+    if (timeReached) {
       onStopHandler()
     }
     return () => clearInterval(interval);
-  }, [IsRunning, runningState , timeReached]);
+  }, [IsRunning, runningState, timeReached]);
 
 
 
@@ -67,8 +67,8 @@ const RunnerActions = ({
       const kcalPerKm = 72 * 1.036
       const totalKcal = kcalPerKm * totalDistance / 1000
       setkcalBurn(totalKcal)
-      const pace = totalDistance / time
-      setSpeed(pace.toFixed(2))
+      const pace = (totalDistance / time).toFixed(2)
+      setSpeed(pace)
     }
   }, [totalDistance, IsRunning, runningState])
 
@@ -84,6 +84,7 @@ const RunnerActions = ({
     setIsRunning(!IsRunning);
     setRunningState(!runningState)
     setTime(0); // Initialize time to 00:00:00
+    setSpeed(0)
     console.log('Running');
   };
 
@@ -135,34 +136,71 @@ const RunnerActions = ({
           setDsitanceCovered={setDsitanceCovered}
           settargetKcalBurn={settargetKcalBurn}
         />
-        <SoundNotification rowTitle={'Sound Notifications'} reminderTime={undefined} setReminderTime={undefined} reminderFlag={undefined} setReminderFlag={undefined} />
-        <LetsRunRow title={'Duration'} subtil={`${timeDuration.h} hour ${timeDuration.m} mins`} onpress={() => toggleModal('duration')} />
-        <LetsRunRow title={'Distance'} subtil={`${distanceCovered} km`} onpress={() => toggleModal('distance')} />
-        <LetsRunRow title={'Calories'} subtil={`${targetKcalBurn} kcal`} onpress={() => toggleModal('calories')} />
-        <View style={{ alignItems: 'center' }}>
-          <Pressable
-            style={[styles.button]}
-            onPress={letsRunHandler}>
-            <Text style={styles.textStyle}>Let's Run</Text>
-          </Pressable>
+        <View style={{ marginHorizontal: 10 }}>
+          <SoundNotification rowTitle={'Sound Notifications'} reminderTime={undefined} setReminderTime={undefined} reminderFlag={undefined} setReminderFlag={undefined} />
+          <View
+            style={
+              {
+                backgroundColor: '#e9eaee',
+                borderRadius: 10,
+                paddingVertical: 10,
+                marginVertical: 10
+              }
+            }
+          >
+            <LetsRunRow title={'Duration'} subtil={`${timeDuration.h} hour ${timeDuration.m} mins`} onpress={() => toggleModal('duration')} />
+            <LetsRunRow title={'Distance'} subtil={`${distanceCovered} km`} onpress={() => toggleModal('distance')} />
+            <LetsRunRow title={'Calories'} subtil={`${targetKcalBurn} kcal`} onpress={() => toggleModal('calories')} />
+          </View>
+          <View style={{ alignItems: 'center' }}>
+            <Pressable
+              style={[styles.button]}
+              onPress={letsRunHandler}>
+              <Text style={styles.textStyle}>Let's Run</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
     ) : (
       <View style={styles.container}>
         <View style={styles.container1}>
-          <StatsCard isFirst={true} icon={<Ionicons name="speedometer" size={14} color="blue" />} unit={'speed m/s'} value={speed} />
-          <StatsCard isFirst={undefined} icon={<AntDesign name="clockcircleo" size={14} color="red" />} unit={'time'} value={formatTime(time)} />
-          <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} unit={'kcal'} isFirst={undefined} value={(kcalBurn).toFixed(2)} />
-          <StatsCard icon={<Octicons name="location" size={14} color="green" />} unit={'km'} isFirst={undefined} value={(totalDistance / 1000).toFixed(2)} />
+          <StatsCard
+            isFirst={true}
+            icon={require('../../../assets/letsRunScreenAssets/speed_icon.png')}
+            unit={'speed m/s'}
+            value={Number(speed)}
+            letsRunScreen={true}
+          />
+          <StatsCard
+            isFirst={undefined}
+            icon={require('../../../assets/letsRunScreenAssets/timer_icon.png')}
+            unit={'time'}
+            value={formatTime(time)}
+            letsRunScreen={true}
+          />
+          <StatsCard
+            icon={require('../../../assets/letsRunScreenAssets/calories_icon.png')}
+            unit={'kcal'}
+            isFirst={true}
+            value={(kcalBurn).toFixed(2)}
+            letsRunScreen={true}
+          />
+          <StatsCard
+            icon={require('../../../assets/letsRunScreenAssets/distance_icon.png')}
+            unit={'km'}
+            isFirst={undefined}
+            value={(totalDistance / 1000).toFixed(2)}
+            letsRunScreen={true}
+          />
         </View>
         <View style={styles.btnRow}>
           <Pressable
-            style={[styles.button, { backgroundColor: 'white', borderColor: 'red', borderWidth: 1 }]}
+            style={[styles.button, styles.cancelBtn]}
             onPress={onStopHandler}>
-            <Text style={[styles.textStyle, { color: 'black' }]}>Stop</Text>
+            <Text style={[styles.textStyle]}>Stop</Text>
           </Pressable>
           <Pressable
-            style={[styles.button]}
+            style={[styles.button, { backgroundColor: runningState ? '#f49913' : '#5cd749' }]}
             onPress={pauscontinueHandler}>
             <Text style={[styles.textStyle]}>{runningState ? 'Pause' : 'Continue'}</Text>
           </Pressable>
@@ -193,27 +231,24 @@ const styles = StyleSheet.create({
     gap: 15,
     paddingHorizontal: 10,
   },
+
   button: {
-    backgroundColor: '#0cf249',
-    paddingHorizontal: 50,
-    paddingVertical: 15,
-    borderRadius: 50,
+    backgroundColor: '#f49913',
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    borderRadius: 10,
     fontWeight: 'bold',
     textAlign: 'center',
     margin: 10,
-    // width: '100%',
-    justifyContent: 'center',
-    // alignItems: 'center',
-    // shadowColor: '#000',
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.8,
-    // shadowRadius: 2,
-    // elevation: 5,
   },
   textStyle: {
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 14
+  },
+  cancelBtn: {
+    backgroundColor: '#0fb4fc',
   },
   btnRow: {
     flexDirection: 'row',

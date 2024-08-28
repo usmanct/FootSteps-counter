@@ -77,15 +77,15 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData 
                                 }
 
                             }
-                            selectedStyle={{ borderColor: '#0cf249', borderWidth: 1 }}
+                            selectedStyle={styles.selectedItem}
                         />
                         <Pressable
-                            style={[styles.button]}
+                            style={[styles.button , styles.saveBtn]}
                             onPress={saveChanges}>
                             <Text style={styles.textStyle}>Save Changes</Text>
                         </Pressable>
                         <Pressable
-                            style={[styles.button]}
+                            style={[styles.button , styles.cancelBtn]}
                             onPress={() => setModalVisible(!modalVisible)}>
                             <Text style={styles.textStyle}>Cancel</Text>
                         </Pressable>
@@ -122,10 +122,10 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     button: {
-        backgroundColor: '#0cf249',
-        paddingHorizontal: 50,
+        backgroundColor: '#f49913',
+        paddingHorizontal: 30,
         paddingVertical: 10,
-        borderRadius: 50,
+        borderRadius: 10,
         fontWeight: 'bold',
         textAlign: 'center',
         margin: 10,
@@ -139,29 +139,38 @@ const styles = StyleSheet.create({
         elevation: 5,
 
     },
-    // buttonOpen: {
-    //     backgroundColor: '#F194FF',
-    // },
-    buttonClose: {
-        backgroundColor: '#fffff',
-        color: '#000000',
+    saveBtn: {
+        backgroundColor: '#f49913',
+    },
+    cancelBtn: {
+        backgroundColor: '#0fb4fc',
     },
     textStyle: {
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
+        fontSize: 14
     },
     modalText: {
         marginBottom: 15,
         textAlign: 'center',
     },
-    textHeading: {
-        fontWeight: 'bold',
-        fontSize: 20,
+    input: {
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 5,
+        borderColor: '#ccc',
         marginBottom: 10,
-        color: '#333',
-        textAlign: 'center',
+        fontSize: 16,
     },
+    selectedItem: {
+        borderWidth: 2,
+        borderColor: '#fc5c74',
+        color: '#0cf249',
+        fontWeight: 'bold',
+    }
 });
 
 export default BmiModal;

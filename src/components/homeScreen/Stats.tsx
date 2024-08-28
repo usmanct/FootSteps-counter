@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Image, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import StatsCard from './StatsCard'
 import { AntDesign } from '@expo/vector-icons';
@@ -6,7 +6,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { AppContext } from '../../contextApi/AppContext';
 
-const Stats = ({ setCurrentStepCount, currentStepCount, kcal, setKcal, distance, setDistance } : any) => {
+const Stats = ({ setCurrentStepCount, currentStepCount, kcal, setKcal, distance, setDistance }: any) => {
     const [time, setTime] = useState(new Date());
     const { state, setState }: any = useContext(AppContext);
 
@@ -33,7 +33,7 @@ const Stats = ({ setCurrentStepCount, currentStepCount, kcal, setKcal, distance,
     }, []);
 
     // Format time as HH:MM:SS
-    const formatTime = (date) => {
+    const formatTime = (date: Date) => {
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
         const seconds = String(date.getSeconds()).padStart(2, '0');
@@ -41,10 +41,24 @@ const Stats = ({ setCurrentStepCount, currentStepCount, kcal, setKcal, distance,
     };
 
     return (
-        <View style={styles.container}>
-            <StatsCard isFirst={true} icon={<AntDesign name="clockcircleo" size={14} color="red" />} value={formatTime(time)} unit={'time'} />
-            <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} value={kcal} unit={'kcal'} isFirst={undefined} />
-            <StatsCard icon={<Octicons name="location" size={14} color="green" />} value={distance} unit={'km'} isFirst={undefined} />
+        <View style={{...styles.container}}>
+            <StatsCard
+                icon={require('../../../assets/homeScreenAssets/distance_icon.png')}
+                value={distance}
+                unit={'Km'}
+                isFirst={undefined}
+            />
+            <StatsCard
+                isFirst={true}
+                icon={require('../../../assets/homeScreenAssets/timer_icon.png')}
+                value={formatTime(time)}
+                unit={'Timer'}
+            />
+            <StatsCard
+                icon={require('../../../assets/homeScreenAssets/calories_icon.png')}
+                value={kcal} unit={'Kcal'}
+                isFirst={undefined}
+            />
         </View>
     )
 }
@@ -59,12 +73,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         backgroundColor: 'white',
-        margin: 10,
-        marginTop: 5,
-        paddingVertical: 15,
+        paddingHorizontal: 15,
+        marginVertical: 5,
+        paddingVertical: 10,
         borderRadius: 8,
         gap: 15,
-        paddingHorizontal: 10,
     },
     btnView: {
         justifyContent: 'flex-end',

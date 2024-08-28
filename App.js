@@ -1,11 +1,23 @@
 import { SafeAreaView, StyleSheet } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect , useState } from 'react';
 import { AppProvider } from './src/contextApi/AppContext';
 import { BottomTabs } from './src/bottomNavigation/BottomTabs';
 import * as Location from 'expo-location';
-
+import SplashScreen from './src/screens/SplashScreen';
 
 export default function App() {
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate a loading process (e.g., fetching data, setting up the app)
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 6000); // 3 seconds loading time
+
+    // Cleanup the timer when the component is unmounted
+    return () => clearTimeout(timer);
+  }, []);
 
 
   //Reuesting to Access the Location of the device 
@@ -28,7 +40,8 @@ export default function App() {
     <AppProvider>
       <SafeAreaView style={styles.container}>
         {/* <ScreenNavigation /> */}
-        <BottomTabs />
+        {isLoading ? <SplashScreen /> : <BottomTabs />}
+        {/* <SplashScreen /> */}
       </SafeAreaView>
     </AppProvider>
   );
@@ -37,7 +50,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightgrey',
+    backgroundColor: '#fff',
     marginTop: 40
     // alignItems: 'center',
     // justifyContent: 'center',

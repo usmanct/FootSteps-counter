@@ -1,11 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Calendar, WeekCalendar } from 'react-native-calendars';
 import { useNavigation } from '@react-navigation/native';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
 
-const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance }) => {
+const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance }: any) => {
 
     const { getData, getWaterData, dropTable, insertData } = useDatabase();
     const navigation = useNavigation();
@@ -48,19 +48,54 @@ const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distanc
             <View style={styles.container}>
                 <Text style={styles.heading}>Your Progress</Text>
                 <TouchableOpacity style={styles.btn} onPress={() => {
-             
+
                 }}>
                     <Text style={styles.btnText}>Months</Text>
-                    <AntDesign name="right" size={12} color="black" />
+                    <AntDesign name="right" size={14} color="white" />
                 </TouchableOpacity>
             </View>
             <View style={styles.hrline}></View>
             <Calendar
                 onDayPress={onPressDateHandler}
                 markedDates={{
-                    [selected]: { selected: true, disableTouchEvent: true, }
+                    [selected]: {
+                        selected: true,
+                        disableTouchEvent: true,
+                        customStyles: {
+                            container: {
+                                borderWidth: 2, // Border width
+                                borderColor: '#fd5b72', // Border color
+                                borderRadius: 20, // Half of width/height to make it a circle
+                                width: 40, // Adjust to fit the date container
+                                height: 40, // Adjust to fit the date container
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: 'green', // Background color
+                            },
+                            text: {
+                                color: '#ffffff', // Text color
+                            }
+                        }
+                    },
                 }}
+                theme={{
+                    todayTextColor: '#fd5b72',
+                }}
+                renderArrow={(direction: string) => (
+                    direction === 'left' ? (
+                        <Image
+                            source={require('../../../assets/homeScreenAssets/back_pink.gif')}
+                            style={{ width: 10, height: 10 }}
+                        />
+                    ) : (
+                        <Image
+                            source={require('../../../assets/homeScreenAssets/next_pink.gif')}
+                            style={{ width: 10, height: 10 }}
+                        />
+                    )
+                )}
             />
+
         </View>
     )
 }
@@ -100,22 +135,25 @@ const styles = StyleSheet.create({
         alignItems: 'baseline',
         gap: 5,
         borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 360,
+        // borderWidth: 1,
+        borderRadius: 5,
         paddingHorizontal: 10,
         paddingVertical: 5,
+        backgroundColor: '#09b9fb'
     },
     btnText: {
-        fontSize: 12,
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: 'white'
     },
 
     heading: {
         fontWeight: 'bold',
     },
     hrline: {
-        borderWidth: 1,
-        borderColor: 'lightgray',
-        marginVertical: 5,
+        borderWidth: 3,
+        borderColor: '#f3eff8',
+        // marginVertical: 5,
         width: '100%',
         height: 1,
     }

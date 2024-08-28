@@ -32,16 +32,12 @@ const TargetModal = ({ modalVisible, setModalVisible, target, setTarget }: any) 
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        {/* <TextInput
-                            style={styles.input}
-                            onChangeText={onChangeNumber}
-                            value={inputValue}
-                            placeholder=""
-                            keyboardType="numeric"
-                        /> */}
                         <WheelPickerExpo
                             height={150}
                             width={150}
+                            // style={{
+                            //     backgroundColor:'#f3eff8'
+                            // }} 
                             initialSelectedIndex={defaultIndex}
                             items={data.map((name: any) => ({ label: name, value: '' }))}
                             onChange={
@@ -53,12 +49,12 @@ const TargetModal = ({ modalVisible, setModalVisible, target, setTarget }: any) 
                             selectedStyle={styles.selectedItem}
                         />
                         <Pressable
-                            style={[styles.button]}
+                            style={[styles.button , styles.saveBtn]}
                             onPress={saveChanges}>
                             <Text style={styles.textStyle}>Save Changes</Text>
                         </Pressable>
                         <Pressable
-                            style={[styles.button]}
+                            style={[styles.button , styles.cancelBtn]}
                             onPress={() => setModalVisible(!modalVisible)}>
                             <Text style={styles.textStyle}>Cancel</Text>
                         </Pressable>
@@ -92,10 +88,10 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     button: {
-        backgroundColor: '#0cf249',
-        paddingHorizontal: 50,
+        backgroundColor: '#f49913',
+        paddingHorizontal: 30,
         paddingVertical: 10,
-        borderRadius: 50,
+        borderRadius: 10,
         fontWeight: 'bold',
         textAlign: 'center',
         margin: 10,
@@ -109,16 +105,17 @@ const styles = StyleSheet.create({
         elevation: 5,
 
     },
-    buttonOpen: {
-        backgroundColor: '#F194FF',
+    saveBtn: {
+        backgroundColor: '#f49913',
     },
-    buttonClose: {
-        backgroundColor: '#0cf249',
+    cancelBtn: {
+        backgroundColor: '#0fb4fc',
     },
     textStyle: {
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
+        fontSize: 14
     },
     modalText: {
         marginBottom: 15,
@@ -136,7 +133,7 @@ const styles = StyleSheet.create({
     },
     selectedItem: {
         borderWidth: 2,
-        borderColor: '#0cf249',
+        borderColor: '#fc5c74',
         color: '#0cf249',
         fontWeight: 'bold',
     }

@@ -36,21 +36,11 @@ const Home = () => {
   useEffect(() => {
     DataBaseInitialization()
     initialLoad()
-    // const subscription = AppState.addEventListener('change', handleAppStateChange);
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
 
-    // return () => {
-    //   subscription.remove();
-    // };
-    const getLocationPermission = async () => {
-
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      console.log('Location Status', status)
-      if (status !== 'granted') {
-        return;
-      }
-    }
-
-
+    return () => {
+      subscription.remove();
+    };
   }, [])
   // useFocusEffect(
   //   React.useCallback(() => {
@@ -58,15 +48,17 @@ const Home = () => {
   //   }, [])
   // );
 
-  // const handleAppStateChange = (nextAppState: string) => {
-  //   if (nextAppState === 'background') {
-  //     // Start the background service when the app goes to the background
-  //     startService();
-  //   } else if (nextAppState === 'active') {
-  //     // Stop the background service when the app comes to the foreground
-  //     stopService();
-  //   }
-  // };
+  const handleAppStateChange = (nextAppState: string) => {
+    if (nextAppState === 'background') {
+      console.log(nextAppState)
+      startService();
+      // Start the background service when the app goes to the background
+    } else if (nextAppState === 'active') {
+      console.log(nextAppState)
+      stopService();
+      // Stop the backgroun\d service when the app comes to the foreground
+    }
+  };
 
 
   useEffect(() => {
@@ -124,7 +116,9 @@ const Home = () => {
 
 
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{ backgroundColor: 'white' }}
+    >
       <Header />
       <Progress
         currentStepCount={currentStepCount}

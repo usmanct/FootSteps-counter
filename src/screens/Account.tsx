@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, StyleSheet, Text, Image, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import SoundNotification from '../components/letsrunScreen/SoundNotification'
@@ -20,7 +20,7 @@ const Account = () => {
     m: 0
   })
   const [reminderFlag, setReminderFlag] = useState(false)
-  const [toggleService , setToggleService]  = useState(true)
+  const [toggleService, setToggleService] = useState(true)
 
 
 
@@ -68,8 +68,8 @@ const Account = () => {
         // console.log('currentTime', currentTime.getHours(), currentTime.getMinutes())
         if (currentTime.getHours() === reminderTime.h && currentTime.getMinutes() === reminderTime.m) {
           console.log('fffff')
-         //Place the Alert Logic 
-         clearInterval(interval);
+          //Place the Alert Logic 
+          clearInterval(interval);
         }
       }, 1000);
 
@@ -86,7 +86,14 @@ const Account = () => {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <View style={styles.headerRow}>
+        <Text style={styles.headingText}>Daily Step Counter </Text>
+        <Image
+          source={require('../../assets/homeScreenAssets/step_icon.png')}
+          style={{ height: 30, width: 30 }}
+          resizeMode='contain'
+        />
+      </View>
       <RunningSettingModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
@@ -106,16 +113,27 @@ const Account = () => {
           setToggleService={setToggleService}
         />
       </View>
-      <View style={styles.subcontainer}>
+      <View style={{ ...styles.subcontainer }}>
         <SoundNotification rowTitle={'Daily Step Reminder'}
           reminderTime={reminderTime}
           setReminderTime={setReminderTime}
           reminderFlag={reminderFlag}
           setReminderFlag={setReminderFlag}
+          styleProp={
+            {
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              paddingBottom : 10
+            }
+          }
         />
-        <LetsRunRow title={'Duration'} subtil={`${reminderTime.h}:${reminderTime.m}`} onpress={() => toggleModal('account')} />
+        <View style={{ backgroundColor: '#e9eaee', borderBottomLeftRadius: 10, borderBottomRightRadius: 10, paddingBottom: 15 }}>
+          <LetsRunRow title={'Duration'} subtil={`${reminderTime.h}:${reminderTime.m}`} onpress={() => toggleModal('account')} />
+        </View>
       </View>
-      <Profile />
+      <View style={styles.subcontainer}>
+        <Profile />
+      </View>
     </View>
   )
 }
@@ -128,21 +146,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     // justifyContent: 'center',
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     paddingVertical: 15,
   },
   subcontainer: {
     paddingVertical: 10,
     paddingHorizontal: 10,
-    width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
+    width: '100%'
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // marginBottom: 10,
+    paddingVertical: 15,
+    backgroundColor: '#e9eaee',
+    width: '100%'
+  },
+  headingText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
   }
 
 })

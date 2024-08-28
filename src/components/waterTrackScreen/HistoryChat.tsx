@@ -1,18 +1,21 @@
+import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Dimensions } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 const screenHeight = Dimensions.get("window").height;
 
-const HistoryChat = ({ barData, }) => {
+const HistoryChat = ({ barData }: any) => {
 
 
 
     return (
         <View style={styles.container}>
-            <Text style={styles.textHeading}>HistoryChat</Text>
+            <View style={styles.chartHeading}>
+                <Text style={styles.textHeading}>HistoryChart</Text>
+            </View>
             {barData.length ? <BarChart
-                frontColor={'#0cf249'}
-                barWidth={70}
+                frontColor={'#9f49ff'}
+                barWidth={50}
                 data={barData.slice(barData.length - 3, barData.length)}
                 yAxisLabelWidth={35}
                 isAnimated
@@ -48,15 +51,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'white',
         margin: 10,
-        paddingVertical: 15,
         borderRadius: 8,
         gap: 15,
-        paddingHorizontal: 10,
+        // paddingHorizontal: 10,
     },
     textHeading: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 10,
         color: '#333333'
+    },
+    chartHeading: {
+        backgroundColor: '#e9eaee',
+        marginHorizontal: 10,
+        marginVertical: 5,
+        borderRadius: 10,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 20
     }
 });

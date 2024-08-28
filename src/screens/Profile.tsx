@@ -84,14 +84,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         width: '100%',
-        backgroundColor: '#fff',
+        backgroundColor: '#e9eaee',
         borderRadius: 10,
-        marginBottom: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-        elevation: 2,
     },
     btn: {
         flexDirection: 'row',
@@ -105,7 +99,7 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 20,
+        marginVertical: 10,
     },
     rowText: {
         fontWeight: 'bold',

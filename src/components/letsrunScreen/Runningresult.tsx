@@ -1,4 +1,4 @@
-import { Dimensions, Pressable, StyleSheet, Text, View , Image } from 'react-native'
+import { Dimensions, Pressable, StyleSheet, Text, View, Image } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import Header from '../Header'
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -62,47 +62,78 @@ const Runningresult = ({ route }: any) => {
 
 
     return (<>
-        <Header />
+        <View style={styles.headerRow}>
+            <Text style={styles.headingText}>Daily Step Counter </Text>
+            <Image
+                source={require('../../../assets/homeScreenAssets/step_icon.png')}
+                style={{ height: 30, width: 30 }}
+                resizeMode='contain'
+            />
+        </View>
         <View style={styles.container}>
             <View style={{ alignItems: 'center' }}>
                 <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Results</Text>
             </View>
             <MapView
-                    ref={mapRef}
-                    style={styles.map}
-                    initialRegion={{
-                        latitude: location?.coords?.latitude || 37.78825,
-                        longitude: location?.coords?.longitude || -122.4324,
-                        latitudeDelta: 0.01,
-                        longitudeDelta: 0.01,
-                    }}
-                    showsUserLocation={true}
-                    provider={PROVIDER_GOOGLE}
-                >
-                    <Marker coordinate={{
-                        latitude: location?.coords?.latitude || 37.78825,
-                        longitude: location?.coords?.longitude || -122.4324,
-                    }} />
-                    <Polyline
-                        coordinates={routeCoordinates}
-                        strokeColor="#2ecc71"
-                        strokeWidth={4}
-                    />
-                </MapView>
-        <View style={styles.container1}>
-            <StatsCard isFirst={true} icon={<Ionicons name="speedometer" size={14} color="blue" />} unit={'speed m/s'} value={speed} />
-            <StatsCard icon={<AntDesign name="clockcircleo" size={14} color="red" />} value={formatTime(time)} unit={'time'} isFirst={undefined} />
-            <StatsCard icon={<SimpleLineIcons name="fire" size={14} color="red" />} value={(kcalBurn).toFixed(2)} unit={'kcal'} isFirst={undefined} />
-            <StatsCard icon={<Octicons name="location" size={14} color="green" />} value={(totalDistance / 1000).toFixed(2)} unit={'km'} isFirst={undefined} />
-        </View>
-        <View style={{ alignItems: 'center' }}>
-            <Pressable
-                style={[styles.button]}
-                onPress={runAgainHandler}>
-                <Text style={styles.textStyle}>Run Again</Text>
-            </Pressable>
-        </View>
-    </View >
+                ref={mapRef}
+                style={styles.map}
+                initialRegion={{
+                    latitude: location?.coords?.latitude || 37.78825,
+                    longitude: location?.coords?.longitude || -122.4324,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                }}
+                showsUserLocation={true}
+                provider={PROVIDER_GOOGLE}
+            >
+                <Marker coordinate={{
+                    latitude: location?.coords?.latitude || 37.78825,
+                    longitude: location?.coords?.longitude || -122.4324,
+                }} />
+                <Polyline
+                    coordinates={routeCoordinates}
+                    strokeColor="#2ecc71"
+                    strokeWidth={4}
+                />
+            </MapView>
+            <View style={styles.container1}>
+                <StatsCard
+                    isFirst={true}
+                    icon={require('../../../assets/letsRunScreenAssets/speed_icon.png')}
+                    unit={'speed m/s'}
+                    value={speed}
+                    letsRunScreen={true}
+                />
+                <StatsCard
+                    isFirst={undefined}
+                    icon={require('../../../assets/letsRunScreenAssets/timer_icon.png')}
+                    unit={'time'}
+                    value={formatTime(time)}
+                    letsRunScreen={true}
+                />
+                <StatsCard
+                    icon={require('../../../assets/letsRunScreenAssets/calories_icon.png')}
+                    unit={'kcal'}
+                    isFirst={true}
+                    value={(kcalBurn).toFixed(2)}
+                    letsRunScreen={true}
+                />
+                <StatsCard
+                    icon={require('../../../assets/letsRunScreenAssets/distance_icon.png')}
+                    unit={'km'}
+                    isFirst={undefined}
+                    value={(totalDistance / 1000).toFixed(2)}
+                    letsRunScreen={true}
+                />
+            </View>
+            <View style={{ alignItems: 'center' }}>
+                <Pressable
+                    style={[styles.button]}
+                    onPress={runAgainHandler}>
+                    <Text style={styles.textStyle}>Run Again</Text>
+                </Pressable>
+            </View>
+        </View >
     </>
     )
 }
@@ -138,25 +169,32 @@ const styles = StyleSheet.create({
         height: screenHeight / 2 - 20,
     },
     button: {
-        backgroundColor: '#0cf249',
-        paddingHorizontal: 50,
-        paddingVertical: 15,
-        borderRadius: 50,
+        backgroundColor: '#0fb4fc',
+        paddingHorizontal: 30,
+        paddingVertical: 10,
+        borderRadius: 10,
         fontWeight: 'bold',
         textAlign: 'center',
         margin: 10,
-        // width: '100%',
-        justifyContent: 'center',
-        // alignItems: 'center',
-        // shadowColor: '#000',
-        // shadowOffset: { width: 0, height: 2 },
-        // shadowOpacity: 0.8,
-        // shadowRadius: 2,
-        // elevation: 5,
     },
     textStyle: {
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
+        fontSize: 14
     },
+    headerRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // marginBottom: 10,
+        paddingVertical: 15,
+        backgroundColor: '#e9eaee',
+        width: '100%'
+    },
+    headingText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    }
 })

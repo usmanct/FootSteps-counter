@@ -1,7 +1,5 @@
-import React, { useContext } from 'react';
 import { Pedometer } from 'expo-sensors';
 import BackgroundService from 'react-native-background-actions';
-import { AppContext } from '../contextApi/AppContext';
 import { useDatabase } from '../sqLiteDb/useDatabase';
 
 const StepCountingServiceComponent = () => {
@@ -52,11 +50,11 @@ const StepCountingServiceComponent = () => {
     const veryIntensiveTask = async (taskDataArguments: { delay: number; }) => {
         const { delay } = taskDataArguments;
         const pedometerSubscription = stepCountingInBackground();
-
+        console.log("Usman_______________________")
         await new Promise<void>(async (resolve) => {
             while (BackgroundService.isRunning()) {
                 await updatingStepsInBackground();
-                await stepCountingInBackground()
+                // await stepCountingInBackground()
                 await sleep(delay);
             }
             resolve();
@@ -67,6 +65,7 @@ const StepCountingServiceComponent = () => {
 
     const updateServiceNotification = async (steps: number, calories: number) => {
         if (BackgroundService.isRunning()) {
+            console.log('Updating notification');
             await BackgroundService.updateNotification({
                 taskDesc: `Current step count: ${steps}, Calories: ${calories}`
             });
@@ -74,6 +73,7 @@ const StepCountingServiceComponent = () => {
     };
 
     const startService = async () => {
+        console.log('startService--------------------------------');
         await BackgroundService.start(veryIntensiveTask, {
             taskName: 'StepCountingService',
             taskTitle: 'Step Counting',
@@ -88,10 +88,13 @@ const StepCountingServiceComponent = () => {
                 delay: 60000, // Delay in milliseconds
             }
         });
+        console.log('startService--------------------------------Ending--------------------------------');
     };
 
     const stopService = async () => {
+        console.log('StopService--------------------------------');
         await BackgroundService.stop();
+        console.log('StopService--------------------------------Ending----------------------------------');
     };
 
     return {

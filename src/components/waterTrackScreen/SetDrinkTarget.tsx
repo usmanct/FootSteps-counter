@@ -4,7 +4,7 @@ import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { AppContext } from '../../contextApi/AppContext';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 const SetDrinkTarget = ({ modalVisible, setModalVisible, drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved,
-    setISgoalAchieved, drinkGaolData, cupcapacitydata, defaultIndexcup, setDefaultIndexcup, defaultIndexgoal, setDefaultIndexgoal }) => {
+    setISgoalAchieved, drinkGaolData, cupcapacitydata, defaultIndexcup, setDefaultIndexcup, defaultIndexgoal, setDefaultIndexgoal } : any) => {
 
 
     const {
@@ -57,25 +57,25 @@ const SetDrinkTarget = ({ modalVisible, setModalVisible, drinkGoal, setDrinkGoal
                             width={150}
                             initialSelectedIndex={modalType === 'cupcapacity' ? defaultIndexcup : defaultIndexgoal}
                             items={
-                                modalType === 'drinkgoal' ? drinkGaolData.map(name => ({ label: name, value: '' }))
-                                    : modalType === 'cupcapacity' ? cupcapacitydata.map(name => ({ label: name, value: '' }))
-                                        : cupcapacitydata.map(name => ({ label: name, value: '' }))
+                                modalType === 'drinkgoal' ? drinkGaolData.map((name: any) => ({ label: name, value: '' }))
+                                    : modalType === 'cupcapacity' ? cupcapacitydata.map((name: any) => ({ label: name, value: '' }))
+                                        : cupcapacitydata.map((name: any) => ({ label: name, value: '' }))
                             }
                             onChange={
                                 ({ item, index }) => {
-                                    setInputValue(pre => ({ ...pre, value: item.label, i: index }))
+                                    setInputValue((pre: any) => ({ ...pre, value: item.label, i: index }))
                                 }
 
                             }
                             selectedStyle={styles.selectedItem}
                         />
                         <Pressable
-                            style={[styles.button]}
+                            style={[styles.button , styles.saveBtn]}
                             onPress={saveChanges}>
                             <Text style={styles.textStyle}>Save Changes</Text>
                         </Pressable>
                         <Pressable
-                            style={[styles.button]}
+                            style={[styles.button , styles.cancelBtn]}
                             onPress={() => setModalVisible(!modalVisible)}>
                             <Text style={styles.textStyle}>Cancel</Text>
                         </Pressable>
@@ -109,10 +109,10 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     button: {
-        backgroundColor: '#0cf249',
-        paddingHorizontal: 50,
+        backgroundColor: '#f49913',
+        paddingHorizontal: 30,
         paddingVertical: 10,
-        borderRadius: 50,
+        borderRadius: 10,
         fontWeight: 'bold',
         textAlign: 'center',
         margin: 10,
@@ -126,11 +126,11 @@ const styles = StyleSheet.create({
         elevation: 5,
 
     },
-    buttonOpen: {
-        backgroundColor: '#F194FF',
+    saveBtn: {
+        backgroundColor: '#f49913',
     },
-    buttonClose: {
-        backgroundColor: '#0cf249',
+    cancelBtn: {
+        backgroundColor: '#0fb4fc',
     },
     textStyle: {
         color: 'white',
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     },
     selectedItem: {
         borderWidth: 2,
-        borderColor: '#0cf249',
+        borderColor: '#fc5c74',
         color: '#0cf249',
         fontWeight: 'bold',
     }

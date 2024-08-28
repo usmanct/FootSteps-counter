@@ -4,7 +4,7 @@ import SwitchToggle from 'react-native-switch-toggle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppContext } from '../../contextApi/AppContext';
 
-const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFlag, setReminderFlag, setToggleService, toggleService }: any) => {
+const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFlag, setReminderFlag, setToggleService, toggleService , styleProp }: any) => {
     const [isEnabled, setIsEnabled] = useState(reminderFlag || false);
     const {
         currentStepCount,
@@ -50,7 +50,7 @@ const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFl
     };
 
     return (
-        <View style={styles.row}>
+        <View style={{...styles.row , ...styleProp}}>
             <Text style={styles.rowText}>{rowTitle}</Text>
             <SwitchToggle
                 switchOn={isEnabled}
@@ -60,7 +60,6 @@ const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFl
                 backgroundColorOn='#6D6D6D'
                 backgroundColorOff='#C4C4C4'
                 containerStyle={{
-                    marginTop: 16,
                     width: 60,
                     height: 30,
                     borderRadius: 25,
@@ -83,13 +82,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingHorizontal: 10,
-        paddingVertical: 10,
-        borderBottomWidth: 1,
-        borderColor: '#ddd',
-        marginBottom: 10,
+        paddingVertical: 20,
         width: '100%',
         alignItems: 'center',
-        marginVertical: 10,
+        borderRadius: 10,
+        backgroundColor:'#e9eaee'
     },
     rowText: {
         fontSize: 18,

@@ -16,13 +16,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         paddingVertical: 20,
+        backgroundColor:'#e9eaee'
     },
     headingText:{
         fontSize: 20,
-        fontWeight: 'semibold',
+        fontWeight: 'bold',
         flex: 1,
         textAlign: 'center',
-        
     }
 
 })

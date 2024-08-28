@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import BmiModal from '../components/bmiScreen/BmiModal';
@@ -31,12 +31,12 @@ const BmiCalculations = () => {
         try {
             const res = await AsyncStorage.getItem('userData');
             if (res) {
-              const userData = JSON.parse(res);
-              setUserData(userData); // Update the state with the retrieved data
+                const userData = JSON.parse(res);
+                setUserData(userData); // Update the state with the retrieved data
             }
-          } catch (error) {
+        } catch (error) {
             console.error('Failed to load user data', error);
-          }
+        }
     }
 
     // function calculateBMI(weight, heightCm) {
@@ -81,6 +81,11 @@ const BmiCalculations = () => {
 
     return (
         <View style={styles.container}>
+            <Image
+                source={require('../../assets/homeScreenAssets/bmi_calculate_icon.png')}
+                style={{height: 90 , width: 90}}
+                resizeMode='contain'
+            />
             <Text style={styles.heading}>BMI Calculations</Text>
             <Text style={styles.subHeading}>Set your  Personal Information to calculate</Text>
             <BmiModal modalVisible={modalVisible} setModalVisible={setModalVisible} title={title} userData={userData} setUserData={setUserData} />
@@ -134,10 +139,11 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
+        backgroundColor: '#fff',
 
     },
     subContainer: {
-        backgroundColor: '#F8F8F8',
+        backgroundColor: '#efefef',
         borderRadius: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -149,14 +155,14 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     heading: {
-        fontSize: 20,
+        fontSize: 34,
         fontWeight: 'bold',
         marginBottom: 20,
         color: '#333',
         textAlign: 'center',
     },
     subHeading: {
-        fontSize: 15,
+        fontSize: 20,
         marginBottom: 20,
         color: 'grey',
         textAlign: 'center',
@@ -179,10 +185,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     resultBtn: {
-        backgroundColor: '#0cf249',
-        paddingHorizontal: 50,
+        backgroundColor: '#06bcfa',
+        paddingHorizontal: 20,
         paddingVertical: 10,
-        borderRadius: 50,
+        borderRadius: 10,
         fontWeight: 'bold',
         textAlign: 'center',
         margin: 20,
@@ -198,7 +204,7 @@ const styles = StyleSheet.create({
     },
     resultBtnText: {
         color: 'white',
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: 'bold',
     }
 

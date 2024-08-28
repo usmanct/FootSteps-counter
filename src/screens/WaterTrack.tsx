@@ -26,7 +26,7 @@ const WaterTrack = () => {
   const { getALLWaterData, updateWaterRecord, insertWaterData, getWaterData } = useDatabase()
 
   useEffect(() => {
-    const waterDrinkedData = waterHistory.map((data: any) => ({
+    const waterDrinkedData  = waterHistory.map((data: any) => ({
       value: data?.waterIntake,
       label: data?.date,
     }));
@@ -139,7 +139,11 @@ const WaterTrack = () => {
   return (
     <View style={{ flex: 1 }}>
 
-      <ScrollView>
+      <ScrollView
+      contentContainerStyle={{ 
+        backgroundColor: 'white'
+       }}
+      >
         <Header />
         <WaterProgress
           drinkGoal={drinkGoal}
@@ -160,28 +164,3 @@ const WaterTrack = () => {
 }
 
 export default WaterTrack
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  text: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-
-})

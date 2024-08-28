@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import ProgressCircle from './ProgressCircle';
@@ -54,41 +54,49 @@ const WaterProgress = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, w
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.btnView}>
-                <TouchableOpacity
-                    onPress={navigateToSetting}
-                    style={styles.btn}
-                >
-                    <Text style={styles.btnText}>edit</Text>
-                    <AntDesign name="right" size={12} color="black" />
+        <>
+            <ImageBackground
+                source={require('../../../assets/homeScreenAssets/back_ground.png')}
+                style={{ ...styles.container, backgroundColor: '#e9eaee' }}
+                resizeMode="cover" // You can also use "contain" or other modes depending on the effect you want
+            >
+                <View style={styles.btnView}>
+                    <TouchableOpacity
+                        onPress={navigateToSetting}
+                        style={styles.btn}
+                    >
+                        <Text style={styles.btnText}>Edit</Text>
+                        <AntDesign name="right" size={14} color="white" />
+                    </TouchableOpacity>
+                </View>
+                {/* <View style={styles.innerContainer}> */}
+                <ProgressCircle
+                    drinkGoal={drinkGoal}
+                    setDrinkGoal={setDrinkGoal}
+                    cupCapacity={cupCapacity}
+                    setCupCapacity={setCupCapacity}
+                    waterdrinked={waterdrinked}
+                    setwaterdrinked={setwaterdrinked}
+                    IsgoalAchieved={IsgoalAchieved}
+                    setISgoalAchieved={setISgoalAchieved} />
+                {/* </View> */}
+            </ImageBackground>
+            <View style={[styles.container, styles.resultContainer]}>
+                <TouchableOpacity onPress={() => dropTable()}>
+                    <Text style={styles.pageText}>{precentageDrinked}%</Text>
                 </TouchableOpacity>
+                <Text style={{fontSize: 16 , color:'#fb6175'}}>{waterdrinked}/{drinkGoal}ml</Text>
+                <View>
+                    <TouchableOpacity
+                        style={{ ...styles.drinkBtn, backgroundColor: IsgoalAchieved ? 'gray' : '#0fb4fc', }}
+                        onPress={handleDrink}
+                        disabled={IsgoalAchieved}
+                    >
+                        <Text style={styles.textStyle}>Drink</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            {/* <View style={styles.innerContainer}> */}
-            <ProgressCircle
-                drinkGoal={drinkGoal}
-                setDrinkGoal={setDrinkGoal}
-                cupCapacity={cupCapacity}
-                setCupCapacity={setCupCapacity}
-                waterdrinked={waterdrinked}
-                setwaterdrinked={setwaterdrinked}
-                IsgoalAchieved={IsgoalAchieved}
-                setISgoalAchieved={setISgoalAchieved} />
-            <TouchableOpacity onPress={() => dropTable()}>
-                <Text style={styles.pageText}>{precentageDrinked}%</Text>
-            </TouchableOpacity>
-            <Text>{waterdrinked}/{drinkGoal}ml</Text>
-            <View>
-                <TouchableOpacity
-                    style={{ ...styles.drinkBtn, backgroundColor: IsgoalAchieved ? 'gray' : '#0cf249', }}
-                    onPress={handleDrink}
-                    disabled={IsgoalAchieved}
-                >
-                    <Text style={styles.textStyle}>Drink</Text>
-                </TouchableOpacity>
-            </View>
-            {/* </View> */}
-        </View>
+        </>
     )
 }
 
@@ -100,12 +108,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white',
-        margin: 10,
+        // margin: 10,
         paddingVertical: 15,
-        borderRadius: 8,
+        // borderRadius: 8,
         gap: 15,
         paddingHorizontal: 10,
 
+    },
+    resultContainer: {
+        backgroundColor: '#e9eaee',
+        marginHorizontal: 10,
+        marginVertical: 15,
+        borderRadius: 10,
+        gap: 5
     },
     btnView: {
         justifyContent: 'flex-end',
@@ -119,22 +134,26 @@ const styles = StyleSheet.create({
         alignItems: 'baseline',
         gap: 5,
         borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 360,
+        // borderWidth: 1,
+        borderRadius: 5,
         paddingHorizontal: 10,
         paddingVertical: 5,
+        backgroundColor: '#f59207'
     },
     btnText: {
-        fontSize: 12,
+        fontSize: 14,
+        color: 'white',
+        fontWeight: 'bold',
     },
     pageText: {
         fontSize: 40,
         fontWeight: 'bold',
     },
     drinkBtn: {
-        paddingHorizontal: 50,
+        backgroundColor: '#f49913',
+        paddingHorizontal: 30,
         paddingVertical: 10,
-        borderRadius: 50,
+        borderRadius: 10,
         fontWeight: 'bold',
         textAlign: 'center',
         margin: 10,
