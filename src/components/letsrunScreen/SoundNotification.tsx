@@ -3,13 +3,15 @@ import React, { useContext, useEffect, useState } from 'react';
 import SwitchToggle from 'react-native-switch-toggle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppContext } from '../../contextApi/AppContext';
+import { useThemeChange } from '../../apptheme/ThemeChange';
 
-const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFlag, setReminderFlag, setToggleService, toggleService , styleProp }: any) => {
+const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFlag, setReminderFlag, setToggleService, toggleService, styleProp, currentType }: any) => {
     const [isEnabled, setIsEnabled] = useState(reminderFlag || false);
     const {
         currentStepCount,
         setCurrentStepCount,
     }: any = useContext(AppContext)
+    const useCustomTheme = useThemeChange()
     useEffect(() => {
         const saveSettings = async () => {
             try {
@@ -41,7 +43,7 @@ const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFl
         else if (rowTitle === 'StepCounter') {
             setIsEnabled(toggleService)
             if (toggleService) {
-            
+
             }
             else {
 
@@ -50,8 +52,8 @@ const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFl
     };
 
     return (
-        <View style={{...styles.row , ...styleProp}}>
-            <Text style={styles.rowText}>{rowTitle}</Text>
+        <View style={{ ...styles.row, ...styleProp, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
+            <Text style={{ ...styles.rowText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{rowTitle}</Text>
             <SwitchToggle
                 switchOn={isEnabled}
                 onPress={toggleSwitch}
@@ -86,7 +88,6 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         borderRadius: 10,
-        backgroundColor:'#e9eaee'
     },
     rowText: {
         fontSize: 18,

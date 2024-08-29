@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
+import { useThemeChange } from '../../apptheme/ThemeChange';
 
-const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData } : any) => {
+const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData, currentType }: any) => {
     const CITIES = 'Jakarta,Bandung,Sumbawa,Taliwang,Lombok,Bima'.split(',');
     const gender = 'male,female,other'.split(',');
     const ageArray = Array.from({ length: 200 }, (_, index) => index + 1);
@@ -13,6 +14,7 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData 
         weight: 69
     })
     const [obj, setObj] = useState<any>({})
+    const usecustomTheme = useThemeChange()
 
     const saveChanges = () => {
         if (title === 'Gender') {
@@ -49,8 +51,8 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData 
                     setModalVisible(!modalVisible);
                 }}>
                 <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.textHeading}>{title}</Text>
+                    <View style={{ ...styles.modalView, backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white' }}>
+                        <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>{title}</Text>
                         <WheelPickerExpo
                             height={150}
                             width={150}
@@ -77,15 +79,16 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData 
                                 }
 
                             }
-                            selectedStyle={styles.selectedItem}
+                            selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
+                            backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
                         />
                         <Pressable
-                            style={[styles.button , styles.saveBtn]}
+                            style={[styles.button, { backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.bmiButton : '#f49913' }]}
                             onPress={saveChanges}>
                             <Text style={styles.textStyle}>Save Changes</Text>
                         </Pressable>
                         <Pressable
-                            style={[styles.button , styles.cancelBtn]}
+                            style={[styles.button, { backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.Btn1 : '#0fb4fc' }]}
                             onPress={() => setModalVisible(!modalVisible)}>
                             <Text style={styles.textStyle}>Cancel</Text>
                         </Pressable>
@@ -122,7 +125,6 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     button: {
-        backgroundColor: '#f49913',
         paddingHorizontal: 30,
         paddingVertical: 10,
         borderRadius: 10,
@@ -138,12 +140,6 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 5,
 
-    },
-    saveBtn: {
-        backgroundColor: '#f49913',
-    },
-    cancelBtn: {
-        backgroundColor: '#0fb4fc',
     },
     textStyle: {
         color: 'white',
@@ -167,7 +163,6 @@ const styles = StyleSheet.create({
     },
     selectedItem: {
         borderWidth: 2,
-        borderColor: '#fc5c74',
         color: '#0cf249',
         fontWeight: 'bold',
     }

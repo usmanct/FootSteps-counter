@@ -11,6 +11,8 @@ import { Fontisto } from '@expo/vector-icons';
 import Account from '../screens/Account';
 import ScreenNavigation from '../stackNavigation/ScreenNavigation';
 import WaterTrackStack from '../stackNavigation/WaterTrackStack ';
+import { AppContext } from '../contextApi/AppContext';
+import { useThemeChange } from '../apptheme/ThemeChange';
 
 
 
@@ -18,13 +20,22 @@ import WaterTrackStack from '../stackNavigation/WaterTrackStack ';
 
 const Tab = createBottomTabNavigator();
 
+
+
 function MyTabs() {
+
+  const { currentType} : any = React.useContext(AppContext)
+  const useCustomTheme = useThemeChange()
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        tabBarActiveTintColor: '#fd5b73',
+        tabBarActiveTintColor: currentType ==='dark' ? useCustomTheme.darkMode.activeTint : useCustomTheme.lightMode.activeTint,
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header,
+        },
       }}
     >
       <Tab.Screen

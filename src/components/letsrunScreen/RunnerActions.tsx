@@ -10,6 +10,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Octicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useThemeChange } from '../../apptheme/ThemeChange'
 const RunnerActions = ({
   timeDuration,
   settimeDuration,
@@ -32,14 +33,15 @@ const RunnerActions = ({
   runningState,
   setRunningState,
   setTimeReached,
-  timeReached
+  timeReached,
+  currentType
 }: any) => {
 
   const [modalVisible, setModalVisible] = useState(false)
   const navigation = useNavigation();
   const [modalType, setModalType] = useState('')
   const [time, setTime] = useState(1);
-
+  const useCustomTheme = useThemeChange()
 
 
   useEffect(() => {
@@ -111,6 +113,7 @@ const RunnerActions = ({
         totalDistance,
         setkcalBurn,
         setTotalDistance,
+        currentType
       } as never)
   }
 
@@ -135,26 +138,34 @@ const RunnerActions = ({
           settimeDuration={settimeDuration}
           setDsitanceCovered={setDsitanceCovered}
           settargetKcalBurn={settargetKcalBurn}
+          currentType={currentType}
         />
         <View style={{ marginHorizontal: 10 }}>
-          <SoundNotification rowTitle={'Sound Notifications'} reminderTime={undefined} setReminderTime={undefined} reminderFlag={undefined} setReminderFlag={undefined} />
+          <SoundNotification
+            rowTitle={'Sound Notifications'}
+            reminderTime={undefined}
+            setReminderTime={undefined}
+            reminderFlag={undefined}
+            setReminderFlag={undefined}
+            currentType={currentType}
+          />
           <View
             style={
               {
-                backgroundColor: '#e9eaee',
+                backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header,
                 borderRadius: 10,
                 paddingVertical: 10,
                 marginVertical: 10
               }
             }
           >
-            <LetsRunRow title={'Duration'} subtil={`${timeDuration.h} hour ${timeDuration.m} mins`} onpress={() => toggleModal('duration')} />
-            <LetsRunRow title={'Distance'} subtil={`${distanceCovered} km`} onpress={() => toggleModal('distance')} />
-            <LetsRunRow title={'Calories'} subtil={`${targetKcalBurn} kcal`} onpress={() => toggleModal('calories')} />
+            <LetsRunRow title={'Duration'} subtil={`${timeDuration.h} hour ${timeDuration.m} mins`} onpress={() => toggleModal('duration')} currentType={currentType} />
+            <LetsRunRow title={'Distance'} subtil={`${distanceCovered} km`} onpress={() => toggleModal('distance')} currentType={currentType} />
+            <LetsRunRow title={'Calories'} subtil={`${targetKcalBurn} kcal`} onpress={() => toggleModal('calories')} currentType={currentType} />
           </View>
           <View style={{ alignItems: 'center' }}>
             <Pressable
-              style={[styles.button]}
+              style={[styles.button, { backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn1 : useCustomTheme.lightMode.Btn1 }]}
               onPress={letsRunHandler}>
               <Text style={styles.textStyle}>Let's Run</Text>
             </Pressable>
@@ -163,7 +174,7 @@ const RunnerActions = ({
       </View>
     ) : (
       <View style={styles.container}>
-        <View style={styles.container1}>
+        <View style={{ ...styles.container1, backgroundColor: currentType === 'dark' ? 'transparent' : 'white' }}>
           <StatsCard
             isFirst={true}
             icon={require('../../../assets/letsRunScreenAssets/speed_icon.png')}
@@ -195,12 +206,12 @@ const RunnerActions = ({
         </View>
         <View style={styles.btnRow}>
           <Pressable
-            style={[styles.button, styles.cancelBtn]}
+            style={[styles.button, styles.cancelBtn, { backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn1 : useCustomTheme.darkMode.bmiButton }]}
             onPress={onStopHandler}>
             <Text style={[styles.textStyle]}>Stop</Text>
           </Pressable>
           <Pressable
-            style={[styles.button, { backgroundColor: runningState ? '#f49913' : '#5cd749' }]}
+            style={[styles.button, { backgroundColor: runningState ? currentType==='dark'? useCustomTheme.darkMode.bmiButton : '#f89814' : '#5cd749' }]}
             onPress={pauscontinueHandler}>
             <Text style={[styles.textStyle]}>{runningState ? 'Pause' : 'Continue'}</Text>
           </Pressable>
@@ -223,7 +234,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: 'white',
     margin: 10,
     marginTop: 5,
     paddingVertical: 15,
@@ -233,7 +243,6 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: '#f49913',
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 10,

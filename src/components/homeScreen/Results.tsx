@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { Dimensions, FlatList, StyleSheet, Text, View, Image, TouchableOpacity , ScrollView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
@@ -7,16 +7,16 @@ import StatsCard from './StatsCard';
 import { AppContext } from '../../contextApi/AppContext';
 import { BarChart } from "react-native-gifted-charts";
 import { useDatabase } from '../../sqLiteDb/useDatabase';
-
+import { useThemeChange } from '../../apptheme/ThemeChange';
 
 const screenHeight = Dimensions.get("window").height;
 
 const Results = () => {
     const {
-        isLoading,
         record,
-        waterRecord,
+        currentType
     }: any = useContext(AppContext);
+    const useCustomTheme = useThemeChange()
     const [totalSteps, setTotalSteps] = useState(0);
     const { waterHistory }: any = useContext(AppContext)
     const [fetchData, setFetchData] = useState<any>([])
@@ -40,15 +40,15 @@ const Results = () => {
 
     }, [record]);
     return (
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
-            <View>
+        <View style={{ flex: 1, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
+            <ScrollView>
                 <TouchableOpacity onPress={dropTable}>
                     <Text style={styles.headingText}>Results</Text>
                 </TouchableOpacity>
                 {record.length ?
-                    <View style={styles.container}>
-                        {record.length ? <Text style={styles.subHeading}>Steps</Text> : null}
-                        <Text style={styles.headingText}>{totalSteps}</Text>
+                    <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : useCustomTheme.lightMode.bgcolor }}>
+                        {record.length ? <Text style={{ ...styles.subHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Steps</Text> : null}
+                        <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{totalSteps}</Text>
                         <FlatList
                             data={record}
                             renderItem={({ item }) => (
@@ -77,8 +77,8 @@ const Results = () => {
                     null
                 }
                 {fetchData.length ?
-                    <View style={styles.container}>
-                        <Text style={styles.subHeading}>Water Track History</Text>
+                    <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.bgcolor }}>
+                        <Text style={{ ...styles.subHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Water Track History</Text>
                         <BarChart
                             frontColor={'#9f49ff'}
                             barWidth={50}
@@ -101,7 +101,7 @@ const Results = () => {
                     </View> :
                     null
                 }
-            </View>
+            </ScrollView>
             {!fetchData.length && !record.length ?
                 <View style={styles.notFoundContainer}>
                     <Image

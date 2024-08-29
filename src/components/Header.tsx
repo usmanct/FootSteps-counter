@@ -1,10 +1,19 @@
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { useThemeChange } from '../apptheme/ThemeChange'
 
-const Header = () => {
+const Header = ({ currentType }: any) => {
+
+  const useCustomTheme = useThemeChange()
+
   return (
-    <View style={styles.mainView}>
-      <Text style={styles.headingText}>Daily Step Counter </Text>
+    <View style={{ ...styles.mainView, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
+      <Text
+        style={
+          { ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }
+        }>
+        Daily Step Counter
+      </Text>
     </View>
   )
 }
@@ -12,17 +21,17 @@ const Header = () => {
 export default Header
 
 const styles = StyleSheet.create({
-    mainView:{
-        justifyContent: 'center',
-        flexDirection: 'row',
-        paddingVertical: 20,
-        backgroundColor:'#e9eaee'
-    },
-    headingText:{
-        fontSize: 20,
-        fontWeight: 'bold',
-        flex: 1,
-        textAlign: 'center',
-    }
+  mainView: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    paddingVertical: 20,
+    backgroundColor: '#e9eaee'
+  },
+  headingText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    flex: 1,
+    textAlign: 'center',
+  }
 
 })

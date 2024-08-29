@@ -1,10 +1,13 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
+import { AppContext } from '../../contextApi/AppContext';
+import { useThemeChange } from '../../apptheme/ThemeChange';
 const BmiResult = ({ route }: any) => {
     const navigation = useNavigation();
     const { res } = route.params;
-
+    const { currentType }: any = useContext(AppContext)
+    const useCustomTheme = useThemeChange()
     const [score, setScore] = useState(23.5)
     const [remarks, setRemarks] = useState({
         a: 'Normal',
@@ -43,27 +46,27 @@ const BmiResult = ({ route }: any) => {
     }, [])
 
     return (
-        <View style={styles.container}>
+        <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : "white" }}>
             <Image
                 source={require('../../../assets/homeScreenAssets/bmi_calculate_icon.png')}
                 style={{ height: 90, width: 90 }}
                 resizeMode='contain'
             />
-            <Text style={styles.heading}>BMI Calculator</Text>
+            <Text style={{ ...styles.heading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>BMI Calculator</Text>
             <Text style={styles.subHeading}>BMI Score</Text>
-            <View style={styles.subContainer}>
-                <Text style={styles.resultText}>{score}</Text>
+            <View style={{ ...styles.subContainer, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
+                <Text style={{ ...styles.resultText, color: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : '#fc5c74' }}>{score}</Text>
                 <Text style={{ ...styles.subHeading, fontSize: 20, fontWeight: 'bold' }}>{remarks.a}</Text>
                 <View>
-                    <View style={styles.remarksContainer}>
-                        <Text style={styles.commentText}>
+                    <View style={{ ...styles.remarksContainer, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : '#ded8e8', borderWidth: currentType === 'dark' ? 2 : 0, borderColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : '' }}>
+                        <Text style={{ ...styles.commentText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>
                             {remarks.b}
                         </Text>
                     </View>
                 </View>
                 <View style={styles.btnRow}>
                     <TouchableOpacity
-                        style={[styles.button , styles.saveBtn]}
+                        style={[styles.button, styles.cancelBtn]}
                         onPress={() => {
                             navigation.navigate('Home' as never)
                         }}
@@ -71,7 +74,7 @@ const BmiResult = ({ route }: any) => {
                         <Text style={styles.textStyle}>Back to Home</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={[styles.button , styles.cancelBtn]}
+                        style={[styles.button, styles.saveBtn, { backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn1 : '' }]}
                         onPress={() => {
                             navigation.navigate('BmiCalculations' as never)
                         }}
@@ -91,12 +94,10 @@ const styles = StyleSheet.create({
         flex: 1,
         // justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
-        backgroundColor: '#fff',
+        padding: 20
 
     },
     subContainer: {
-        backgroundColor: '#f3eff8',
         borderRadius: 10,
         margin: 10,
         width: '100%',
@@ -105,7 +106,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     remarksContainer: {
-        backgroundColor: '#ded8e8',
         borderRadius: 10,
         margin: 10,
         width: '100%',
@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
         fontSize: 34,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: '#333',
         textAlign: 'center',
     },
     subHeading: {
@@ -169,7 +168,6 @@ const styles = StyleSheet.create({
     resultText: {
         fontSize: 35,
         fontWeight: 'bold',
-        color: '#fc5c74',
         textAlign: 'center'
     },
     commentText: {

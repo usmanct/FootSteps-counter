@@ -8,6 +8,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useThemeChange } from '../../apptheme/ThemeChange';
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 
@@ -26,9 +27,10 @@ const Runningresult = ({ route }: any) => {
         totalDistance,
         setkcalBurn,
         setTotalDistance,
+        currentType
     }: any = route.params
 
-
+    const useCustomTheme = useThemeChange()
     // useEffect(()=>{
     //     if (mapRef.current) {
     //         mapRef.current.takeSnapshot({
@@ -61,80 +63,81 @@ const Runningresult = ({ route }: any) => {
     };
 
 
-    return (<>
-        <View style={styles.headerRow}>
-            <Text style={styles.headingText}>Daily Step Counter </Text>
-            <Image
-                source={require('../../../assets/homeScreenAssets/step_icon.png')}
-                style={{ height: 30, width: 30 }}
-                resizeMode='contain'
-            />
+    return (
+        <View style={{ backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
+            <View style={{ ...styles.headerRow, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
+                <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Daily Step Counter </Text>
+                <Image
+                    source={require('../../../assets/homeScreenAssets/step_icon.png')}
+                    style={{ height: 30, width: 30 }}
+                    resizeMode='contain'
+                />
+            </View>
+            <View style={styles.container}>
+                <View style={{ alignItems: 'center' }}>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Results</Text>
+                </View>
+                <MapView
+                    ref={mapRef}
+                    style={styles.map}
+                    initialRegion={{
+                        latitude: location?.coords?.latitude || 37.78825,
+                        longitude: location?.coords?.longitude || -122.4324,
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01,
+                    }}
+                    showsUserLocation={true}
+                    provider={PROVIDER_GOOGLE}
+                >
+                    <Marker coordinate={{
+                        latitude: location?.coords?.latitude || 37.78825,
+                        longitude: location?.coords?.longitude || -122.4324,
+                    }} />
+                    <Polyline
+                        coordinates={routeCoordinates}
+                        strokeColor="#2ecc71"
+                        strokeWidth={4}
+                    />
+                </MapView>
+                <View style={styles.container1}>
+                    <StatsCard
+                        isFirst={true}
+                        icon={require('../../../assets/letsRunScreenAssets/speed_icon.png')}
+                        unit={'speed m/s'}
+                        value={speed}
+                        letsRunScreen={true}
+                    />
+                    <StatsCard
+                        isFirst={undefined}
+                        icon={require('../../../assets/letsRunScreenAssets/timer_icon.png')}
+                        unit={'time'}
+                        value={formatTime(time)}
+                        letsRunScreen={true}
+                    />
+                    <StatsCard
+                        icon={require('../../../assets/letsRunScreenAssets/calories_icon.png')}
+                        unit={'kcal'}
+                        isFirst={true}
+                        value={(kcalBurn).toFixed(2)}
+                        letsRunScreen={true}
+                    />
+                    <StatsCard
+                        icon={require('../../../assets/letsRunScreenAssets/distance_icon.png')}
+                        unit={'km'}
+                        isFirst={undefined}
+                        value={(totalDistance / 1000).toFixed(2)}
+                        letsRunScreen={true}
+                    />
+                </View>
+                <View style={{ alignItems: 'center' }}>
+                    <Pressable
+                        style={[styles.button, { backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn1 : useCustomTheme.darkMode.bmiButton }]}
+                        onPress={runAgainHandler}>
+                        <Text style={styles.textStyle}>Run Again</Text>
+                    </Pressable>
+                </View>
+            </View >
         </View>
-        <View style={styles.container}>
-            <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Results</Text>
-            </View>
-            <MapView
-                ref={mapRef}
-                style={styles.map}
-                initialRegion={{
-                    latitude: location?.coords?.latitude || 37.78825,
-                    longitude: location?.coords?.longitude || -122.4324,
-                    latitudeDelta: 0.01,
-                    longitudeDelta: 0.01,
-                }}
-                showsUserLocation={true}
-                provider={PROVIDER_GOOGLE}
-            >
-                <Marker coordinate={{
-                    latitude: location?.coords?.latitude || 37.78825,
-                    longitude: location?.coords?.longitude || -122.4324,
-                }} />
-                <Polyline
-                    coordinates={routeCoordinates}
-                    strokeColor="#2ecc71"
-                    strokeWidth={4}
-                />
-            </MapView>
-            <View style={styles.container1}>
-                <StatsCard
-                    isFirst={true}
-                    icon={require('../../../assets/letsRunScreenAssets/speed_icon.png')}
-                    unit={'speed m/s'}
-                    value={speed}
-                    letsRunScreen={true}
-                />
-                <StatsCard
-                    isFirst={undefined}
-                    icon={require('../../../assets/letsRunScreenAssets/timer_icon.png')}
-                    unit={'time'}
-                    value={formatTime(time)}
-                    letsRunScreen={true}
-                />
-                <StatsCard
-                    icon={require('../../../assets/letsRunScreenAssets/calories_icon.png')}
-                    unit={'kcal'}
-                    isFirst={true}
-                    value={(kcalBurn).toFixed(2)}
-                    letsRunScreen={true}
-                />
-                <StatsCard
-                    icon={require('../../../assets/letsRunScreenAssets/distance_icon.png')}
-                    unit={'km'}
-                    isFirst={undefined}
-                    value={(totalDistance / 1000).toFixed(2)}
-                    letsRunScreen={true}
-                />
-            </View>
-            <View style={{ alignItems: 'center' }}>
-                <Pressable
-                    style={[styles.button]}
-                    onPress={runAgainHandler}>
-                    <Text style={styles.textStyle}>Run Again</Text>
-                </Pressable>
-            </View>
-        </View >
-    </>
     )
 }
 export default Runningresult
@@ -142,12 +145,13 @@ export default Runningresult
 const styles = StyleSheet.create({
 
     container: {
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         margin: 10,
         paddingVertical: 15,
         borderRadius: 8,
         gap: 15,
         paddingHorizontal: 10,
+        height: screenHeight
 
     },
     container1: {
@@ -155,7 +159,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         flexDirection: 'row',
-        backgroundColor: 'white',
         margin: 10,
         marginTop: 5,
         paddingVertical: 15,
@@ -167,6 +170,7 @@ const styles = StyleSheet.create({
     map: {
         width: screenWidth - 40,
         height: screenHeight / 2 - 20,
+        borderRadius: 10,
     },
     button: {
         backgroundColor: '#0fb4fc',

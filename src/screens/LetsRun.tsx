@@ -1,10 +1,12 @@
 import { StyleSheet, Image, View, Text } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Header from '../components/Header'
 import RunnerMap from '../components/letsrunScreen/RunnerMap'
 import RunnerActions from '../components/letsrunScreen/RunnerActions'
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
+import { AppContext } from '../contextApi/AppContext'
+import { useThemeChange } from '../apptheme/ThemeChange'
 const LetsRun = () => {
 
   const [timeDuration, settimeDuration] = useState({
@@ -24,7 +26,8 @@ const LetsRun = () => {
   const [runningState, setRunningState] = useState<boolean>(false)
   const mapRef = useRef<any>(null);
   const [timeReached, setTimeReached] = useState(false);
-
+  const { currentType }: any = useContext(AppContext)
+  const useCustomTheme = useThemeChange()
 
   useEffect(() => {
     const getPermissionsAndTrackLocation = async () => {
@@ -184,9 +187,9 @@ const LetsRun = () => {
 
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerRow}>
-        <Text style={styles.headingText}>Daily Step Counter </Text>
+    <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
+      <View style={{ ...styles.headerRow, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
+        <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Daily Step Counter </Text>
         <Image
           source={require('../../assets/homeScreenAssets/step_icon.png')}
           style={{ height: 30, width: 30 }}
@@ -205,6 +208,7 @@ const LetsRun = () => {
         setLocation={setLocation}
         speed={speed}
         setSpeed={setSpeed}
+        currentType={currentType}
       />
       <RunnerActions
         timeDuration={timeDuration}
@@ -229,6 +233,7 @@ const LetsRun = () => {
         setRunningState={setRunningState}
         timeReached={timeReached}
         setTimeReached={setTimeReached}
+        currentType={currentType}
       />
     </View>
   )
@@ -239,11 +244,10 @@ export default LetsRun
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     // paddingHorizontal: 10,
-    paddingVertical: 15,
+    // paddingVertical: 15,
 
   },
   headerRow: {
@@ -252,7 +256,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // marginBottom: 10,
     paddingVertical: 15,
-    backgroundColor: '#e9eaee',
     width: '100%'
   },
   headingText: {

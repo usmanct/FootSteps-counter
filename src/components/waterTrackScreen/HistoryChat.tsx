@@ -2,16 +2,17 @@ import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Dimensions } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
+import { useThemeChange } from '../../apptheme/ThemeChange';
 const screenHeight = Dimensions.get("window").height;
 
-const HistoryChat = ({ barData }: any) => {
-
+const HistoryChat = ({ barData, currentType }: any) => {
+    const useCustomTheme = useThemeChange()
 
 
     return (
-        <View style={styles.container}>
-            <View style={styles.chartHeading}>
-                <Text style={styles.textHeading}>HistoryChart</Text>
+        <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
+            <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
+                <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>HistoryChart</Text>
             </View>
             {barData.length ? <BarChart
                 frontColor={'#9f49ff'}
@@ -21,7 +22,7 @@ const HistoryChat = ({ barData }: any) => {
                 isAnimated
                 hideRules
                 // yAxisLabelTexts={yAxisLabels}
-                stepValue={500} // Adjust this to match the scale of your y-axis
+                stepValue={1000} // Adjust this to match the scale of your y-axis
                 maxValue={7000}
                 yAxisThickness={0}
                 xAxisThickness={0}
@@ -49,7 +50,6 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white',
         margin: 10,
         borderRadius: 8,
         gap: 15,
@@ -58,12 +58,10 @@ const styles = StyleSheet.create({
     textHeading: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#333333'
     },
     chartHeading: {
-        backgroundColor: '#e9eaee',
         marginHorizontal: 10,
-        marginVertical: 5,
+        // marginVertical: 5,
         borderRadius: 10,
         width: '100%',
         alignItems: 'center',

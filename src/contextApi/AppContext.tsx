@@ -2,7 +2,7 @@ import React, { createContext, useState } from 'react';
 
 export const AppContext = createContext();
 
-export const AppProvider = ({ children } : any) => {
+export const AppProvider = ({ children }: any) => {
 
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
@@ -20,6 +20,7 @@ export const AppProvider = ({ children } : any) => {
     const [kcal, setKcal] = useState<any>(0);
     const [distance, setDistance] = useState<any>(0);
     const [target, setTarget] = useState(100)
+    const [currentType, setCurrentType] = useState<string>('light')
 
 
     const MAX_HEIGHT = 200
@@ -54,6 +55,8 @@ export const AppProvider = ({ children } : any) => {
             setDistance,
             target,
             setTarget,
+            currentType,
+            setCurrentType
         }}>
             {children}
         </AppContext.Provider>

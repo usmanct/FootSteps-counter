@@ -1,16 +1,19 @@
-import { Alert, StyleSheet, Text, Image, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import Header from '../components/Header'
+import { StyleSheet, Text, Image, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import SoundNotification from '../components/letsrunScreen/SoundNotification'
 import LetsRunRow from '../components/letsrunScreen/LetsRunRow'
-import BmiCalculations from './BmiCalculations'
 import Profile from './Profile'
 import RunningSettingModal from '../components/letsrunScreen/RunningSettingModal'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import ThemeSwitch from '../components/ThemeSwitch'
+import { AppContext } from '../contextApi/AppContext'
+import { useThemeChange } from '../apptheme/ThemeChange'
 // import { startRunningreminderService } from '../services/ForegroundService'
 
 const Account = () => {
+
+
 
 
   const [modalVisible, setModalVisible] = useState(false)
@@ -21,6 +24,8 @@ const Account = () => {
   })
   const [reminderFlag, setReminderFlag] = useState(false)
   const [toggleService, setToggleService] = useState(true)
+  const { currentType }: any = useContext(AppContext)
+  const useCustomTheme = useThemeChange()
 
 
 
@@ -85,9 +90,9 @@ const Account = () => {
 
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerRow}>
-        <Text style={styles.headingText}>Daily Step Counter </Text>
+    <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
+      <View style={{ ...styles.headerRow, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
+        <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Daily Step Counter </Text>
         <Image
           source={require('../../assets/homeScreenAssets/step_icon.png')}
           style={{ height: 30, width: 30 }}
@@ -101,7 +106,11 @@ const Account = () => {
         setModalType={setModalType}
         reminderTime={reminderTime}
         setReminderTime={setReminderTime}
+        currentType={currentType}
       />
+      <View style={styles.subcontainer}>
+        <ThemeSwitch />
+      </View>
       <View style={styles.subcontainer}>
         <SoundNotification
           rowTitle={'StepCounter'}
@@ -111,9 +120,11 @@ const Account = () => {
           setReminderFlag={undefined}
           toggleService={toggleService}
           setToggleService={setToggleService}
+          currentType={currentType}
         />
       </View>
-      <View style={{ ...styles.subcontainer }}>
+      <View style={{ ...styles.subcontainer, }}>
+
         <SoundNotification rowTitle={'Daily Step Reminder'}
           reminderTime={reminderTime}
           setReminderTime={setReminderTime}
@@ -123,16 +134,17 @@ const Account = () => {
             {
               borderBottomLeftRadius: 0,
               borderBottomRightRadius: 0,
-              paddingBottom : 10
+              paddingBottom: 10
             }
           }
+          currentType={currentType}
         />
-        <View style={{ backgroundColor: '#e9eaee', borderBottomLeftRadius: 10, borderBottomRightRadius: 10, paddingBottom: 15 }}>
-          <LetsRunRow title={'Duration'} subtil={`${reminderTime.h}:${reminderTime.m}`} onpress={() => toggleModal('account')} />
+        <View style={{ backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, paddingBottom: 15 }}>
+          <LetsRunRow title={'Duration'} subtil={`${reminderTime.h}:${reminderTime.m}`} onpress={() => toggleModal('account')} currentType={currentType} />
         </View>
       </View>
       <View style={styles.subcontainer}>
-        <Profile />
+        <Profile currentType={currentType} />
       </View>
     </View>
   )
@@ -143,11 +155,10 @@ export default Account
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     // justifyContent: 'center',
     // paddingHorizontal: 10,
-    paddingVertical: 15,
+    // paddingVertical: 15,
   },
   subcontainer: {
     paddingVertical: 10,

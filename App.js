@@ -1,5 +1,5 @@
-import { SafeAreaView, StyleSheet } from 'react-native';
-import { useEffect , useState } from 'react';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
 import { AppProvider } from './src/contextApi/AppContext';
 import { BottomTabs } from './src/bottomNavigation/BottomTabs';
 import * as Location from 'expo-location';
@@ -50,8 +50,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    marginTop: 40
+    // backgroundColor: '#fff',
+    marginTop: 30
     // alignItems: 'center',
     // justifyContent: 'center',
   },

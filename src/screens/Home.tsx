@@ -12,6 +12,7 @@ import { AppContext } from '../contextApi/AppContext'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import StepCountingServiceComponent from '../services/ForegroundService'
 import * as Location from 'expo-location';
+import { useThemeChange } from '../apptheme/ThemeChange'
 const Home = () => {
 
 
@@ -25,6 +26,7 @@ const Home = () => {
     setDistance,
     target,
     setTarget,
+    currentType,
   }: any = useContext(AppContext)
   const now = new Date();
   const dateOnly = now.toLocaleDateString();
@@ -33,14 +35,16 @@ const Home = () => {
 
   const { insertData, getData, updateFootStepRecord } = useDatabase();
   const [appState, setAppState] = useState(AppState.currentState);
+  const [stepflag, setStepFlag] = useState(true)
+  const useCustomTheme = useThemeChange()
   useEffect(() => {
     DataBaseInitialization()
     initialLoad()
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    // const subscription = AppState.addEventListener('change', handleAppStateChange);
 
-    return () => {
-      subscription.remove();
-    };
+    // return () => {
+    //   subscription.remove();
+    // };
   }, [])
   // useFocusEffect(
   //   React.useCallback(() => {
@@ -48,17 +52,17 @@ const Home = () => {
   //   }, [])
   // );
 
-  const handleAppStateChange = (nextAppState: string) => {
-    if (nextAppState === 'background') {
-      console.log(nextAppState)
-      startService();
-      // Start the background service when the app goes to the background
-    } else if (nextAppState === 'active') {
-      console.log(nextAppState)
-      stopService();
-      // Stop the backgroun\d service when the app comes to the foreground
-    }
-  };
+  // const handleAppStateChange = (nextAppState: string) => {
+  //   if (nextAppState === 'background') {
+  //     console.log(nextAppState)
+  //     startService();
+  //     // Start the background service when the app goes to the background
+  //   } else if (nextAppState === 'active') {
+  //     console.log(nextAppState)
+  //     stopService();
+  //     // Stop the backgroun\d service when the app comes to the foreground
+  //   }
+  // };
 
 
   useEffect(() => {
@@ -117,9 +121,11 @@ const Home = () => {
 
   return (
     <ScrollView
-      contentContainerStyle={{ backgroundColor: 'white' }}
+      contentContainerStyle={{backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white'}}
     >
-      <Header />
+      <Header
+        currentType={currentType}
+      />
       <Progress
         currentStepCount={currentStepCount}
         setCurrentStepCount={setCurrentStepCount}
@@ -129,6 +135,9 @@ const Home = () => {
         setDistance={setDistance}
         target={target}
         setTarget={setTarget}
+        stepflag={stepflag}
+        setStepFlag={setStepFlag}
+        currentType={currentType}
       />
       <Stats
         currentStepCount={currentStepCount}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
+import { useThemeChange } from '../../apptheme/ThemeChange';
 
 const TargetModal = (
     {
@@ -12,9 +13,11 @@ const TargetModal = (
         setReminderTime,
         settimeDuration,
         setDsitanceCovered,
-        settargetKcalBurn
+        settargetKcalBurn,
+        currentType
     }: any) => {
     const formatNumber = (num: { toString: () => string; }) => num.toString().padStart(2, '0');
+    const usecustomTheme = useThemeChange()
 
     const dataMin: any = Array.from({ length: 60 }, (_, i) => i);
     const dataHour: any = Array.from({ length: 24 }, (_, i) => i);
@@ -86,7 +89,7 @@ const TargetModal = (
                 visible={modalVisible}
             >
                 <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
+                    <View style={{ ...styles.modalView, backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white' }}>
                         {modalType === 'duration' || modalType === 'account'
                             ?
                             <View style={styles.wheelRow}>
@@ -102,9 +105,10 @@ const TargetModal = (
                                                 setTimeValue((prev: any) => ({ ...prev, hour: item.label, hindex: index }));
                                             }
                                         }
-                                        selectedStyle={styles.selectedItem}
+                                        selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
+                                        backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
                                     />
-                                    <Text>Hours</Text>
+                                    <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Hours</Text>
                                 </View>
                                 <View style={styles.pickerContainer}>
                                     <WheelPickerExpo
@@ -118,9 +122,10 @@ const TargetModal = (
                                                 setTimeValue((prev: any) => ({ ...prev, minute: item.label, mindex: index }));
                                             }
                                         }
-                                        selectedStyle={styles.selectedItem}
+                                        selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
+                                        backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
                                     />
-                                    <Text>Minutes</Text>
+                                    <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Minutes</Text>
                                 </View>
                             </View>
                             :
@@ -135,19 +140,20 @@ const TargetModal = (
                                             setInputValue((prev: any) => ({ ...prev, value: item.label, i: index }));
                                         }
                                     }
-                                    selectedStyle={styles.selectedItem}
+                                    selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
+                                    backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
                                 />
-                                <Text>{modalType === 'distance' ? 'km' : 'kcal'}</Text>
+                                <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>{modalType === 'distance' ? 'km' : 'kcal'}</Text>
                             </View>
                         }
 
                         <Pressable
-                            style={[styles.button , styles.saveBtn]}
+                            style={[styles.button, { backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.bmiButton : '#f49913' }]}
                             onPress={saveChanges}>
                             <Text style={styles.textStyle}>Save Changes</Text>
                         </Pressable>
                         <Pressable
-                            style={[styles.button , styles.cancelBtn]}
+                            style={[styles.button, { backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.Btn1 : '#0fb4fc' }]}
                             onPress={() => setModalVisible(!modalVisible)}>
                             <Text style={styles.textStyle}>Cancel</Text>
                         </Pressable>

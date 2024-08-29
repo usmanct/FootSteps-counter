@@ -1,12 +1,32 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { useThemeChange } from '../../apptheme/ThemeChange'
+import { AppContext } from '../../contextApi/AppContext'
 
-const StatsCard = ({ icon, value, unit, isFirst , letsRunScreen }: any) => {
+const StatsCard = ({ icon, value, unit, isFirst, letsRunScreen }: any) => {
+
+    const { currentType }: any = useContext(AppContext)
+    const useCustomTheme = useThemeChange()
 
     return (
-        <View style={{ ...styles.container, width: letsRunScreen ? '25%' : '33%' }}>
-            <Text style={{ fontWeight: 'bold' }}>{value}</Text>
-            <Text style={styles.label}>{unit}</Text>
+        <View style={
+            {
+                ...styles.container,
+                width: letsRunScreen ? '25%' : '33%',
+                backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header
+            }}
+        >
+            <Text style={
+                {
+                    fontWeight: 'bold',
+                    color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
+                }
+            }>
+                {value}
+            </Text>
+            <Text style={{ ...styles.label, color: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : '#8d8891' }}>
+                {unit}
+            </Text>
             <Image
                 source={icon}
                 style={{ width: 40, height: 40 }}
@@ -31,7 +51,6 @@ const styles = StyleSheet.create({
         borderLeftWidth: 0,
     },
     label: {
-        color: '#8d8891',
         fontSize: 14,
         fontWeight: 'bold',
 

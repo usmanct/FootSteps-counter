@@ -1,9 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import BmiModal from '../components/bmiScreen/BmiModal';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppContext } from '../contextApi/AppContext';
+import { useThemeChange } from '../apptheme/ThemeChange';
 
 const BmiCalculations = () => {
     const navigation = useNavigation();
@@ -19,6 +21,8 @@ const BmiCalculations = () => {
         weight: '70',
 
     })
+    const { currentType }: any = useContext(AppContext)
+    const useCustomTheme = useThemeChange()
 
 
 
@@ -80,42 +84,42 @@ const BmiCalculations = () => {
     }, [bmivalue])
 
     return (
-        <View style={styles.container}>
+        <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
             <Image
                 source={require('../../assets/homeScreenAssets/bmi_calculate_icon.png')}
-                style={{height: 90 , width: 90}}
+                style={{ height: 90, width: 90 }}
                 resizeMode='contain'
             />
-            <Text style={styles.heading}>BMI Calculations</Text>
+            <Text style={{ ...styles.heading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>BMI Calculations</Text>
             <Text style={styles.subHeading}>Set your  Personal Information to calculate</Text>
-            <BmiModal modalVisible={modalVisible} setModalVisible={setModalVisible} title={title} userData={userData} setUserData={setUserData} />
-            <View style={styles.subContainer}>
+            <BmiModal modalVisible={modalVisible} setModalVisible={setModalVisible} title={title} userData={userData} setUserData={setUserData} currentType={currentType} />
+            <View style={{ ...styles.subContainer, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
                 <View style={styles.row}>
-                    <Text style={styles.rowText}>Gender</Text>
+                    <Text style={{ ...styles.rowText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Gender</Text>
                     <TouchableOpacity style={styles.btn} onPress={() => toggleModal('Gender')}>
-                        <Text style={styles.btnText}>{userData.gender}</Text>
-                        <AntDesign name="down" size={14} color="grey" />
+                        <Text style={{ ...styles.btnText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{userData.gender}</Text>
+                        <AntDesign name="down" size={14} color={currentType === 'dark' ? useCustomTheme.darkMode.Text : 'grey'} />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.row}>
-                    <Text style={styles.rowText}>Age</Text>
+                    <Text style={{ ...styles.rowText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Age</Text>
                     <TouchableOpacity style={styles.btn} onPress={() => toggleModal('Age')}>
-                        <Text style={styles.btnText}>{userData.age} years old</Text>
-                        <AntDesign name="down" size={14} color="grey" />
+                        <Text style={{ ...styles.btnText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{userData.age} years old</Text>
+                        <AntDesign name="down" size={14} color={currentType === 'dark' ? useCustomTheme.darkMode.Text : 'grey'} />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.row}>
-                    <Text style={styles.rowText}>Height</Text>
+                    <Text style={{ ...styles.rowText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Height</Text>
                     <TouchableOpacity style={styles.btn} onPress={() => toggleModal('Height')}>
-                        <Text style={styles.btnText}>{userData.height} cm</Text>
-                        <AntDesign name="down" size={14} color="grey" />
+                        <Text style={{ ...styles.btnText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{userData.height} cm</Text>
+                        <AntDesign name="down" size={14} color={currentType === 'dark' ? useCustomTheme.darkMode.Text : 'grey'} />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.row}>
-                    <Text style={styles.rowText}>Weight</Text>
+                    <Text style={{ ...styles.rowText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Weight</Text>
                     <TouchableOpacity style={styles.btn} onPress={() => toggleModal('Weight')}>
-                        <Text style={styles.btnText}>{userData.weight} Kg</Text>
-                        <AntDesign name="down" size={14} color="grey" />
+                        <Text style={{ ...styles.btnText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{userData.weight} Kg</Text>
+                        <AntDesign name="down" size={14} color={currentType === 'dark' ? useCustomTheme.darkMode.Text : 'grey'} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -139,17 +143,10 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
-        backgroundColor: '#fff',
 
     },
     subContainer: {
-        backgroundColor: '#efefef',
         borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 5,
         margin: 10,
         width: '100%',
         padding: 20,
@@ -158,7 +155,6 @@ const styles = StyleSheet.create({
         fontSize: 34,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: '#333',
         textAlign: 'center',
     },
     subHeading: {

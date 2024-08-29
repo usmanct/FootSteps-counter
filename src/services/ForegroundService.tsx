@@ -1,9 +1,11 @@
 import { Pedometer } from 'expo-sensors';
 import BackgroundService from 'react-native-background-actions';
 import { useDatabase } from '../sqLiteDb/useDatabase';
+import { useState } from 'react';
 
 const StepCountingServiceComponent = () => {
     const { getData, updateFootStepRecord } = useDatabase();
+    const [stepFlag, setStepsFlag] = useState<boolean>(true)
     const dateOnly = new Date().toLocaleDateString();
 
     const sleep = (time: number | undefined) => new Promise<void>((resolve) => setTimeout(() => resolve(), time));
@@ -11,18 +13,20 @@ const StepCountingServiceComponent = () => {
     const stepCountingInBackground = () => {
         console.log('stepCountingInBackground');
         return Pedometer.watchStepCount(async (result) => {
-            const newSteps = result.steps;
-            console.log("newSteps: ", newSteps);
+
             // Fetch current state directly from the database
             const res: any = await getData(dateOnly);
             const currentData = res && res.length > 0 ? res[0] : { footsteps: 0, energy: 0, distance: 0, goal: 10000 };
             console.log("currentData: ", currentData);
+            const newSteps = stepFlag ? currentData.footsteps + result.steps -1 : result.steps;
+            console.log("newSteps: ", newSteps);
             // if (newSteps < currentData.goal) {
-            const updatedCount = newSteps ;
+            const updatedCount = newSteps;
             const updatedEnergy: any = calculateEnergy(updatedCount).toFixed(2);  // Implement this based on your calculation logic
 
             // Update database with new values
-            await updateFootStepRecord(dateOnly, updatedCount, currentData.goal, currentData.distance, updatedEnergy);
+            setStepsFlag(false)
+            await updateFootStepRecord(dateOnly, updatedCount, currentData.goal, updatedEnergy, currentData.distance);
             // }
         });
     };
@@ -54,7 +58,7 @@ const StepCountingServiceComponent = () => {
         await new Promise<void>(async (resolve) => {
             while (BackgroundService.isRunning()) {
                 await updatingStepsInBackground();
-                // await stepCountingInBackground()
+                await stepCountingInBackground()
                 await sleep(delay);
             }
             resolve();
@@ -93,6 +97,7 @@ const StepCountingServiceComponent = () => {
 
     const stopService = async () => {
         console.log('StopService--------------------------------');
+        setStepsFlag(true)
         await BackgroundService.stop();
         console.log('StopService--------------------------------Ending----------------------------------');
     };

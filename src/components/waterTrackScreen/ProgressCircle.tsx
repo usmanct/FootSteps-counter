@@ -4,12 +4,23 @@ import { AppContext } from '../../contextApi/AppContext';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
 import React from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import { useThemeChange } from '../../apptheme/ThemeChange';
 const { width } = Dimensions.get('window');
 
 
 
 
-const ProgressCircle = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved, setISgoalAchieved }: any) => {
+const ProgressCircle = ({
+    drinkGoal,
+    setDrinkGoal,
+    cupCapacity,
+    setCupCapacity,
+    waterdrinked,
+    setwaterdrinked,
+    IsgoalAchieved,
+    setISgoalAchieved,
+    currentType
+}: any) => {
     const {
         MAX_HEIGHT,
         setNoOfCups,
@@ -17,6 +28,7 @@ const ProgressCircle = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, 
         fillcontainer,
         setFillContainer,
     }: any = useContext(AppContext)
+    const useCustomTheme = useThemeChange()
     const [bolflag, setBolFlag] = useState(true)
     const [drinkflag, setDrinkFlag] = useState(true)
     const [cupHeight, setCupHeight] = useState(0)
@@ -118,13 +130,13 @@ const ProgressCircle = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, 
     }, [cupCapacity])
 
     return (
-        <View style={{ ...styles.container, height: MAX_HEIGHT }}>
+        <View style={{ ...styles.container, height: MAX_HEIGHT , borderColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke }}>
             <Image
                 source={require('../../../assets/waterTrackScreenAssets/water_icon.png')}
                 style={{ height: 100, width: 100 }}
             />
-            <View style={{ ...styles.fillingContainer, height: fillcontainer || 0 }}>
-            {/* <Animated.View style={[styles.ave, waveAnimation]} /> */}
+            <View style={{ ...styles.fillingContainer, height: fillcontainer || 0  , backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke }}>
+                {/* <Animated.View style={[styles.ave, waveAnimation]} /> */}
             </View>
         </View>
     );
@@ -135,17 +147,15 @@ export default ProgressCircle;
 const styles = StyleSheet.create({
     container: {
         width: 200,
-        borderColor: '#9f49ff',
         borderWidth: 5,
         borderRadius: 100,
         flexDirection: 'row',
         justifyContent: 'center',
         overflow: 'hidden',
-        alignItems:'center'
+        alignItems: 'center'
     },
     fillingContainer: {
         width: '100%',
-        backgroundColor: '#9f49ff',
         position: 'absolute',
         bottom: 0,
         borderBottomLeftRadius: 4,

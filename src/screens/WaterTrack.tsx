@@ -7,6 +7,7 @@ import { useDatabase } from '../sqLiteDb/useDatabase'
 import { AppContext } from '../contextApi/AppContext'
 import CompleteAnimation from '../components/CompleteAnimation'
 import DataBaseInitialization from '../sqLiteDb/DataBaseInitialization'
+import { useThemeChange } from '../apptheme/ThemeChange'
 const WaterTrack = () => {
 
   const [barData, setbarData] = useState([])
@@ -15,8 +16,10 @@ const WaterTrack = () => {
   const {
     waterHistory,
     setFillContainer,
-    MAX_HEIGHT
+    MAX_HEIGHT,
+    currentType
   }: any = useContext(AppContext)
+  const useCustomTheme = useThemeChange()
   const [updateflag, setUpdateflag] = useState(true);
   const [currentDate, setCurrentDate] = useState(dateOnly);
   const [drinkGoal, setDrinkGoal] = useState(1000)
@@ -26,7 +29,7 @@ const WaterTrack = () => {
   const { getALLWaterData, updateWaterRecord, insertWaterData, getWaterData } = useDatabase()
 
   useEffect(() => {
-    const waterDrinkedData  = waterHistory.map((data: any) => ({
+    const waterDrinkedData = waterHistory.map((data: any) => ({
       value: data?.waterIntake,
       label: data?.date,
     }));
@@ -53,7 +56,7 @@ const WaterTrack = () => {
     return () => clearInterval(interval); // Clean up the interval on unmount
   }, [dateOnly]);
 
- useEffect(() => {
+  useEffect(() => {
     const loadInitialData = async () => {
       try {
         const data: any = await getWaterData(dateOnly);
@@ -140,11 +143,11 @@ const WaterTrack = () => {
     <View style={{ flex: 1 }}>
 
       <ScrollView
-      contentContainerStyle={{ 
-        backgroundColor: 'white'
-       }}
+        contentContainerStyle={{
+          backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white'
+        }}
       >
-        <Header />
+        <Header currentType={currentType} />
         <WaterProgress
           drinkGoal={drinkGoal}
           setDrinkGoal={setDrinkGoal}
@@ -154,9 +157,13 @@ const WaterTrack = () => {
           setwaterdrinked={setwaterdrinked}
           IsgoalAchieved={IsgoalAchieved}
           setISgoalAchieved={setISgoalAchieved}
+          currentType={currentType}
         />
         {/* <CanvasProgress/> */}
-        <HistoryChat barData={barData} />
+        <HistoryChat
+          barData={barData}
+          currentType={currentType}
+        />
       </ScrollView>
       {/* {goalAchieved && <CompleteAnimation isVisible={goalAchieved} />} */}
     </View>

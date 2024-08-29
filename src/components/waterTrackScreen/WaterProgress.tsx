@@ -6,17 +6,18 @@ import { AppContext } from '../../contextApi/AppContext';;
 import { useNavigation } from '@react-navigation/native';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
 import { useIsFocused } from '@react-navigation/native';
+import { useThemeChange } from '../../apptheme/ThemeChange';
 
 
 const WaterProgress = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved,
-    setISgoalAchieved }: any) => {
+    setISgoalAchieved, currentType }: any) => {
     const {
         MAX_HEIGHT,
         fillcontainer,
         setFillContainer,
-
     }: any = useContext(AppContext)
     const isFocused = useIsFocused();
+    const useCustomTheme = useThemeChange()
     const now = new Date()
     const dateOnly = now.toLocaleDateString();
     const navigation = useNavigation();
@@ -57,13 +58,13 @@ const WaterProgress = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, w
         <>
             <ImageBackground
                 source={require('../../../assets/homeScreenAssets/back_ground.png')}
-                style={{ ...styles.container, backgroundColor: '#e9eaee' }}
+                style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : useCustomTheme.lightMode.bgcolor }}
                 resizeMode="cover" // You can also use "contain" or other modes depending on the effect you want
             >
                 <View style={styles.btnView}>
                     <TouchableOpacity
                         onPress={navigateToSetting}
-                        style={styles.btn}
+                        style={{ ...styles.btn, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn1 : useCustomTheme.lightMode.Btn1 }}
                     >
                         <Text style={styles.btnText}>Edit</Text>
                         <AntDesign name="right" size={14} color="white" />
@@ -78,14 +79,16 @@ const WaterProgress = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, w
                     waterdrinked={waterdrinked}
                     setwaterdrinked={setwaterdrinked}
                     IsgoalAchieved={IsgoalAchieved}
-                    setISgoalAchieved={setISgoalAchieved} />
+                    setISgoalAchieved={setISgoalAchieved}
+                    currentType={currentType}
+                />
                 {/* </View> */}
             </ImageBackground>
-            <View style={[styles.container, styles.resultContainer]}>
+            <View style={[styles.container, styles.resultContainer, { backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }]}>
                 <TouchableOpacity onPress={() => dropTable()}>
-                    <Text style={styles.pageText}>{precentageDrinked}%</Text>
+                    <Text style={{ ...styles.pageText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{precentageDrinked}%</Text>
                 </TouchableOpacity>
-                <Text style={{fontSize: 16 , color:'#fb6175'}}>{waterdrinked}/{drinkGoal}ml</Text>
+                <Text style={{ fontSize: 16, color: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.Text }}>{waterdrinked}/{drinkGoal}ml</Text>
                 <View>
                     <TouchableOpacity
                         style={{ ...styles.drinkBtn, backgroundColor: IsgoalAchieved ? 'gray' : '#0fb4fc', }}
@@ -116,7 +119,6 @@ const styles = StyleSheet.create({
 
     },
     resultContainer: {
-        backgroundColor: '#e9eaee',
         marginHorizontal: 10,
         marginVertical: 15,
         borderRadius: 10,

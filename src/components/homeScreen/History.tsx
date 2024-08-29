@@ -1,23 +1,27 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
 import { Calendar, WeekCalendar } from 'react-native-calendars';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
+import { AppContext } from '../../contextApi/AppContext';
+import { useThemeChange } from '../../apptheme/ThemeChange';
 
 const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance }: any) => {
 
-    const { getData, getWaterData, dropTable, insertData } = useDatabase();
+    const { getData, getWaterData } = useDatabase();
     const navigation = useNavigation();
+    const { currentType }: any = useContext(AppContext)
+    const useCustomTheme = useThemeChange()
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
     const [selected, setSelected] = useState('');
-
+    const isFocused = useIsFocused();
     useEffect(() => {
         console.log("Today Date: ", selected)
-    }, [selected])
+        console.log("From History Current Type", currentType)
 
-
+    }, [selected, currentType])
     const onPressDateHandler = (day: any) => {
         console.log("Press Date:", day)
         const currentMonth = day.month
@@ -44,54 +48,51 @@ const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distanc
 
 
     return (
-        <View style={styles.upperContainer}>
+        <View style={{ ...styles.upperContainer, backgroundColor: currentType === 'dark' ? useCustomTheme?.darkMode?.bgcolor : 'white' }}>
             <View style={styles.container}>
-                <Text style={styles.heading}>Your Progress</Text>
-                <TouchableOpacity style={styles.btn} onPress={() => {
+                <Text style={{ ...styles.heading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Your Progress</Text>
+                <TouchableOpacity style={{ ...styles.btn, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn2 : useCustomTheme.lightMode.Btn2 }} onPress={() => {
 
                 }}>
                     <Text style={styles.btnText}>Months</Text>
                     <AntDesign name="right" size={14} color="white" />
                 </TouchableOpacity>
             </View>
-            <View style={styles.hrline}></View>
+            <View style={{ ...styles.hrline, borderColor: currentType === 'dark' ? '#14161d' : useCustomTheme.lightMode.Header }}></View>
             <Calendar
                 onDayPress={onPressDateHandler}
                 markedDates={{
                     [selected]: {
                         selected: true,
                         disableTouchEvent: true,
-                        customStyles: {
-                            container: {
-                                borderWidth: 2, // Border width
-                                borderColor: '#fd5b72', // Border color
-                                borderRadius: 20, // Half of width/height to make it a circle
-                                width: 40, // Adjust to fit the date container
-                                height: 40, // Adjust to fit the date container
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                backgroundColor: 'green', // Background color
-                            },
-                            text: {
-                                color: '#ffffff', // Text color
-                            }
-                        }
                     },
                 }}
                 theme={{
-                    todayTextColor: '#fd5b72',
+                    todayTextColor: currentType === 'dark' ? useCustomTheme?.darkMode?.activeStroke : '#fd5b72',
+                    calendarBackground: 'Transparent',
+                    backgroundColor: 'Transparent',
                 }}
                 renderArrow={(direction: string) => (
                     direction === 'left' ? (
-                        <Image
-                            source={require('../../../assets/homeScreenAssets/back_pink.gif')}
-                            style={{ width: 10, height: 10 }}
-                        />
+                        currentType === 'dark' ?
+                            <Image
+                                source={require('../../../assets/homeScreenAssets/back_green.png')}
+                                style={{ width: 10, height: 10 }}
+                            /> :
+                            <Image
+                                source={require('../../../assets/homeScreenAssets/back_pink.gif')}
+                                style={{ width: 10, height: 10 }}
+                            />
                     ) : (
-                        <Image
-                            source={require('../../../assets/homeScreenAssets/next_pink.gif')}
-                            style={{ width: 10, height: 10 }}
-                        />
+                        currentType === 'dark' ?
+                            <Image
+                                source={require('../../../assets/homeScreenAssets/next_green.png')}
+                                style={{ width: 10, height: 10 }}
+                            /> :
+                            <Image
+                                source={require('../../../assets/homeScreenAssets/next_pink.gif')}
+                                style={{ width: 10, height: 10 }}
+                            />
                     )
                 )}
             />
@@ -139,7 +140,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        backgroundColor: '#09b9fb'
     },
     btnText: {
         fontSize: 14,
@@ -151,11 +151,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     hrline: {
-        borderWidth: 3,
-        borderColor: '#f3eff8',
+        borderTopWidth: 3,
         // marginVertical: 5,
         width: '100%',
-        height: 1,
     }
 
 

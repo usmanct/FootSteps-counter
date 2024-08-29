@@ -5,10 +5,20 @@ import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import TargetModal from '../TargetModal';
 import { Pedometer } from 'expo-sensors';
+import { useThemeChange } from '../../apptheme/ThemeChange';
 
-const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKcal, setDistance, target, setTarget }: any) => {
+const Progress = (
+    {
+        setCurrentStepCount,
+        currentStepCount,
+        target,
+        setTarget,
+        currentType
+    }
+        : any) => {
 
     const [modalVisible, setModalVisible] = useState(false);
+    const useCustomTheme = useThemeChange()
 
     const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
     // const [IsTargetReached, setIsTargetReached] = useState<any>(false);
@@ -82,8 +92,7 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
         subscription = Pedometer.watchStepCount((result) => {
             console.log("result", result.steps)
             setCurrentStepCount((preCount: any) => {
-                console.log("preCount", preCount);
-                // const newCount = preCount > 1 ? result.steps + preCount - 1 : result.steps;
+                console.log("preCount", currentStepCount);
                 const newCount = result.steps;
 
                 if (newCount >= target) {
@@ -103,14 +112,14 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
     return (
         <ImageBackground
             source={require('../../../assets/homeScreenAssets/back_ground.png')}
-            style={styles.container}
+            style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : useCustomTheme.lightMode.bgcolor }}
             resizeMode="cover" // You can also use "contain" or other modes depending on the effect you want
         >
 
             <View style={styles.btnView}>
-                <TargetModal modalVisible={modalVisible} setModalVisible={setModalVisible} target={target} setTarget={setTarget} />
+                <TargetModal modalVisible={modalVisible} setModalVisible={setModalVisible} target={target} setTarget={setTarget} currentType={currentType} />
                 <TouchableOpacity
-                    style={styles.btn}
+                    style={{ ...styles.btn, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn1 : useCustomTheme.lightMode.Btn1 }}
                     onPress={openTargetModal}
                 >
                     <Text style={styles.btnText}>Edit</Text>
@@ -123,8 +132,8 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
                 radius={100}
                 duration={1000}
                 maxValue={target}
-                inActiveStrokeOpacity={.5}
-                activeStrokeColor={'#9c46fc'}
+                inActiveStrokeOpacity={currentType === 'dark' ? 1 : .5}
+                activeStrokeColor={currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke}
                 onAnimationComplete={() => {
 
                 }
@@ -140,11 +149,26 @@ const Progress = ({ setCurrentStepCount, currentStepCount, kcal, distance, setKc
                         style={{ height: 55, width: 55 }}
                         resizeMode="contain"
                     />
-                    <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{dateOnly}</Text>
+                    <Text
+                        style={
+                            { fontSize: 14, fontWeight: 'bold', color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }
+                        }
+                    >
+                        {dateOnly}
+                    </Text>
                     <TouchableOpacity onPress={() => { setCurrentStepCount(currentStepCount + 1) }}>
-                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{currentStepCount}</Text>
+                        <Text
+                            style={
+                                { fontSize: 15, fontWeight: 'bold', color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }
+                            }>
+                            {currentStepCount}
+                        </Text>
                     </TouchableOpacity>
-                    <Text style={{ fontSize: 12, }}>/{target}</Text>
+                    <Text
+                        style={{ fontSize: 12, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}
+                    >
+                        /{target}
+                    </Text>
                 </View>
             </CircularProgressBase>
             <Image
@@ -159,10 +183,9 @@ const styles = StyleSheet.create({
         position: 'relative',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#e9eaee',
         // margin: 10,
         paddingVertical: 15,
-        borderRadius: 8,
+        // borderRadius: 8,
         gap: 15,
         paddingHorizontal: 20,
 
@@ -183,7 +206,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        backgroundColor: '#f59207'
+
     },
     btnText: {
         fontSize: 14,
