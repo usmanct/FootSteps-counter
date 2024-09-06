@@ -8,7 +8,6 @@ const screenHeight = Dimensions.get("window").height;
 const HistoryChat = ({ barData, currentType }: any) => {
     const useCustomTheme = useThemeChange()
 
-
     return (
         <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
             <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
@@ -17,7 +16,7 @@ const HistoryChat = ({ barData, currentType }: any) => {
             {barData.length ? <BarChart
                 frontColor={'#9f49ff'}
                 barWidth={50}
-                data={barData.slice(barData.length - 3, barData.length)}
+                data={barData}
                 yAxisLabelWidth={35}
                 isAnimated
                 hideRules

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
+import { StyleSheet, Text, TouchableWithoutFeedback , View, Image } from 'react-native'
 import React, { useContext } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,22 +23,22 @@ const Bmi = () => {
                     <Text style={styles.btnText}>Watch ads</Text>
                 </TouchableOpacity>
             </View> */}
-            <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.lightMode.bmiButton }}>
-                <Image
-                    source={require('../../../assets/homeScreenAssets/bmi_calculate_icon.png')}
-                    style={{ height: 60, width: 100 }}
-                />
-                <Text
-                    style={{
-                        fontSize: 20, fontWeight: 'bold',
-                        color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
-                    }}>
-                    BMI Calculate
-                </Text>
-                <TouchableOpacity onPress={navigateToBMI}>
+            <TouchableWithoutFeedback  onPress={navigateToBMI}>
+                <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.lightMode.bmiButton }}>
+                    <Image
+                        source={require('../../../assets/homeScreenAssets/bmi_calculate_icon.png')}
+                        style={{ height: 60, width: 100 }}
+                    />
+                    <Text
+                        style={{
+                            fontSize: 20, fontWeight: 'bold',
+                            color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
+                        }}>
+                        BMI Calculate
+                    </Text>
                     <AntDesign name="right" size={25} color={currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text} />
-                </TouchableOpacity>
-            </View>
+                </View>
+            </TouchableWithoutFeedback>
         </View>
     )
 }

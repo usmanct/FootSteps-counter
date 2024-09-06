@@ -7,21 +7,23 @@ import { useDatabase } from '../../sqLiteDb/useDatabase';
 import { AppContext } from '../../contextApi/AppContext';
 import { useThemeChange } from '../../apptheme/ThemeChange';
 
-const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distance, setDistance }: any) => {
+const History = ({ currentType, currentStepCount, target }: any) => {
 
     const { getData, getWaterData } = useDatabase();
     const navigation = useNavigation();
-    const { currentType }: any = useContext(AppContext)
+    // const { currentType }: any = useContext(AppContext)
     const useCustomTheme = useThemeChange()
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
     const [selected, setSelected] = useState('');
+    const [stepProgress, setStepProgress] = useState<any>();
+    const todayDate = now.toISOString().split('T')[0]; // Format current date to 'YYYY-MM-DD'
+
     const isFocused = useIsFocused();
     useEffect(() => {
-        console.log("Today Date: ", selected)
-        console.log("From History Current Type", currentType)
-
-    }, [selected, currentType])
+        const progress = (currentStepCount / target) * 100;
+        setStepProgress(progress)
+    }, [target, currentStepCount])
     const onPressDateHandler = (day: any) => {
         console.log("Press Date:", day)
         const currentMonth = day.month
@@ -60,17 +62,39 @@ const History = ({ currentStepCount, setCurrentStepCount, kcal, setKcal, distanc
             </View>
             <View style={{ ...styles.hrline, borderColor: currentType === 'dark' ? '#14161d' : useCustomTheme.lightMode.Header }}></View>
             <Calendar
+                key={currentType}
                 onDayPress={onPressDateHandler}
+                markingType={'custom'}
+                hideExtraDays={true}
+                enableSwipeMonths={true}
                 markedDates={{
+                    [todayDate]: {  // Highlight the current date
+                        customStyles: {
+                            container: {
+                                // backgroundColor: 'green',
+                                borderColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke,
+                                borderWidth: 1
+                            },
+                            text: {
+                                color: currentType === 'dark' ? useCustomTheme.darkMode.Text : '#fd5b72',
+                                // fontWeight: 'bold',
+                            },
+                        },
+                    },
                     [selected]: {
                         selected: true,
                         disableTouchEvent: true,
+
                     },
+
                 }}
                 theme={{
                     todayTextColor: currentType === 'dark' ? useCustomTheme?.darkMode?.activeStroke : '#fd5b72',
                     calendarBackground: 'Transparent',
                     backgroundColor: 'Transparent',
+
+                    dayTextColor: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text,
+                    monthTextColor: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
                 }}
                 renderArrow={(direction: string) => (
                     direction === 'left' ? (

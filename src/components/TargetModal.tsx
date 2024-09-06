@@ -3,7 +3,7 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'reac
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { useThemeChange } from '../apptheme/ThemeChange';
 
-const TargetModal = ({ modalVisible, setModalVisible, target, setTarget, currentType }: any) => {
+const TargetModal = ({ modalVisible, setModalVisible, target, setTarget, currentType, showOverLay, setShowOverLay }: any) => {
 
     const data: any = [10, 20, 50, 100, 200, 300, 500, 600, 700, 800, 900, 1000, 2000,]
     const [inputValue, setInputValue] = useState<any>({})
@@ -20,6 +20,7 @@ const TargetModal = ({ modalVisible, setModalVisible, target, setTarget, current
         setTarget(inputValue.value)
         setDefaultIndex(inputValue.i)
         setModalVisible(!modalVisible)
+        setShowOverLay(!showOverLay)
     }
 
 
@@ -56,7 +57,11 @@ const TargetModal = ({ modalVisible, setModalVisible, target, setTarget, current
                         </Pressable>
                         <Pressable
                             style={[styles.button, { backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.Btn1 : '#0fb4fc' }]}
-                            onPress={() => setModalVisible(!modalVisible)}>
+                            onPress={() => {
+                                setModalVisible(!modalVisible)
+                                setShowOverLay(!showOverLay)
+                            }
+                            }>
                             <Text style={styles.textStyle}>Cancel</Text>
                         </Pressable>
                     </View>

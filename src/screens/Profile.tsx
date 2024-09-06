@@ -4,7 +4,7 @@ import { AntDesign } from '@expo/vector-icons';
 import BmiModal from '../components/bmiScreen/BmiModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useThemeChange } from '../apptheme/ThemeChange';
-const Profile = ({ currentType }: any) => {
+const Profile = ({ currentType, setShowOverLay, showOverLay }: any) => {
 
 
 
@@ -39,13 +39,23 @@ const Profile = ({ currentType }: any) => {
 
     const toggleModal = (e: any) => {
         setModalVisible(!modalVisible)
+        setShowOverLay(!showOverLay)
         setTitle(e)
     }
 
 
     return (
         <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header, borderRadius: 10, }}>
-            <BmiModal modalVisible={modalVisible} setModalVisible={setModalVisible} title={title} userData={userData} setUserData={setUserData} currentType={currentType} />
+            <BmiModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                title={title}
+                userData={userData}
+                setUserData={setUserData}
+                currentType={currentType}
+                setShowOverLay={setShowOverLay}
+                showOverLay={showOverLay}
+            />
             <View style={styles.row}>
                 <Text style={{ ...styles.rowText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Gender</Text>
                 <TouchableOpacity style={styles.btn} onPress={() => toggleModal('Gender')}>

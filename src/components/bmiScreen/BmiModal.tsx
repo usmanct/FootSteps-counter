@@ -3,7 +3,7 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { useThemeChange } from '../../apptheme/ThemeChange';
 
-const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData, currentType }: any) => {
+const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData, currentType, showOverLay, setShowOverLay }: any) => {
     const CITIES = 'Jakarta,Bandung,Sumbawa,Taliwang,Lombok,Bima'.split(',');
     const gender = 'male,female,other'.split(',');
     const ageArray = Array.from({ length: 200 }, (_, index) => index + 1);
@@ -33,6 +33,7 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData,
 
 
         setModalVisible(!modalVisible)
+        setShowOverLay(!showOverLay)
     }
 
 
@@ -89,7 +90,10 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData,
                         </Pressable>
                         <Pressable
                             style={[styles.button, { backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.Btn1 : '#0fb4fc' }]}
-                            onPress={() => setModalVisible(!modalVisible)}>
+                            onPress={() => {
+                                setModalVisible(!modalVisible)
+                                setShowOverLay(!showOverLay)
+                            }}>
                             <Text style={styles.textStyle}>Cancel</Text>
                         </Pressable>
                     </View>
@@ -108,6 +112,7 @@ const styles = StyleSheet.create({
     centeredView: {
         justifyContent: 'center',
         alignItems: 'center',
+        flex: 1,
     },
     modalView: {
         margin: 20,

@@ -27,7 +27,7 @@ export const useDatabase = () => {
         try {
             const result = await db.getAllAsync('SELECT * FROM step_data WHERE date = ?', s);
             if (result) {
-                console.log('getData====', result);
+                // console.log('getData====', result);
                 setRecord([...result]);
                 return result;
             }

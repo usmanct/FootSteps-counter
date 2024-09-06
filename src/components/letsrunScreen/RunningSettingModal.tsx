@@ -14,7 +14,9 @@ const TargetModal = (
         settimeDuration,
         setDsitanceCovered,
         settargetKcalBurn,
-        currentType
+        currentType,
+        setShowOverLay,
+        showOverLay
     }: any) => {
     const formatNumber = (num: { toString: () => string; }) => num.toString().padStart(2, '0');
     const usecustomTheme = useThemeChange()
@@ -78,6 +80,7 @@ const TargetModal = (
             settargetKcalBurn(inputValue.value)
         }
         setModalVisible(!modalVisible);
+        setShowOverLay(!showOverLay);
         setModalType('')
     };
 
@@ -154,7 +157,11 @@ const TargetModal = (
                         </Pressable>
                         <Pressable
                             style={[styles.button, { backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.Btn1 : '#0fb4fc' }]}
-                            onPress={() => setModalVisible(!modalVisible)}>
+                            onPress={() => {
+                                setModalVisible(!modalVisible)
+                                setShowOverLay(!showOverLay);
+                            }
+                            }>
                             <Text style={styles.textStyle}>Cancel</Text>
                         </Pressable>
                     </View>
@@ -166,9 +173,10 @@ const TargetModal = (
 
 const styles = StyleSheet.create({
     centeredView: {
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 22,
+        // marginTop: 22,
     },
     modalView: {
         margin: 20,

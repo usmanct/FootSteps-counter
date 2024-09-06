@@ -34,7 +34,9 @@ const RunnerActions = ({
   setRunningState,
   setTimeReached,
   timeReached,
-  currentType
+  currentType,
+  showOverLay,
+  setShowOverLay
 }: any) => {
 
   const [modalVisible, setModalVisible] = useState(false)
@@ -69,8 +71,11 @@ const RunnerActions = ({
       const kcalPerKm = 72 * 1.036
       const totalKcal = kcalPerKm * totalDistance / 1000
       setkcalBurn(totalKcal)
+      console.log("totalDistance: ", totalDistance)
+      console.log("time: ", time)
       const pace = (totalDistance / time).toFixed(2)
-      setSpeed(pace)
+      console.log("pace", pace)
+      setSpeed(pace === 'NaN' ? 0 : pace)
     }
   }, [totalDistance, IsRunning, runningState])
 
@@ -79,6 +84,7 @@ const RunnerActions = ({
   const toggleModal = (s: string) => {
     setModalType(s)
     setModalVisible(!modalVisible)
+    setShowOverLay(!showOverLay)
 
   }
 
@@ -128,19 +134,7 @@ const RunnerActions = ({
   return (
     !IsRunning ? (
       <View style={styles.container}>
-        <RunningSettingModal
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-          modalType={modalType}
-          setModalType={setModalType}
-          reminderTime={undefined}
-          setReminderTime={undefined}
-          settimeDuration={settimeDuration}
-          setDsitanceCovered={setDsitanceCovered}
-          settargetKcalBurn={settargetKcalBurn}
-          currentType={currentType}
-        />
-        <View style={{ marginHorizontal: 10 }}>
+        <View style={{ marginHorizontal: 10, marginTop: 10 }}>
           <SoundNotification
             rowTitle={'Sound Notifications'}
             reminderTime={undefined}
@@ -171,6 +165,20 @@ const RunnerActions = ({
             </Pressable>
           </View>
         </View>
+        <RunningSettingModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          modalType={modalType}
+          setModalType={setModalType}
+          reminderTime={undefined}
+          setReminderTime={undefined}
+          settimeDuration={settimeDuration}
+          setDsitanceCovered={setDsitanceCovered}
+          settargetKcalBurn={settargetKcalBurn}
+          currentType={currentType}
+          showOverLay={showOverLay}
+          setShowOverLay={setShowOverLay}
+        />
       </View>
     ) : (
       <View style={styles.container}>
@@ -211,7 +219,7 @@ const RunnerActions = ({
             <Text style={[styles.textStyle]}>Stop</Text>
           </Pressable>
           <Pressable
-            style={[styles.button, { backgroundColor: runningState ? currentType==='dark'? useCustomTheme.darkMode.bmiButton : '#f89814' : '#5cd749' }]}
+            style={[styles.button, { backgroundColor: runningState ? currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : '#f89814' : '#5cd749' }]}
             onPress={pauscontinueHandler}>
             <Text style={[styles.textStyle]}>{runningState ? 'Pause' : 'Continue'}</Text>
           </Pressable>

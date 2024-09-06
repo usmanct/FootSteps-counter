@@ -2,12 +2,14 @@ import { ImageBackground, StyleSheet, Text, Dimensions, View, Image } from 'reac
 import React, { useEffect, useState } from 'react'
 
 
+
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width
 
 const SplashScreen = () => {
-    const [progress, setProgress] = useState<boolean>()
+    const [progress, setProgress] = useState<boolean>(false)
     const [loaderWidth, setLoaderWidth] = useState<number>(0)
+
 
     useEffect(() => {
         // Set the interval to gradually fill the bar

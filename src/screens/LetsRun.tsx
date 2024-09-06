@@ -1,4 +1,4 @@
-import { StyleSheet, Image, View, Text } from 'react-native'
+import { StyleSheet, Image, View, Text, ScrollView } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import Header from '../components/Header'
 import RunnerMap from '../components/letsrunScreen/RunnerMap'
@@ -7,6 +7,7 @@ import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
 import { AppContext } from '../contextApi/AppContext'
 import { useThemeChange } from '../apptheme/ThemeChange'
+import OverLayScreen from '../components/OverLayScreen'
 const LetsRun = () => {
 
   const [timeDuration, settimeDuration] = useState({
@@ -26,6 +27,7 @@ const LetsRun = () => {
   const [runningState, setRunningState] = useState<boolean>(false)
   const mapRef = useRef<any>(null);
   const [timeReached, setTimeReached] = useState(false);
+  const [showOverLay, setShowOverLay] = useState(false)
   const { currentType }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
 
@@ -135,7 +137,7 @@ const LetsRun = () => {
 
 
   useEffect(() => {
-    const getPermissions = async () => {
+    const watchSteps = async () => {
       try {
         const startTime: any = new Date();
         // Start tracking location
@@ -181,13 +183,16 @@ const LetsRun = () => {
       }
     };
 
-    getPermissions();
+    watchSteps();
   }, [IsRunning, runningState]);
 
 
 
   return (
-    <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
+    <ScrollView
+      contentContainerStyle={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white', position: 'relative' }}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={{ ...styles.headerRow, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
         <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Daily Step Counter </Text>
         <Image
@@ -234,8 +239,11 @@ const LetsRun = () => {
         timeReached={timeReached}
         setTimeReached={setTimeReached}
         currentType={currentType}
+        showOverLay={showOverLay}
+        setShowOverLay={setShowOverLay}
       />
-    </View>
+      <OverLayScreen showOverLay={showOverLay} />
+    </ScrollView>
   )
 }
 
@@ -243,7 +251,7 @@ export default LetsRun
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: 'center',
     // justifyContent: 'center',
     // paddingHorizontal: 10,

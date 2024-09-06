@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import ThemeSwitch from '../components/ThemeSwitch'
 import { AppContext } from '../contextApi/AppContext'
 import { useThemeChange } from '../apptheme/ThemeChange'
+import OverLayScreen from '../components/OverLayScreen'
 // import { startRunningreminderService } from '../services/ForegroundService'
 
 const Account = () => {
@@ -24,6 +25,7 @@ const Account = () => {
   })
   const [reminderFlag, setReminderFlag] = useState(false)
   const [toggleService, setToggleService] = useState(true)
+  const [showOverLay, setShowOverLay] = useState(false)
   const { currentType }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
 
@@ -86,6 +88,7 @@ const Account = () => {
   const toggleModal = (s: string) => {
     setModalType(s)
     setModalVisible(!modalVisible)
+    setShowOverLay(!showOverLay)
   }
 
 
@@ -99,15 +102,6 @@ const Account = () => {
           resizeMode='contain'
         />
       </View>
-      <RunningSettingModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        modalType={modalType}
-        setModalType={setModalType}
-        reminderTime={reminderTime}
-        setReminderTime={setReminderTime}
-        currentType={currentType}
-      />
       <View style={styles.subcontainer}>
         <ThemeSwitch />
       </View>
@@ -144,8 +138,20 @@ const Account = () => {
         </View>
       </View>
       <View style={styles.subcontainer}>
-        <Profile currentType={currentType} />
+        <Profile currentType={currentType} showOverLay={showOverLay} setShowOverLay={setShowOverLay} />
       </View>
+      <RunningSettingModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        modalType={modalType}
+        setModalType={setModalType}
+        reminderTime={reminderTime}
+        setReminderTime={setReminderTime}
+        currentType={currentType}
+        showOverLay={showOverLay}
+        setShowOverLay={setShowOverLay}
+      />
+      <OverLayScreen modalVisible={modalVisible} showOverLay={showOverLay} />
     </View>
   )
 }
@@ -156,6 +162,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    position: 'relative'
     // justifyContent: 'center',
     // paddingHorizontal: 10,
     // paddingVertical: 15,
@@ -178,6 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-  }
+  },
+
 
 })

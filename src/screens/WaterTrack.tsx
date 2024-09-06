@@ -10,7 +10,7 @@ import DataBaseInitialization from '../sqLiteDb/DataBaseInitialization'
 import { useThemeChange } from '../apptheme/ThemeChange'
 const WaterTrack = () => {
 
-  const [barData, setbarData] = useState([])
+  const [barData, setbarData] = useState<any>([])
   const now = new Date();
   const dateOnly = now.toLocaleDateString();
   const {
@@ -29,7 +29,7 @@ const WaterTrack = () => {
   const { getALLWaterData, updateWaterRecord, insertWaterData, getWaterData } = useDatabase()
 
   useEffect(() => {
-    const waterDrinkedData = waterHistory.map((data: any) => ({
+    const waterDrinkedData  = waterHistory.map((data: any) => ({
       value: data?.waterIntake,
       label: data?.date,
     }));

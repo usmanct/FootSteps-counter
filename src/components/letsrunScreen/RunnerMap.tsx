@@ -20,6 +20,13 @@ const RunnerMap = ({
     currentType
 }: any) => {
 
+    useEffect(() => {
+        console.log("mapref", mapRef)
+        console.log("location", location)
+        console.log("routeCoordinates", routeCoordinates)
+    }, [])
+
+
     return (
         <View style={{ ...styles.map, justifyContent: 'center', alignItems: 'center' }}>
             {errorMsg ? (

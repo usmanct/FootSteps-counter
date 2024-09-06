@@ -46,7 +46,7 @@ const Results = () => {
                     <Text style={styles.headingText}>Results</Text>
                 </TouchableOpacity>
                 {record.length ?
-                    <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : useCustomTheme.lightMode.bgcolor }}>
+                    <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
                         {record.length ? <Text style={{ ...styles.subHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Steps</Text> : null}
                         <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{totalSteps}</Text>
                         <FlatList

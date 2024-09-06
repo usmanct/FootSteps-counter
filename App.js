@@ -1,9 +1,10 @@
 import { SafeAreaView, StyleSheet, View } from 'react-native';
-import { useEffect, useState } from 'react';
-import { AppProvider } from './src/contextApi/AppContext';
+import { useContext, useEffect, useState } from 'react';
+import { AppContext, AppProvider } from './src/contextApi/AppContext';
 import { BottomTabs } from './src/bottomNavigation/BottomTabs';
 import * as Location from 'expo-location';
 import SplashScreen from './src/screens/SplashScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
 

@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { AppContext } from '../contextApi/AppContext';
 import { useThemeChange } from '../apptheme/ThemeChange';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const ThemeSwitch = () => {
 
@@ -12,28 +13,27 @@ const ThemeSwitch = () => {
     }: any = useContext(AppContext)
     const useCustomTheme = useThemeChange()
 
-    const [themeMode, setThemeMode] = useState<string>('light')
 
 
 
-    const toggleTheme = () => {
-        setThemeMode((pre: string) => (pre === 'light' ? 'dark' : 'light'))
-        setCurrentType((pre: string) => (pre === 'light' ? 'dark' : 'light'))
+    const toggleTheme = async () => {
+        const newThemeMode = currentType === 'light' ? 'dark' : 'light';
+        setCurrentType(newThemeMode);
+        await AsyncStorage.setItem('currentMode', newThemeMode);
     }
 
 
     useEffect(() => {
         console.log("currentType", currentType)
-        console.log(" themeMode", themeMode)
-    }, [currentType, themeMode])
+    }, [currentType])
 
     return (
         <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
-            <Text style={{ ...styles.rowText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{themeMode === 'light' ? 'Light' : 'Dark'} Mode </Text>
+            <Text style={{ ...styles.rowText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{currentType === 'light' ? 'Light' : 'Dark'} Mode </Text>
             <TouchableOpacity
                 onPress={toggleTheme}
             >
-                {themeMode === 'light' ?
+                {currentType === 'light' ?
                     <MaterialIcons name="dark-mode" size={20} color="black" />
                     :
                     <MaterialIcons name="light-mode" size={20} color="white" />

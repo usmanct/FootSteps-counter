@@ -5,6 +5,8 @@ import { useDatabase } from '../../sqLiteDb/useDatabase';
 import React from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { useThemeChange } from '../../apptheme/ThemeChange';
+import Wave from "react-native-waves"
+import { WaterWave } from './WaterWave';
 const { width } = Dimensions.get('window');
 
 
@@ -130,15 +132,17 @@ const ProgressCircle = ({
     }, [cupCapacity])
 
     return (
-        <View style={{ ...styles.container, height: MAX_HEIGHT , borderColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke }}>
-            <Image
-                source={require('../../../assets/waterTrackScreenAssets/water_icon.png')}
-                style={{ height: 100, width: 100 }}
-            />
-            <View style={{ ...styles.fillingContainer, height: fillcontainer || 0  , backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke }}>
-                {/* <Animated.View style={[styles.ave, waveAnimation]} /> */}
-            </View>
-        </View>
+        // <View style={{ ...styles.container, height: MAX_HEIGHT, borderColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke }}>
+        //     <Image
+        //         source={require('../../../assets/waterTrackScreenAssets/water_icon.png')}
+        //         style={{ height: 100, width: 100 }}
+        //     />
+        //     <View style={{ ...styles.fillingContainer, height: fillcontainer || 0, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke }}>
+        //     {/* <Animated.View style={[styles.ave, waveAnimation]} /> */}
+        //     </View>
+        //     {/* <Wave delta={1} maxPoints={1} placement="bottom" height={fillcontainer || 0} color={currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke} /> */}
+        // </View>
+        <WaterWave size={200} value={fillcontainer} currentType={currentType}/>
     );
 };
 

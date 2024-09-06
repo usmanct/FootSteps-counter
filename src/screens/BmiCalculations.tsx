@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppContext } from '../contextApi/AppContext';
 import { useThemeChange } from '../apptheme/ThemeChange';
+import OverLayScreen from '../components/OverLayScreen';
 
 const BmiCalculations = () => {
     const navigation = useNavigation();
@@ -13,6 +14,7 @@ const BmiCalculations = () => {
     const [bmivalue, setBmiValue] = useState<any>()
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState('')
+    const [showOverLay, setShowOverLay] = useState(false)
 
     const [userData, setUserData] = useState({
         gender: 'male',
@@ -73,6 +75,7 @@ const BmiCalculations = () => {
 
     const toggleModal = (e: any) => {
         setModalVisible(!modalVisible)
+        setShowOverLay(!showOverLay)
         setTitle(e)
     }
 
@@ -92,7 +95,6 @@ const BmiCalculations = () => {
             />
             <Text style={{ ...styles.heading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>BMI Calculations</Text>
             <Text style={styles.subHeading}>Set your  Personal Information to calculate</Text>
-            <BmiModal modalVisible={modalVisible} setModalVisible={setModalVisible} title={title} userData={userData} setUserData={setUserData} currentType={currentType} />
             <View style={{ ...styles.subContainer, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
                 <View style={styles.row}>
                     <Text style={{ ...styles.rowText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Gender</Text>
@@ -131,6 +133,17 @@ const BmiCalculations = () => {
                     <Text style={styles.resultBtnText}>Calculate</Text>
                 </TouchableOpacity>
             </View>
+            <OverLayScreen showOverLay={showOverLay} />
+            <BmiModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                title={title}
+                userData={userData}
+                setUserData={setUserData}
+                currentType={currentType}
+                showOverLay={showOverLay}
+                setShowOverLay={setShowOverLay}
+            />
         </View>
     )
 }
@@ -143,6 +156,7 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
+        position: 'relative',
 
     },
     subContainer: {

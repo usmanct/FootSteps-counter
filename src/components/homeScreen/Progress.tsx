@@ -2,7 +2,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from
 import React, { useEffect, useState } from 'react'
 import { CircularProgressBase } from 'react-native-circular-progress-indicator';
 import { AntDesign } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import TargetModal from '../TargetModal';
 import { Pedometer } from 'expo-sensors';
 import { useThemeChange } from '../../apptheme/ThemeChange';
@@ -13,7 +12,10 @@ const Progress = (
         currentStepCount,
         target,
         setTarget,
-        currentType
+        currentType,
+        setInitialUpdateflag,
+        showOverLay,
+        setShowOverLay
     }
         : any) => {
 
@@ -21,55 +23,24 @@ const Progress = (
     const useCustomTheme = useThemeChange()
 
     const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
+    const [initialCountflag, setinitailcountflag] = useState<boolean>(false)
     // const [IsTargetReached, setIsTargetReached] = useState<any>(false);
 
 
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
 
-    //Updaeting the Notification in the Background
-    // useEffect(() => {
-    //     const updateBackground = async () => {
-    //         await updateService(currentStepCount, kcal)
-    //     }
-    //     updateBackground()
-    // }, [currentStepCount, kcal])
 
-
-    // useEffect(() => {
-    //     if (currentStepCount >= target) {
-    //         setCurrentStepCount(target)
-    //         setIsTargetReached(true);
-    //     }
-    //     else {
-    //         setIsTargetReached(false);
-    //     }
-    //     // console.log("Inside Target:state", state);
-    // }, [target, currentStepCount]);
+    useEffect(() => {
+        if (currentStepCount >= target) {
+            setCurrentStepCount(target)
+        }
+    }, [target, currentStepCount]);
 
     const openTargetModal = () => {
         setModalVisible(!modalVisible)
+        setShowOverLay(!showOverLay)
     }
-
-    const countStepsInBackground = async () => {
-        console.log("CountStepsInBackground")
-        // await updateService(currentStepCount, kcal)
-        // Pedometer.watchStepCount((result) => {
-        //     console.log("result", result.steps)
-        //     setCurrentStepCount((preCount: any) => {
-        //         // console.log("preCount", preCount);
-        //         // const newCount = preCount > 1 ? result.steps + preCount - 1 : result.steps;
-        //         const newCount = result.steps;
-
-        //         if (newCount >= target) {
-        //             // setIsTargetReached(true);
-        //             return target;
-        //         }
-        //         return newCount;
-        //     });
-        // });
-    }
-
     useEffect(() => {
         let subscription;
         console.log("Subscription")
@@ -85,6 +56,7 @@ const Progress = (
         );
         Pedometer.requestPermissionsAsync().then((result) => {
             console.log("Availability", result)
+            setInitialUpdateflag(true);
         },
             (error) => {
                 console.log("Could not get availability:", error)
@@ -96,7 +68,6 @@ const Progress = (
                 const newCount = result.steps;
 
                 if (newCount >= target) {
-                    // setIsTargetReached(true);
                     return target;
                 }
                 return newCount;
@@ -106,7 +77,7 @@ const Progress = (
             subscription && subscription.remove();
 
         };
-    }, []);
+    }, [initialCountflag]);
 
 
     return (
@@ -117,7 +88,15 @@ const Progress = (
         >
 
             <View style={styles.btnView}>
-                <TargetModal modalVisible={modalVisible} setModalVisible={setModalVisible} target={target} setTarget={setTarget} currentType={currentType} />
+                <TargetModal
+                    modalVisible={modalVisible}
+                    setModalVisible={setModalVisible}
+                    target={target}
+                    setTarget={setTarget}
+                    currentType={currentType}
+                    showOverLay={showOverLay}
+                    setShowOverLay={setShowOverLay}
+                />
                 <TouchableOpacity
                     style={{ ...styles.btn, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn1 : useCustomTheme.lightMode.Btn1 }}
                     onPress={openTargetModal}
@@ -188,6 +167,7 @@ const styles = StyleSheet.create({
         // borderRadius: 8,
         gap: 15,
         paddingHorizontal: 20,
+
 
     },
     btnView: {

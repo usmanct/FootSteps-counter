@@ -3,14 +3,35 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View, ToastAndroid } from 'r
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { AppContext } from '../../contextApi/AppContext';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-const SetDrinkTarget = ({ modalVisible, setModalVisible, drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved,
-    setISgoalAchieved, drinkGaolData, cupcapacitydata, defaultIndexcup, setDefaultIndexcup, defaultIndexgoal, setDefaultIndexgoal } : any) => {
+import { useThemeChange } from '../../apptheme/ThemeChange';
+const SetDrinkTarget = (
+    {
+        modalVisible,
+        setModalVisible,
+        drinkGoal,
+        setDrinkGoal,
+        cupCapacity,
+        setCupCapacity,
+        waterdrinked,
+        setwaterdrinked,
+        IsgoalAchieved,
+        setISgoalAchieved,
+        drinkGaolData,
+        cupcapacitydata,
+        defaultIndexcup,
+        setDefaultIndexcup,
+        defaultIndexgoal,
+        setDefaultIndexgoal,
+        currentType
+    }
+        : any) => {
 
 
     const {
         modalType,
         setWaterCupCount,
     }: any = useContext(AppContext)
+    const useCustomTheme = useThemeChange()
     const [inputValue, setInputValue] = useState<any>({})
     const saveChanges = () => {
         setModalVisible(!modalVisible)
@@ -50,7 +71,7 @@ const SetDrinkTarget = ({ modalVisible, setModalVisible, drinkGoal, setDrinkGoal
                 visible={modalVisible}
             >
                 <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
+                    <View  style={{ ...styles.modalView, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : 'white' }}>
 
                         <WheelPickerExpo
                             height={150}
@@ -67,15 +88,16 @@ const SetDrinkTarget = ({ modalVisible, setModalVisible, drinkGoal, setDrinkGoal
                                 }
 
                             }
-                            selectedStyle={styles.selectedItem}
+                            selectedStyle={ {...styles.selectedItem, borderColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : '#fc5c74' }}
+                            backgroundColor={currentType === 'dark' ? useCustomTheme.darkMode.Header : 'white'}
                         />
                         <Pressable
-                            style={[styles.button , styles.saveBtn]}
+                            style={[styles.button, { backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : '#f49913' }]}
                             onPress={saveChanges}>
                             <Text style={styles.textStyle}>Save Changes</Text>
                         </Pressable>
                         <Pressable
-                            style={[styles.button , styles.cancelBtn]}
+                            style={[styles.button, { backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn1 : '#0fb4fc' }]}
                             onPress={() => setModalVisible(!modalVisible)}>
                             <Text style={styles.textStyle}>Cancel</Text>
                         </Pressable>
@@ -91,7 +113,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 22,
+        // marginTop: 22,
     },
     modalView: {
         margin: 20,

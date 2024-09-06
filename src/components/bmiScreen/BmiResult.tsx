@@ -74,7 +74,7 @@ const BmiResult = ({ route }: any) => {
                         <Text style={styles.textStyle}>Back to Home</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={[styles.button, styles.saveBtn, { backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn1 : '' }]}
+                        style={[styles.button, styles.saveBtn, { backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn1 : useCustomTheme.lightMode.Btn1 }]}
                         onPress={() => {
                             navigation.navigate('BmiCalculations' as never)
                         }}
