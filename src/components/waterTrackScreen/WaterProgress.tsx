@@ -9,8 +9,20 @@ import { useIsFocused } from '@react-navigation/native';
 import { useThemeChange } from '../../apptheme/ThemeChange';
 
 
-const WaterProgress = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved,
-    setISgoalAchieved, currentType }: any) => {
+const WaterProgress = (
+    {
+        drinkGoal,
+        setDrinkGoal,
+        cupCapacity,
+        setCupCapacity,
+        waterdrinked,
+        setwaterdrinked,
+        IsgoalAchieved,
+        setISgoalAchieved,
+        currentType,
+        setShowOverLay,
+        showOverLay
+    }: any) => {
     const {
         MAX_HEIGHT,
         fillcontainer,
@@ -20,13 +32,18 @@ const WaterProgress = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, w
     const useCustomTheme = useThemeChange()
     const now = new Date()
     const dateOnly = now.toLocaleDateString();
+    const [waterdrinkFlag, setWaterDrinkFlag] = useState(false)
     const navigation = useNavigation();
     const { dropTable, getWaterData } = useDatabase()
     useEffect(() => {
         if (drinkGoal <= waterdrinked) {
             setISgoalAchieved(true)
+            setShowOverLay(true)
         }
-    }, [isFocused])
+        setTimeout(() => {
+            setWaterDrinkFlag(false)
+        }, 2000)
+    }, [isFocused, waterdrinkFlag])
 
 
     useEffect(() => {
@@ -44,6 +61,7 @@ const WaterProgress = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, w
     const handleDrink = () => {
         if (!IsgoalAchieved) {
             setwaterdrinked(waterdrinked + cupCapacity)
+            setWaterDrinkFlag(true)
         }
 
     }
@@ -93,9 +111,13 @@ const WaterProgress = ({ drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, w
                     <TouchableOpacity
                         style={{ ...styles.drinkBtn, backgroundColor: IsgoalAchieved ? 'gray' : '#0fb4fc', }}
                         onPress={handleDrink}
-                        disabled={IsgoalAchieved}
+                        disabled={IsgoalAchieved || waterdrinkFlag}
                     >
-                        <Text style={styles.textStyle}>Drink</Text>
+                        {waterdrinkFlag
+                            ?
+                            <Text style={styles.textStyle}>Drinking....</Text> :
+                            <Text style={styles.textStyle}>Drink</Text>
+                        }
                     </TouchableOpacity>
                 </View>
             </View>

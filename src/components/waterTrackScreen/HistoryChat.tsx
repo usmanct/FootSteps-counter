@@ -5,36 +5,35 @@ import { BarChart } from "react-native-gifted-charts";
 import { useThemeChange } from '../../apptheme/ThemeChange';
 const screenHeight = Dimensions.get("window").height;
 
-const HistoryChat = ({ barData, currentType }: any) => {
+const HistoryChat = ({ barData, currentType, cupCapacity, drinkGoal }: any) => {
     const useCustomTheme = useThemeChange()
+    const yAxixsLabels = ['0', , '1000', '2000', '3000', '4000', '5000', '6000']
 
     return (
         <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
             <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
                 <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>HistoryChart</Text>
             </View>
-            {barData.length ? <BarChart
-                frontColor={'#9f49ff'}
-                barWidth={50}
-                data={barData}
-                yAxisLabelWidth={35}
-                isAnimated
-                hideRules
-                // yAxisLabelTexts={yAxisLabels}
-                stepValue={1000} // Adjust this to match the scale of your y-axis
-                maxValue={7000}
-                yAxisThickness={0}
-                xAxisThickness={0}
-                // barBorderRadius={5}
-                barBorderTopLeftRadius={5}
-                barBorderTopRightRadius={5}
-                // height={screenHeight - 400}
-                showValuesAsTopLabel={true}
-                hideYAxisText
-            /> :
+            {barData.length ?
+                <BarChart
+                    frontColor={'#9f49ff'}
+                    barWidth={70}
+                    data={barData}
+                    isAnimated
+                    hideRules
+                    stepValue={cupCapacity}
+                    maxValue={6000}
+                    barBorderTopLeftRadius={5}
+                    barBorderTopRightRadius={5}
+                    showValuesAsTopLabel={true}
+                    noOfSections={6}
+                    xAxisThickness={0}
+                    yAxisThickness={0}
+                />
+                :
                 <View>
                     <Image
-                        source={require('../images/NotFound.gif')}
+                        source={require('../../../assets/waterTrackScreenAssets/Not_found_Gif.gif')}
                     />
                 </View>
             }

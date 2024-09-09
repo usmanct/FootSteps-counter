@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View, Image } from 'react-native'
+import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import WaterProgress from '../components/waterTrackScreen/WaterProgress'
@@ -8,6 +8,7 @@ import { AppContext } from '../contextApi/AppContext'
 import CompleteAnimation from '../components/CompleteAnimation'
 import DataBaseInitialization from '../sqLiteDb/DataBaseInitialization'
 import { useThemeChange } from '../apptheme/ThemeChange'
+import OverLayScreen from '../components/OverLayScreen'
 const WaterTrack = () => {
 
   const [barData, setbarData] = useState<any>([])
@@ -26,10 +27,12 @@ const WaterTrack = () => {
   const [cupCapacity, setCupCapacity] = useState(50)
   const [waterdrinked, setwaterdrinked] = useState<any>(0)
   const [IsgoalAchieved, setISgoalAchieved] = useState(false)
+  const [loading, setLoading] = useState(true)
   const { getALLWaterData, updateWaterRecord, insertWaterData, getWaterData } = useDatabase()
+  const [showOverLay, setShowOverLay] = useState(false)
 
   useEffect(() => {
-    const waterDrinkedData  = waterHistory.map((data: any) => ({
+    const waterDrinkedData = waterHistory.map((data: any) => ({
       value: data?.waterIntake,
       label: data?.date,
     }));
@@ -38,6 +41,14 @@ const WaterTrack = () => {
     // Check if the goal is achieved
 
   }, [waterdrinked, waterHistory]);
+
+  useEffect(() => {
+    if (IsgoalAchieved) {
+      setTimeout(() => {
+        setShowOverLay(false)
+      }, 5000);
+    }
+  }, [IsgoalAchieved])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -80,6 +91,9 @@ const WaterTrack = () => {
         }
       } catch (error) {
         console.error('Failed to load initial data', error);
+      }
+      finally {
+        setLoading(false);
       }
     };
     getALLWaterData();
@@ -137,11 +151,21 @@ const WaterTrack = () => {
 
   //   return () => clearInterval(interval); // Clean up the interval on unmount
   // }, [currentDate, insertWaterData, waterdrinked]);
-
+  if (loading) {
+    return (
+      <View style={
+        {
+          ...styles.loaderContainer,
+          backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white'
+        }
+      }>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>
-
       <ScrollView
         contentContainerStyle={{
           backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white'
@@ -158,16 +182,27 @@ const WaterTrack = () => {
           IsgoalAchieved={IsgoalAchieved}
           setISgoalAchieved={setISgoalAchieved}
           currentType={currentType}
+          showOverLay={showOverLay}
+          setShowOverLay={setShowOverLay}
         />
         {/* <CanvasProgress/> */}
         <HistoryChat
           barData={barData}
           currentType={currentType}
+          cupCapacity={cupCapacity}
+          drinkGoal={drinkGoal}
         />
       </ScrollView>
-      {/* {goalAchieved && <CompleteAnimation isVisible={goalAchieved} />} */}
-    </View>
-  )
+      <OverLayScreen showOverLay={showOverLay} type={'Complete_Animation'} />
+    </View>)
 }
+
+const styles = StyleSheet.create({
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default WaterTrack

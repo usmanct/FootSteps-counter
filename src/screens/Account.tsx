@@ -24,9 +24,13 @@ const Account = () => {
     m: 0
   })
   const [reminderFlag, setReminderFlag] = useState(false)
-  const [toggleService, setToggleService] = useState(true)
+  const [toggleService, setToggleService] = useState(false)
   const [showOverLay, setShowOverLay] = useState(false)
-  const { currentType }: any = useContext(AppContext)
+  const {
+    currentType,
+    isPedometerRunning,
+    setIsPedometerRunning,
+  }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
 
 
@@ -115,6 +119,8 @@ const Account = () => {
           toggleService={toggleService}
           setToggleService={setToggleService}
           currentType={currentType}
+          isPedometerRunning={isPedometerRunning}
+          setIsPedometerRunning={setIsPedometerRunning}
         />
       </View>
       <View style={{ ...styles.subcontainer, }}>

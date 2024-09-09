@@ -15,12 +15,15 @@ const Progress = (
         currentType,
         setInitialUpdateflag,
         showOverLay,
-        setShowOverLay
+        setShowOverLay,
+        isPedometerRunning,
+        setIsPedometerRunning,
     }
         : any) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const useCustomTheme = useThemeChange()
+    let subscription: any;
 
     const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
     const [initialCountflag, setinitailcountflag] = useState<boolean>(false)
@@ -42,42 +45,47 @@ const Progress = (
         setShowOverLay(!showOverLay)
     }
     useEffect(() => {
-        let subscription;
         console.log("Subscription")
-        // let lastSteps = 0;
-        Pedometer.isAvailableAsync().then(
-            (result) => {
-                console.log("Availability--", result)
-                setIsPedometerAvailable(String(result));
-            },
-            (error) => {
-                setIsPedometerAvailable('Could not get availability: ' + error);
-            }
-        );
-        Pedometer.requestPermissionsAsync().then((result) => {
-            console.log("Availability", result)
-            setInitialUpdateflag(true);
-        },
-            (error) => {
-                console.log("Could not get availability:", error)
-            })
-        subscription = Pedometer.watchStepCount((result) => {
-            console.log("result", result.steps)
-            setCurrentStepCount((preCount: any) => {
-                console.log("preCount", currentStepCount);
-                const newCount = result.steps;
+        if (isPedometerRunning) {
 
-                if (newCount >= target) {
-                    return target;
+            // let lastSteps = 0;
+            Pedometer.isAvailableAsync().then(
+                (result) => {
+                    console.log("Availability--", result)
+                    setIsPedometerAvailable(String(result));
+                },
+                (error) => {
+                    setIsPedometerAvailable('Could not get availability: ' + error);
                 }
-                return newCount;
+            );
+            Pedometer.requestPermissionsAsync().then((result) => {
+                console.log("Availability", result)
+                setInitialUpdateflag(true);
+            },
+                (error) => {
+                    console.log("Could not get availability:", error)
+                })
+            subscription = Pedometer.watchStepCount((result) => {
+                console.log("result", result.steps)
+                setCurrentStepCount((preCount: any) => {
+                    console.log("preCount", currentStepCount);
+                    const newCount = result.steps;
+
+                    if (newCount >= target) {
+                        return target;
+                    }
+                    return newCount;
+                });
             });
-        });
+        }
+        else {
+            subscription && subscription.remove();
+        }
         return () => {
             subscription && subscription.remove();
 
         };
-    }, [initialCountflag]);
+    }, [initialCountflag , isPedometerRunning]);
 
 
     return (
@@ -111,7 +119,8 @@ const Progress = (
                 radius={100}
                 duration={1000}
                 maxValue={target}
-                inActiveStrokeOpacity={currentType === 'dark' ? 1 : .5}
+                inActiveStrokeOpacity={1}
+                inActiveStrokeColor={currentType === 'dark' ? useCustomTheme.darkMode.inActiveStroke : useCustomTheme.lightMode.inActiveStroke}
                 activeStrokeColor={currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke}
                 onAnimationComplete={() => {
 
@@ -151,7 +160,7 @@ const Progress = (
                 </View>
             </CircularProgressBase>
             <Image
-                source={require('../../../assets/homeScreenAssets/gift_icon.gif')}
+                source={require('../../../assets/homeScreenAssets/running_gif.gif')}
                 style={{ height: 70, width: 100, position: 'absolute', bottom: 0, right: 0 }}
             />
         </ImageBackground>

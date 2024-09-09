@@ -170,8 +170,8 @@ const styles = StyleSheet.create({
     map: {
         width: screenWidth - 40,
         height: screenHeight / 2 - 20,
-        borderRadius: 10,
-    },
+    }
+    ,
     button: {
         backgroundColor: '#0fb4fc',
         paddingHorizontal: 30,

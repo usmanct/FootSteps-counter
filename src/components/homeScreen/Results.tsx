@@ -1,15 +1,11 @@
-import { Dimensions, FlatList, StyleSheet, Text, View, Image, TouchableOpacity , ScrollView } from 'react-native'
+import {  FlatList, StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { AntDesign } from '@expo/vector-icons';
-import { SimpleLineIcons } from '@expo/vector-icons';
-import { Octicons } from '@expo/vector-icons';
 import StatsCard from './StatsCard';
 import { AppContext } from '../../contextApi/AppContext';
 import { BarChart } from "react-native-gifted-charts";
 import { useDatabase } from '../../sqLiteDb/useDatabase';
 import { useThemeChange } from '../../apptheme/ThemeChange';
 
-const screenHeight = Dimensions.get("window").height;
 
 const Results = () => {
     const {
@@ -22,13 +18,12 @@ const Results = () => {
     const [fetchData, setFetchData] = useState<any>([])
 
 
-    const { getALLWaterData, dropTable, insertData } = useDatabase()
-
+    const { getALLWaterData, dropTable } = useDatabase()
+ 
     useEffect(() => {
         getALLWaterData()
         const waterDrinkedData = waterHistory.map((data: { waterIntake: any; date: any; }) => ({ value: data.waterIntake, label: data.date }))
         setFetchData([...waterDrinkedData])
-        // console.log('waterDrinkedData', waterDrinkedData)
     }, [waterHistory])
 
     useEffect(() => {
@@ -105,7 +100,7 @@ const Results = () => {
             {!fetchData.length && !record.length ?
                 <View style={styles.notFoundContainer}>
                     <Image
-                        source={require('../images/NotFound.gif')}
+                        source={require('../../../assets/waterTrackScreenAssets/Not_found_Gif.gif')}
                     />
                 </View>
                 : null}
@@ -118,7 +113,6 @@ export default Results
 
 const styles = StyleSheet.create({
     container: {
-
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#e9eaee',
@@ -135,11 +129,9 @@ const styles = StyleSheet.create({
         flex: 1
     },
     subContainer: {
-
         justifyContent: 'space-around',
         alignItems: 'center',
         flexDirection: 'row',
-        // backgroundColor: 'white',
         margin: 10,
         marginTop: 5,
         paddingVertical: 15,
@@ -150,10 +142,8 @@ const styles = StyleSheet.create({
     },
     btnView: {
         justifyContent: 'flex-end',
-        // backgroundColor: 'green',
         width: '100%',
         flexDirection: 'row',
-
     },
     btn: {
         flexDirection: 'row',
@@ -171,7 +161,6 @@ const styles = StyleSheet.create({
     headingText: {
         fontSize: 20,
         fontWeight: 'bold',
-        // flex: 1,
         textAlign: 'center',
         marginVertical: 10,
 
@@ -194,6 +183,4 @@ const styles = StyleSheet.create({
         gap: 15,
         paddingHorizontal: 10,
     }
-
-
 })

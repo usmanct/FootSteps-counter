@@ -5,7 +5,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppContext } from '../../contextApi/AppContext';
 import { useThemeChange } from '../../apptheme/ThemeChange';
 
-const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFlag, setReminderFlag, setToggleService, toggleService, styleProp, currentType }: any) => {
+const SoundNotification = (
+    { rowTitle,
+        reminderTime,
+        setReminderTime,
+        reminderFlag,
+        setReminderFlag,
+        setToggleService,
+        toggleService,
+        styleProp,
+        currentType,
+        isPedometerRunning,
+        setIsPedometerRunning
+    }: any) => {
     const [isEnabled, setIsEnabled] = useState(reminderFlag || false);
     const {
         currentStepCount,
@@ -28,7 +40,7 @@ const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFl
 
     useEffect(() => {
         if (rowTitle === 'StepCounter') {
-            setIsEnabled(toggleService)
+            setIsEnabled(isPedometerRunning)
         }
     }, [])
 
@@ -41,7 +53,10 @@ const SoundNotification = ({ rowTitle, reminderTime, setReminderTime, reminderFl
             setReminderFlag(newState);
         }
         else if (rowTitle === 'StepCounter') {
-            setIsEnabled(toggleService)
+            console.log('isPedometerRunning', isPedometerRunning)
+            setToggleService(!toggleService);
+            setIsEnabled(!toggleService)
+            setIsPedometerRunning(!isPedometerRunning)
             if (toggleService) {
 
             }

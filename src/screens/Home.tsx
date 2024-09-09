@@ -11,13 +11,10 @@ import { AppState } from 'react-native';
 import { AppContext } from '../contextApi/AppContext'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import StepCountingServiceComponent from '../services/ForegroundService'
-import * as Location from 'expo-location';
 import { useThemeChange } from '../apptheme/ThemeChange'
 import OverLayScreen from '../components/OverLayScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 const Home = () => {
-
-
 
   const {
     currentStepCount,
@@ -29,13 +26,12 @@ const Home = () => {
     target,
     setTarget,
     currentType,
-    setCurrentType
+    setCurrentType,
+    isPedometerRunning
   }: any = useContext(AppContext)
   const now = new Date();
   const dateOnly = now.toLocaleDateString();
   const { startService, stopService } = StepCountingServiceComponent()
-  const isFocused = useIsFocused();
-
   const { insertData, getData, updateFootStepRecord } = useDatabase();
   const [appState, setAppState] = useState(AppState.currentState);
   const [stepflag, setStepFlag] = useState(true)
@@ -61,12 +57,12 @@ const Home = () => {
     return () => {
       subscription.remove();
     };
-  }, [appState])
+  }, [appState, isPedometerRunning])
 
 
 
   const handleAppStateChange = (nextAppState: string) => {
-    if (nextAppState === 'background') {
+    if (nextAppState === 'background' && isPedometerRunning ) {
       startService();
       // Start the background service when the app goes to the background
     } else if (nextAppState === 'active') {
