@@ -7,7 +7,7 @@ const screenHeight = Dimensions.get("window").height;
 
 const HistoryChat = ({ barData, currentType, cupCapacity, drinkGoal }: any) => {
     const useCustomTheme = useThemeChange()
-    const yAxixsLabels = ['0', , '1000', '2000', '3000', '4000', '5000', '6000']
+    const yAxixsLabels = ['0', '1000', '2000', '3000', '4000', '5000', '6000']
 
     return (
         <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
@@ -15,21 +15,25 @@ const HistoryChat = ({ barData, currentType, cupCapacity, drinkGoal }: any) => {
                 <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>HistoryChart</Text>
             </View>
             {barData.length ?
-                <BarChart
-                    frontColor={'#9f49ff'}
-                    barWidth={70}
-                    data={barData}
-                    isAnimated
-                    hideRules
-                    stepValue={cupCapacity}
-                    maxValue={6000}
-                    barBorderTopLeftRadius={5}
-                    barBorderTopRightRadius={5}
-                    showValuesAsTopLabel={true}
-                    noOfSections={6}
-                    xAxisThickness={0}
-                    yAxisThickness={0}
-                />
+                <View style={{padding: 10}}>
+                    <BarChart
+                        frontColor={'#9f49ff'}
+                        barWidth={70}
+                        data={barData}
+                        isAnimated
+                        // hideRules
+                        stepValue={1000}
+                        maxValue={6500}
+                        barBorderTopLeftRadius={5}
+                        barBorderTopRightRadius={5}
+                        showValuesAsTopLabel={true}
+                        noOfSections={12}
+                        xAxisThickness={0}
+                        yAxisThickness={0}
+                        yAxisLabelTexts={yAxixsLabels}
+
+                    />
+                </View>
                 :
                 <View>
                     <Image

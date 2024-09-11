@@ -21,7 +21,8 @@ export const AppProvider = ({ children }: any) => {
     const [distance, setDistance] = useState<any>(0);
     const [target, setTarget] = useState(100)
     const [currentType, setCurrentType] = useState<string>('light')
-    const [isPedometerRunning , setIsPedometerRunning] = useState(false)
+    const [isPedometerRunning, setIsPedometerRunning] = useState<boolean>(false)
+    const [reminderFlag, setReminderFlag] = useState(false)
 
 
     const MAX_HEIGHT = 200
@@ -59,7 +60,9 @@ export const AppProvider = ({ children }: any) => {
             currentType,
             setCurrentType,
             isPedometerRunning,
-            setIsPedometerRunning
+            setIsPedometerRunning,
+            reminderFlag,
+            setReminderFlag,
         }}>
             {children}
         </AppContext.Provider>

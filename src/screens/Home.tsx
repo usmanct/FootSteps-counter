@@ -27,7 +27,10 @@ const Home = () => {
     setTarget,
     currentType,
     setCurrentType,
-    isPedometerRunning
+    isPedometerRunning,
+    setIsPedometerRunning,
+    reminderFlag,
+    setReminderFlag,
   }: any = useContext(AppContext)
   const now = new Date();
   const dateOnly = now.toLocaleDateString();
@@ -62,7 +65,7 @@ const Home = () => {
 
 
   const handleAppStateChange = (nextAppState: string) => {
-    if (nextAppState === 'background' && isPedometerRunning ) {
+    if (nextAppState === 'background' && isPedometerRunning) {
       startService();
       // Start the background service when the app goes to the background
     } else if (nextAppState === 'active') {
@@ -75,15 +78,12 @@ const Home = () => {
 
   useEffect(() => {
     if (initialUpdateflag) {
-      console.log(currentStepCount, "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
       updateFootStepRecord(dateOnly, currentStepCount, target, kcal, distance).then(async () => {
         const res = await getData(dateOnly)
-        console.log('inside updater active Mode', res);
       }).catch((e) => {
         console.error('Error=====:', e);
       })
     }
-    // setInitialUpdateflag(true)
   }, [currentStepCount, kcal, distance, target])
 
 
@@ -95,7 +95,6 @@ const Home = () => {
       const res: any = await getData(newDateOnly);
       if (newDateOnly !== dateOnly && !res && res.length === 0) {
         insertData(newDateOnly, currentStepCount, target, kcal, distance).then(() => {
-          // console.log('Data inserted successfully');
         }).catch(error => {
           console.error('Error inserting data:', error);
         });
@@ -107,18 +106,27 @@ const Home = () => {
   }, [dateOnly]);
 
   const initialLoad = async () => {
-    console.log("initialLoad")
     try {
       const mode = await AsyncStorage.getItem('currentMode')
+      const pedometerState = await AsyncStorage.getItem('PedemeterState');
+      if (pedometerState !== null) {
+        const parsedState = JSON.parse(pedometerState); // Ensure you parse it if it's not null
+        setIsPedometerRunning(parsedState);  // Set the parsed boolean value
+      }
+      const notificationState = await AsyncStorage.getItem('reminderFlag');
+      if (notificationState !== null) {
+        const parsedState = JSON.parse(notificationState); // Ensure you parse it if it's not null
+        setReminderFlag(parsedState);  // Set the parsed boolean value
+      }
+
+
       setCurrentType(mode);
       const res: any = await getData(dateOnly);
-      console.log('res from Initial Load========', res)
       if (res && res.length > 0) {
         setCurrentStepCount(res[0].footsteps);
         setKcal(res[0].energy);
         setDistance(res[0].distance);
         setTarget(res[0].goal);
-        console.log("Inside Initial Load")
       } else {
         // If no data for the current date, insert a new row
         insertData(dateOnly, currentStepCount, target, kcal, distance).then(() => {

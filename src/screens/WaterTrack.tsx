@@ -193,7 +193,7 @@ const WaterTrack = () => {
           drinkGoal={drinkGoal}
         />
       </ScrollView>
-      <OverLayScreen showOverLay={showOverLay} type={'Complete_Animation'} />
+      <OverLayScreen showOverLay={showOverLay} type={'Complete_Animation'}  waterdrinked={waterdrinked}/>
     </View>)
 }
 

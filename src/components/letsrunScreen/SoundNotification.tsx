@@ -24,39 +24,54 @@ const SoundNotification = (
         setCurrentStepCount,
     }: any = useContext(AppContext)
     const useCustomTheme = useThemeChange()
-    useEffect(() => {
-        const saveSettings = async () => {
-            try {
-                // Ensure reminderFlag is either true or false
-                const valueToStore = reminderFlag !== undefined ? JSON.stringify(reminderFlag) : 'false';
-                await AsyncStorage.setItem('reminderFlag', valueToStore);
-            } catch (e) {
-                console.error("Failed to save settings to AsyncStorage", e);
-            }
-        };
 
-        saveSettings();
-    }, [reminderFlag]);
+    // useEffect(() => {
+    //     const saveSettings = async () => {
+    //         try {
+    //             // Ensure reminderFlag is either true or false
+    //             const valueToStore = reminderFlag !== undefined ? JSON.stringify(reminderFlag) : 'false';
+    //             console.log("value", valueToStore)
+    //             await AsyncStorage.setItem('reminderFlag', valueToStore);
+    //         } catch (e) {
+    //             console.error("Failed to save settings to AsyncStorage", e);
+    //         }
+    //     };
+
+    //     saveSettings();
+    // }, [reminderFlag]);
 
     useEffect(() => {
         if (rowTitle === 'StepCounter') {
+            console.log("StepCounter", isPedometerRunning)
             setIsEnabled(isPedometerRunning)
         }
-    }, [])
+        else if (rowTitle === 'Daily Steo Reminder') {
+            console.log('reminderFlag--++', reminderFlag)
+            setIsEnabled(reminderFlag)
+        }
+    }, [isPedometerRunning, reminderFlag, rowTitle])
 
-    const toggleSwitch = () => {
+    const toggleSwitch = async () => {
         // Toggle switch and update reminderFlag state
 
         if (rowTitle === 'Daily Step Reminder') {
-            const newState = !isEnabled;
-            setIsEnabled(newState);
-            setReminderFlag(newState);
+            console.log('reminderFlag--', reminderFlag)
+            setToggleService(!toggleService);
+            setReminderFlag(!reminderFlag)
+            const a: boolean = reminderFlag === true ? false : true;
+            setIsEnabled(a)
+            console.log('bbbb', a)
+            await AsyncStorage.setItem('reminderFlag', JSON.stringify(a));
         }
         else if (rowTitle === 'StepCounter') {
             console.log('isPedometerRunning', isPedometerRunning)
             setToggleService(!toggleService);
-            setIsEnabled(!toggleService)
             setIsPedometerRunning(!isPedometerRunning)
+            const a: boolean = isPedometerRunning === true ? false : true;
+            setIsEnabled(a)
+            console.log('aaaaa', a)
+            await AsyncStorage.setItem('PedemeterState', JSON.stringify(a));
+
             if (toggleService) {
 
             }

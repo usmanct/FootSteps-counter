@@ -10,10 +10,11 @@ import ThemeSwitch from '../components/ThemeSwitch'
 import { AppContext } from '../contextApi/AppContext'
 import { useThemeChange } from '../apptheme/ThemeChange'
 import OverLayScreen from '../components/OverLayScreen'
+import { registerBackgroundFetchAsync } from '../services/BackgroundServices'
+import StepCountingServiceComponent from '../services/ForegroundService'
 // import { startRunningreminderService } from '../services/ForegroundService'
 
 const Account = () => {
-
 
 
 
@@ -23,13 +24,14 @@ const Account = () => {
     h: 0,
     m: 0
   })
-  const [reminderFlag, setReminderFlag] = useState(false)
   const [toggleService, setToggleService] = useState(false)
   const [showOverLay, setShowOverLay] = useState(false)
   const {
     currentType,
     isPedometerRunning,
     setIsPedometerRunning,
+    reminderFlag,
+    setReminderFlag,
   }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
 
@@ -39,17 +41,11 @@ const Account = () => {
     const loadSettings = async () => {
       try {
         const savedReminderTime = await AsyncStorage.getItem('reminderTime');
-        const savedReminderFlag = await AsyncStorage.getItem('reminderFlag');
-
         if (savedReminderTime) {
-          console.log('R---', savedReminderTime)
+          console.log('ReminderTime', savedReminderTime)
           setReminderTime(JSON.parse(savedReminderTime));
         }
 
-        if (savedReminderFlag) {
-          console.log('p---', savedReminderFlag)
-          setReminderFlag(JSON.parse(savedReminderFlag));
-        }
       } catch (e) {
         console.error("Failed to load settings from AsyncStorage", e);
       }
@@ -60,7 +56,6 @@ const Account = () => {
   useEffect(() => {
     const saveSettings = async () => {
       try {
-        console.log("Befrore0,", reminderTime, reminderFlag)
         await AsyncStorage.setItem('reminderTime', JSON.stringify(reminderTime));
       } catch (e) {
         console.error("Failed to save settings to AsyncStorage", e);
@@ -68,18 +63,17 @@ const Account = () => {
     };
 
     saveSettings();
-  }, [reminderTime, reminderFlag]);
+  }, [reminderTime]);
 
   useEffect(() => {
-    console.log('Reminder', reminderFlag)
     if (reminderFlag) {
-      console.log('tttt')
       const interval = setInterval(() => {
         const currentTime = new Date();
-        // console.log('currentTime', currentTime.getHours(), currentTime.getMinutes())
+        console.log("Current time: ", currentTime.getHours(), currentTime.getMinutes())
+        console.log("Reminder time: ", reminderTime);
         if (currentTime.getHours() === reminderTime.h && currentTime.getMinutes() === reminderTime.m) {
-          console.log('fffff')
-          //Place the Alert Logic 
+          console.log("ooo")
+          registerBackgroundFetchAsync()
           clearInterval(interval);
         }
       }, 1000);
@@ -125,7 +119,8 @@ const Account = () => {
       </View>
       <View style={{ ...styles.subcontainer, }}>
 
-        <SoundNotification rowTitle={'Daily Step Reminder'}
+        <SoundNotification
+          rowTitle={'Daily Step Reminder'}
           reminderTime={reminderTime}
           setReminderTime={setReminderTime}
           reminderFlag={reminderFlag}
@@ -138,6 +133,8 @@ const Account = () => {
             }
           }
           currentType={currentType}
+          setToggleService={setToggleService}
+          toggleService={toggleService}
         />
         <View style={{ backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, paddingBottom: 15 }}>
           <LetsRunRow title={'Duration'} subtil={`${reminderTime.h}:${reminderTime.m}`} onpress={() => toggleModal('account')} currentType={currentType} />

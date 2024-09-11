@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { AppContext } from '../contextApi/AppContext'
 import { useThemeChange } from '../apptheme/ThemeChange'
 
-const OverLayScreen = ({ modalVisible, showOverLay, type }: any) => {
+const OverLayScreen = ({ modalVisible, showOverLay, type, waterdrinked }: any) => {
 
   const { currentType }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
@@ -12,8 +12,8 @@ const OverLayScreen = ({ modalVisible, showOverLay, type }: any) => {
     <View style={
       {
         ...styles.overlay,
-        display: modalVisible || showOverLay ? '' : 'none',
-        backgroundColor: currentType === 'dark' ? 'white' : 'black'
+        display: modalVisible || showOverLay ? 'flex' : 'none',
+        backgroundColor: currentType === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',  // Only the background has opacity
       }
     }>
 
@@ -28,8 +28,11 @@ const OverLayScreen = ({ modalVisible, showOverLay, type }: any) => {
                 width: 300
               }}
             />
-            <Text>
-              
+            <Text style={{ textAlign: 'center', fontSize: 46, fontWeight: '900', color: useCustomTheme.darkMode.Text }}>
+              {waterdrinked}
+            </Text>
+            <Text style={{ textAlign: 'center', fontSize: 32, fontWeight: 'bold', color: useCustomTheme.darkMode.Text }}>
+              Congratulations! You have successfully completed the drinking goal.
             </Text>
           </View>
           : null
@@ -48,10 +51,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    opacity: 0.5,
     justifyContent: 'center',
     alignItems: 'center',
-    // display: 'none'
-
   },
 })

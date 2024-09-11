@@ -41,10 +41,10 @@ const StepCountingServiceComponent = () => {
             // if (newSteps < currentData.goal) {
             const updatedCount = newSteps;
             const updatedEnergy: any = calculateEnergy(updatedCount).toFixed(2);  // Implement this based on your calculation logic
-
+            const updatedDistance: any = calculateDistance(updatedCount).toFixed(3)
             // Update database with new values
             setStepsFlag(false)
-            await updateFootStepRecord(dateOnly, updatedCount, currentData.goal, updatedEnergy, currentData.distance);
+            await updateFootStepRecord(dateOnly, updatedCount, currentData.goal, updatedEnergy, updatedDistance);
             // }
         });
 
@@ -52,15 +52,11 @@ const StepCountingServiceComponent = () => {
 
     const calculateEnergy = (steps: number) => {
         console.log("stepppp", steps)
-        // Implement your energy calculation logic here
-        // Example: return steps * 0.005;
         return steps * 0.05;
     };
 
     const calculateDistance = (steps: number) => {
         console.log("stepppp", steps)
-        // Implement your energy calculation logic here
-        // Example: return steps * 0.005;
         return (steps * 0.6) / 1000;
     };
 
@@ -92,9 +88,8 @@ const StepCountingServiceComponent = () => {
             resolve();
         });
 
-        pedometerSubscription?.remove();
+        (await pedometerSubscription)?.remove();
     };
-
     const updateServiceNotification = async (steps: number, calories: number, goal: number) => {
         if (BackgroundService.isRunning()) {
             console.log('Updating notification');
@@ -152,7 +147,7 @@ const StepCountingServiceComponent = () => {
 
     return {
         stopService,
-        startService
+        startService,
     }
 };
 

@@ -17,7 +17,7 @@ const Results = () => {
     const { waterHistory }: any = useContext(AppContext)
     const [fetchData, setFetchData] = useState<any>([])
 
-
+    const yAxixsLabels = ['0',  '1000', '2000', '3000', '4000', '5000', '6000']
     const { getALLWaterData, dropTable } = useDatabase()
  
     useEffect(() => {
@@ -76,22 +76,19 @@ const Results = () => {
                         <Text style={{ ...styles.subHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Water Track History</Text>
                         <BarChart
                             frontColor={'#9f49ff'}
-                            barWidth={50}
+                            barWidth={70}
                             data={fetchData}
-                            yAxisLabelWidth={35}
                             isAnimated
-                            hideRules
-                            // yAxisLabelTexts={yAxisLabels}
-                            stepValue={500} // Adjust this to match the scale of your y-axis
+                            // hideRules
+                            stepValue={1000}
                             maxValue={7000}
-                            yAxisThickness={0}
-                            xAxisThickness={0}
-                            // barBorderRadius={5}
                             barBorderTopLeftRadius={5}
                             barBorderTopRightRadius={5}
-                            // height={screenHeight - 400}
                             showValuesAsTopLabel={true}
-                            hideYAxisText
+                            noOfSections={6}
+                            xAxisThickness={0}
+                            yAxisThickness={0}
+                            yAxisLabelTexts={yAxixsLabels}
                         />
                     </View> :
                     null

@@ -45,13 +45,11 @@ const Progress = (
         setShowOverLay(!showOverLay)
     }
     useEffect(() => {
-        console.log("Subscription")
-        if (isPedometerRunning) {
+        // if (isPedometerRunning) {
 
             // let lastSteps = 0;
             Pedometer.isAvailableAsync().then(
                 (result) => {
-                    console.log("Availability--", result)
                     setIsPedometerAvailable(String(result));
                 },
                 (error) => {
@@ -59,16 +57,13 @@ const Progress = (
                 }
             );
             Pedometer.requestPermissionsAsync().then((result) => {
-                console.log("Availability", result)
                 setInitialUpdateflag(true);
             },
                 (error) => {
                     console.log("Could not get availability:", error)
                 })
             subscription = Pedometer.watchStepCount((result) => {
-                console.log("result", result.steps)
                 setCurrentStepCount((preCount: any) => {
-                    console.log("preCount", currentStepCount);
                     const newCount = result.steps;
 
                     if (newCount >= target) {
@@ -77,10 +72,10 @@ const Progress = (
                     return newCount;
                 });
             });
-        }
-        else {
-            subscription && subscription.remove();
-        }
+        // }
+        // else {
+        //     subscription && subscription.remove();
+        // }
         return () => {
             subscription && subscription.remove();
 

@@ -38,13 +38,18 @@ const WaterProgress = (
     useEffect(() => {
         if (drinkGoal <= waterdrinked) {
             setISgoalAchieved(true)
-            setShowOverLay(true)
+
         }
         setTimeout(() => {
             setWaterDrinkFlag(false)
-        }, 2000)
+        }, 4000)
     }, [isFocused, waterdrinkFlag])
 
+    useEffect(() => {
+        if (drinkGoal <= waterdrinked && waterdrinkFlag) {
+            setShowOverLay(true)
+        }
+    }, [waterdrinked])
 
     useEffect(() => {
         let per
@@ -109,7 +114,7 @@ const WaterProgress = (
                 <Text style={{ fontSize: 16, color: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.Text }}>{waterdrinked}/{drinkGoal}ml</Text>
                 <View>
                     <TouchableOpacity
-                        style={{ ...styles.drinkBtn, backgroundColor: IsgoalAchieved ? 'gray' : '#0fb4fc', }}
+                        style={{ ...styles.drinkBtn, backgroundColor: IsgoalAchieved || waterdrinkFlag ? 'gray' : '#0fb4fc', }}
                         onPress={handleDrink}
                         disabled={IsgoalAchieved || waterdrinkFlag}
                     >
