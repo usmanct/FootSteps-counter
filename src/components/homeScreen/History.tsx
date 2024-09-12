@@ -1,11 +1,12 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
-import { Calendar, WeekCalendar } from 'react-native-calendars';
+import { Calendar, CalendarProvider, WeekCalendar } from 'react-native-calendars';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useDatabase } from '../../sqLiteDb/useDatabase';
 import { AppContext } from '../../contextApi/AppContext';
 import { useThemeChange } from '../../apptheme/ThemeChange';
+import moment from 'moment'
 
 const History = ({ currentType, currentStepCount, target }: any) => {
 
@@ -15,9 +16,11 @@ const History = ({ currentType, currentStepCount, target }: any) => {
     const useCustomTheme = useThemeChange()
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
-    const [selected, setSelected] = useState('');
-    const [stepProgress, setStepProgress] = useState<any>();
-    const todayDate = now.toISOString().split('T')[0]; // Format current date to 'YYYY-MM-DD'
+    const todayDate = now.toISOString().split('T')[0] || "2024-09-12"; // Format current date to 'YYYY-MM-DD'
+    const [selected, setSelected] = useState<any>('');
+    const [stepProgress, setStepProgress] = useState<any>(todayDate);
+    const [calenderType, setCalenderType] = useState('Month');
+    const [calenderModal, setCalenderModal] = useState(false)
 
     const isFocused = useIsFocused();
     useEffect(() => {
@@ -48,78 +51,176 @@ const History = ({ currentType, currentStepCount, target }: any) => {
 
     }
 
+    const isFutureDate = (date: any) => {
+        return moment(date).isAfter(moment(), 'day'); // Compare dates
+    };
+    const markedDates = {
+        [todayDate]: {
+            customStyles: {
+                container: {
+                    borderColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke,
+                    borderWidth: 1,
+                },
+                text: {
+                    color: currentType === 'dark' ? useCustomTheme.darkMode.Text : '#fd5b72',
+                },
+            },
+        },
+        [selected]: {
+            selected: true,
+            disableTouchEvent: true,
+        },
+        ...Array.from({ length: 31 }).reduce((acc, _, index) => {
+            const date = moment().startOf('month').add(index, 'days').format('YYYY-MM-DD');
+            if (isFutureDate(date)) {
+                acc[date] = {
+                    customStyles: {
+                        text: {
+                            color: 'gray', // Adjust text color for contrast
+                        },
+                    },
+                };
+            }
+            return acc;
+        }, {}),
+    };
+
+
+    const toggleMonthWeekHandler = () => {
+        setCalenderModal(!calenderModal)
+    }
+
+    const setCalenderTypeHandler = (type: string) => {
+        setCalenderType(type)
+        setCalenderModal(!calenderModal)
+    }
+
 
     return (
         <View style={{ ...styles.upperContainer, backgroundColor: currentType === 'dark' ? useCustomTheme?.darkMode?.bgcolor : 'white' }}>
             <View style={styles.container}>
                 <Text style={{ ...styles.heading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Your Progress</Text>
-                <TouchableOpacity style={{ ...styles.btn, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn2 : useCustomTheme.lightMode.Btn2 }} onPress={() => {
-
-                }}>
-                    <Text style={styles.btnText}>Months</Text>
+                <TouchableOpacity
+                    style={{ ...styles.btn, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn2 : useCustomTheme.lightMode.Btn2 }}
+                    onPress={toggleMonthWeekHandler}>
+                    <Text style={styles.btnText}>{calenderType}</Text>
                     <AntDesign name="right" size={14} color="white" />
                 </TouchableOpacity>
+                {calenderModal ?
+                    <View
+                        style={{
+                            ...styles.calenderModal,
+                            backgroundColor: currentType === 'dark' ? useCustomTheme?.darkMode?.bgcolor : 'white',
+                            borderColor: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
+                        }}>
+                        <TouchableOpacity
+                            style={{
+                                ...styles.calenderTypeModalBtn,
+                                borderColor: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
+                            }}
+                            onPress={() => setCalenderTypeHandler('Week')}
+                        >
+                            <Text
+                                style={{ color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}
+                            >Week</Text>
+                        </TouchableOpacity>
+                        <View style={{
+                            borderTopWidth: .5,
+                            borderColor: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
+                        }}
+                        ></View>
+                        <TouchableOpacity
+                            style={{
+                                ...styles.calenderTypeModalBtn,
+                                borderColor: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
+                            }}
+                            onPress={() => setCalenderTypeHandler('Month')}
+                        >
+                            <Text
+                                style={{ color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}
+                            >Month</Text>
+                        </TouchableOpacity>
+                    </View>
+                    : null}
             </View>
             <View style={{ ...styles.hrline, borderColor: currentType === 'dark' ? '#14161d' : useCustomTheme.lightMode.Header }}></View>
-            <Calendar
-                key={currentType}
-                onDayPress={onPressDateHandler}
-                markingType={'custom'}
-                hideExtraDays={true}
-                enableSwipeMonths={true}
-                markedDates={{
-                    [todayDate]: {  // Highlight the current date
-                        customStyles: {
-                            container: {
-                                // backgroundColor: 'green',
-                                borderColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke,
-                                borderWidth: 1
-                            },
-                            text: {
-                                color: currentType === 'dark' ? useCustomTheme.darkMode.Text : '#fd5b72',
-                                // fontWeight: 'bold',
-                            },
-                        },
-                    },
-                    [selected]: {
-                        selected: true,
-                        disableTouchEvent: true,
+            <CalendarProvider date={''}>
+                {
+                    calenderType === 'Month' ?
+                        <Calendar
+                            key={currentType}
+                            onDayPress={onPressDateHandler}
+                            markingType={'custom'}
+                            hideExtraDays={true}
+                            enableSwipeMonths={true}
+                            markedDates={markedDates}
+                            theme={{
+                                todayTextColor: currentType === 'dark' ? useCustomTheme?.darkMode?.activeStroke : '#fd5b72',
+                                calendarBackground: 'transparent',
+                                backgroundColor: 'transparent',
+                                dayTextColor: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text,
+                                monthTextColor: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text,
+                            }}
+                            renderArrow={(direction: string) => (
+                                direction === 'left' ? (
+                                    currentType === 'dark' ? (
+                                        <Image
+                                            source={require('../../../assets/homeScreenAssets/back_green.png')}
+                                            style={{ width: 10, height: 10 }}
+                                        />
+                                    ) : (
+                                        <Image
+                                            source={require('../../../assets/homeScreenAssets/back_pink.gif')}
+                                            style={{ width: 10, height: 10 }}
+                                        />
+                                    )
+                                ) : (
+                                    currentType === 'dark' ? (
+                                        <Image
+                                            source={require('../../../assets/homeScreenAssets/next_green.png')}
+                                            style={{ width: 10, height: 10 }}
+                                        />
+                                    ) : (
+                                        <Image
+                                            source={require('../../../assets/homeScreenAssets/next_pink.gif')}
+                                            style={{ width: 10, height: 10 }}
+                                        />
+                                    )
+                                )
+                            )}
+                        />
+                        :
+                        <WeekCalendar
+                            onDayPress={onPressDateHandler}
+                            firstDay={1}
+                            markingType={'custom'}
+                            markedDates={{
+                                '2024-09-12': {
+                                    customStyles: {
+                                        container: {
+                                            borderColor: 'blue',
+                                            borderWidth: 1,
+                                        },
+                                        text: {
+                                            color: 'blue',
+                                        },
+                                    },
+                                },
+                                [selected]: {
+                                    selected: true,
+                                    disableTouchEvent: true,
+                                },
+                            }}
+                            theme={{
+                                todayTextColor: 'blue',
+                                calendarBackground: 'transparent',
+                                dayTextColor: 'black',
+                                monthTextColor: 'black',
+                            }}
+                        />
 
-                    },
-
-                }}
-                theme={{
-                    todayTextColor: currentType === 'dark' ? useCustomTheme?.darkMode?.activeStroke : '#fd5b72',
-                    calendarBackground: 'Transparent',
-                    backgroundColor: 'Transparent',
-
-                    dayTextColor: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text,
-                    monthTextColor: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
-                }}
-                renderArrow={(direction: string) => (
-                    direction === 'left' ? (
-                        currentType === 'dark' ?
-                            <Image
-                                source={require('../../../assets/homeScreenAssets/back_green.png')}
-                                style={{ width: 10, height: 10 }}
-                            /> :
-                            <Image
-                                source={require('../../../assets/homeScreenAssets/back_pink.gif')}
-                                style={{ width: 10, height: 10 }}
-                            />
-                    ) : (
-                        currentType === 'dark' ?
-                            <Image
-                                source={require('../../../assets/homeScreenAssets/next_green.png')}
-                                style={{ width: 10, height: 10 }}
-                            /> :
-                            <Image
-                                source={require('../../../assets/homeScreenAssets/next_pink.gif')}
-                                style={{ width: 10, height: 10 }}
-                            />
-                    )
-                )}
-            />
+                }
+            </CalendarProvider>
 
         </View>
     )
@@ -146,7 +247,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: 'row',
-
+        position: 'relative',
     },
     btnView: {
         justifyContent: 'flex-end',
@@ -178,9 +279,19 @@ const styles = StyleSheet.create({
         borderTopWidth: 3,
         // marginVertical: 5,
         width: '100%',
+        zIndex: 1
+    },
+    calenderModal: {
+        position: 'absolute',
+        top: 30,
+        right: 0,
+        borderRadius: 8,
+        zIndex: 10,
+        borderWidth: .5,
+    },
+    calenderTypeModalBtn: {
+        alignItems: 'center',
+        paddingHorizontal: 18,
+        paddingVertical: 5
     }
-
-
-
-
 })

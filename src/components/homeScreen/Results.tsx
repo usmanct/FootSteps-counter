@@ -1,4 +1,4 @@
-import {  FlatList, StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { FlatList, StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import StatsCard from './StatsCard';
 import { AppContext } from '../../contextApi/AppContext';
@@ -17,9 +17,9 @@ const Results = () => {
     const { waterHistory }: any = useContext(AppContext)
     const [fetchData, setFetchData] = useState<any>([])
 
-    const yAxixsLabels = ['0',  '1000', '2000', '3000', '4000', '5000', '6000']
+    const yAxixsLabels = ['0', '1000', '2000', '3000', '4000', '5000', '6000']
     const { getALLWaterData, dropTable } = useDatabase()
- 
+
     useEffect(() => {
         getALLWaterData()
         const waterDrinkedData = waterHistory.map((data: { waterIntake: any; date: any; }) => ({ value: data.waterIntake, label: data.date }))
@@ -73,13 +73,15 @@ const Results = () => {
                 }
                 {fetchData.length ?
                     <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.bgcolor }}>
-                        <Text style={{ ...styles.subHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Water Track History</Text>
+                        <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
+                            <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>HistoryChart</Text>
+                        </View>
                         <BarChart
                             frontColor={'#9f49ff'}
-                            barWidth={70}
+                            barWidth={40}
                             data={fetchData}
                             isAnimated
-                            // hideRules
+                            hideRules
                             stepValue={1000}
                             maxValue={7000}
                             barBorderTopLeftRadius={5}
@@ -179,5 +181,16 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         gap: 15,
         paddingHorizontal: 10,
+    },
+    textHeading: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    chartHeading: {
+        borderRadius: 10,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 20
     }
 })

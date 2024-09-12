@@ -81,7 +81,7 @@ const StepCountingServiceComponent = () => {
         console.log("Usman_______________________")
         await new Promise<void>(async (resolve) => {
             while (BackgroundService.isRunning()) {
-                await stepCountingInBackground()
+                // await stepCountingInBackground()
                 await updatingStepsInBackground();
                 await sleep(delay);
             }

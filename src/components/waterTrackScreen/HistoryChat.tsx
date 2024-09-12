@@ -15,13 +15,13 @@ const HistoryChat = ({ barData, currentType, cupCapacity, drinkGoal }: any) => {
                 <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>HistoryChart</Text>
             </View>
             {barData.length ?
-                <View style={{padding: 10}}>
+                <View style={{ padding: 10, left: 0 }}>
                     <BarChart
                         frontColor={'#9f49ff'}
-                        barWidth={70}
+                        barWidth={40}
                         data={barData}
                         isAnimated
-                        // hideRules
+                        hideRules
                         stepValue={1000}
                         maxValue={6500}
                         barBorderTopLeftRadius={5}
@@ -50,20 +50,15 @@ export default HistoryChat;
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: 'center',
-        alignItems: 'center',
         margin: 10,
         borderRadius: 8,
         gap: 15,
-        // paddingHorizontal: 10,
     },
     textHeading: {
         fontSize: 20,
         fontWeight: 'bold',
     },
     chartHeading: {
-        marginHorizontal: 10,
-        // marginVertical: 5,
         borderRadius: 10,
         width: '100%',
         alignItems: 'center',

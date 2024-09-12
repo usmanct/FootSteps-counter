@@ -61,6 +61,96 @@ const Runningresult = ({ route }: any) => {
         const sec = String(seconds % 60).padStart(2, '0');
         return `${hours}:${minutes}:${sec}`;
     };
+    const darkModeMapStyle = [
+        {
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#212121"  // Darker background color
+                }
+            ]
+        },
+        {
+            "elementType": "labels.icon",
+            "stylers": [
+                {
+                    "visibility": "off"  // Hide map icons
+                }
+            ]
+        },
+        {
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#e0e0e0"  // Light gray text for better contrast
+                }
+            ]
+        },
+        {
+            "elementType": "labels.text.stroke",
+            "stylers": [
+                {
+                    "color": "#212121"  // Darker stroke color
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#616161"  // Slightly lighter gray for administrative boundaries
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.country",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#b0b0b0"  // Lighter gray for country labels
+                }
+            ]
+        },
+        {
+            "featureType": "landscape",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#303030"  // Darker color for landscapes
+                }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#424242"  // Darker color for points of interest
+                }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#000000"  // Black or very dark color for water
+                }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#616161"  // Darker color for roads
+                }
+            ]
+        }
+    ];
+
+
 
 
     return (
@@ -88,6 +178,7 @@ const Runningresult = ({ route }: any) => {
                     }}
                     showsUserLocation={true}
                     provider={PROVIDER_GOOGLE}
+                    customMapStyle={currentType === 'dark' ? darkModeMapStyle : []}
                 >
                     <Marker coordinate={{
                         latitude: location?.coords?.latitude || 37.78825,
