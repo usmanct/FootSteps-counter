@@ -4,6 +4,7 @@ import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { AppContext } from '../../contextApi/AppContext';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { useThemeChange } from '../../apptheme/ThemeChange';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const SetDrinkTarget = (
     {
         modalVisible,
@@ -22,7 +23,12 @@ const SetDrinkTarget = (
         setDefaultIndexcup,
         defaultIndexgoal,
         setDefaultIndexgoal,
-        currentType
+        currentType,
+        unitData,
+        defaultUnitIndex,
+        setDefaultUnitIndex,
+        measuringUnit,
+        setMeasuringUnit
     }
         : any) => {
 
@@ -33,7 +39,7 @@ const SetDrinkTarget = (
     }: any = useContext(AppContext)
     const useCustomTheme = useThemeChange()
     const [inputValue, setInputValue] = useState<any>({})
-    const saveChanges = () => {
+    const saveChanges = async () => {
         setModalVisible(!modalVisible)
         if (modalType === 'cupcapacity') {
             ToastAndroid.show('Updated Successfully', ToastAndroid.SHORT);
@@ -60,6 +66,13 @@ const SetDrinkTarget = (
                 setISgoalAchieved(false)
             }
         }
+        else if (modalType === 'unit') {
+            ToastAndroid.show('Unit Update Successfully', ToastAndroid.SHORT);
+            console.log("iiiiiiiiiiiiiiiiiiiiiiiii", inputValue)
+            await AsyncStorage.setItem('unit', inputValue.value);
+            setMeasuringUnit(inputValue.value)
+            setDefaultUnitIndex(inputValue.i);
+        }
 
 
     }
@@ -71,16 +84,16 @@ const SetDrinkTarget = (
                 visible={modalVisible}
             >
                 <View style={styles.centeredView}>
-                    <View  style={{ ...styles.modalView, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : 'white' }}>
+                    <View style={{ ...styles.modalView, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : 'white' }}>
 
                         <WheelPickerExpo
                             height={150}
                             width={150}
-                            initialSelectedIndex={modalType === 'cupcapacity' ? defaultIndexcup : defaultIndexgoal}
+                            initialSelectedIndex={modalType === 'cupcapacity' ? defaultIndexcup : modalType === 'drinkgoal' ? defaultIndexgoal : defaultUnitIndex}
                             items={
                                 modalType === 'drinkgoal' ? drinkGaolData.map((name: any) => ({ label: name, value: '' }))
                                     : modalType === 'cupcapacity' ? cupcapacitydata.map((name: any) => ({ label: name, value: '' }))
-                                        : cupcapacitydata.map((name: any) => ({ label: name, value: '' }))
+                                        : unitData.map((name: any) => ({ label: name, value: '' }))
                             }
                             onChange={
                                 ({ item, index }) => {
@@ -88,7 +101,7 @@ const SetDrinkTarget = (
                                 }
 
                             }
-                            selectedStyle={ {...styles.selectedItem, borderColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : '#fc5c74' }}
+                            selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : '#fc5c74' }}
                             backgroundColor={currentType === 'dark' ? useCustomTheme.darkMode.Header : 'white'}
                         />
                         <Pressable

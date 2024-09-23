@@ -36,7 +36,7 @@ const StepCountingServiceComponent = () => {
             const res: any = await getData(dateOnly);
             const currentData = res && res.length > 0 ? res[0] : { footsteps: 0, energy: 0, distance: 0, goal: 10000 };
             console.log("currentData: ", currentData);
-            const newSteps = result.steps;
+            const newSteps = stepFlag ? result.steps + currentData?.footsteps : result.steps;
             console.log("newSteps: ", newSteps);
             // if (newSteps < currentData.goal) {
             const updatedCount = newSteps;
@@ -81,7 +81,7 @@ const StepCountingServiceComponent = () => {
         console.log("Usman_______________________")
         await new Promise<void>(async (resolve) => {
             while (BackgroundService.isRunning()) {
-                // await stepCountingInBackground()
+                await stepCountingInBackground()
                 await updatingStepsInBackground();
                 await sleep(delay);
             }

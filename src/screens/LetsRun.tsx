@@ -241,6 +241,7 @@ const LetsRun = () => {
         currentType={currentType}
         showOverLay={showOverLay}
         setShowOverLay={setShowOverLay}
+        setRouteCoordinates={setRouteCoordinates}
       />
       <OverLayScreen showOverLay={showOverLay} />
     </ScrollView>

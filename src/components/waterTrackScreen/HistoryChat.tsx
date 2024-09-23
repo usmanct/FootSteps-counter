@@ -17,6 +17,7 @@ const HistoryChat = ({ barData, currentType, cupCapacity, drinkGoal }: any) => {
             {barData.length ?
                 <View style={{ padding: 10, left: 0 }}>
                     <BarChart
+                        key={currentType}
                         frontColor={'#9f49ff'}
                         barWidth={40}
                         data={barData}
@@ -27,10 +28,17 @@ const HistoryChat = ({ barData, currentType, cupCapacity, drinkGoal }: any) => {
                         barBorderTopLeftRadius={5}
                         barBorderTopRightRadius={5}
                         showValuesAsTopLabel={true}
+                        yAxisLabelTexts={yAxixsLabels}
                         noOfSections={12}
                         xAxisThickness={0}
                         yAxisThickness={0}
-                        yAxisLabelTexts={yAxixsLabels}
+                        topLabelTextStyle={{
+                            color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
+                        }}
+                        yAxisTextStyle={{
+                            color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
+                        }}
+                        xAxisLabelTextStyle={{ color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text}}
 
                     />
                 </View>

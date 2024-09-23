@@ -27,7 +27,8 @@ const Runningresult = ({ route }: any) => {
         totalDistance,
         setkcalBurn,
         setTotalDistance,
-        currentType
+        currentType,
+        setRouteCoordinates
     }: any = route.params
 
     const useCustomTheme = useThemeChange()
@@ -53,6 +54,7 @@ const Runningresult = ({ route }: any) => {
         setSpeed(0)
         setkcalBurn(0)
         setTotalDistance(0)
+        setRouteCoordinates([])
     }
 
     const formatTime = (seconds: number) => {

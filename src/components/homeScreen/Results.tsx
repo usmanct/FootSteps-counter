@@ -5,13 +5,15 @@ import { AppContext } from '../../contextApi/AppContext';
 import { BarChart } from "react-native-gifted-charts";
 import { useDatabase } from '../../sqLiteDb/useDatabase';
 import { useThemeChange } from '../../apptheme/ThemeChange';
-
+import { useNavigation } from '@react-navigation/native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const Results = () => {
     const {
         record,
         currentType
     }: any = useContext(AppContext);
+    const navigation = useNavigation();
     const useCustomTheme = useThemeChange()
     const [totalSteps, setTotalSteps] = useState(0);
     const { waterHistory }: any = useContext(AppContext)
@@ -37,12 +39,19 @@ const Results = () => {
     return (
         <View style={{ flex: 1, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
             <ScrollView>
-                <TouchableOpacity onPress={dropTable}>
-                    <Text style={styles.headingText}>Results</Text>
-                </TouchableOpacity>
+                <View style={{ justifyContent: 'center', flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <MaterialIcons name="keyboard-backspace" size={24} color={currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={dropTable}>
+                        <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Results</Text>
+                    </TouchableOpacity>
+                </View>
                 {record.length ?
                     <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
-                        {record.length ? <Text style={{ ...styles.subHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Steps</Text> : null}
+                        <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
+                            <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>FootSteps</Text>
+                        </View>
                         <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{totalSteps}</Text>
                         <FlatList
                             data={record}
@@ -74,7 +83,7 @@ const Results = () => {
                 {fetchData.length ?
                     <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.bgcolor }}>
                         <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
-                            <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>HistoryChart</Text>
+                            <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>Water Drinked</Text>
                         </View>
                         <BarChart
                             frontColor={'#9f49ff'}
@@ -91,6 +100,13 @@ const Results = () => {
                             xAxisThickness={0}
                             yAxisThickness={0}
                             yAxisLabelTexts={yAxixsLabels}
+                            topLabelTextStyle={{
+                                color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
+                            }}
+                            yAxisTextStyle={{
+                                color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
+                            }}
+                            xAxisLabelTextStyle={{ color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}
                         />
                     </View> :
                     null
@@ -112,14 +128,9 @@ export default Results
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#e9eaee',
         margin: 10,
-        paddingVertical: 15,
         borderRadius: 8,
         gap: 15,
-        paddingHorizontal: 10,
     },
     loaderView: {
         justifyContent: 'center',
@@ -192,5 +203,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 20
-    }
+    },
+    backButton: {
+        position: 'absolute',
+        left: 10, // Adjust to fit your layout
+        justifyContent: 'center',
+    },
 })

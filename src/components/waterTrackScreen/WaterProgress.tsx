@@ -21,7 +21,9 @@ const WaterProgress = (
         setISgoalAchieved,
         currentType,
         setShowOverLay,
-        showOverLay
+        showOverLay,
+        setMeasuringUnit,
+        measuringUnit
     }: any) => {
     const {
         MAX_HEIGHT,
@@ -52,7 +54,7 @@ const WaterProgress = (
     }, [waterdrinked])
 
     useEffect(() => {
-        let per
+        let per : any
         per = waterdrinked / drinkGoal * 100
         setPercentageDrinked(per.toFixed(2))
         const prefill = waterdrinked / drinkGoal * 100
@@ -72,8 +74,16 @@ const WaterProgress = (
     }
     const navigateToSetting = () => {
         navigation.navigate('WaterTrackSetting', {
-            drinkGoal, setDrinkGoal, cupCapacity, setCupCapacity, waterdrinked, setwaterdrinked, IsgoalAchieved,
-            setISgoalAchieved
+            drinkGoal,
+            setDrinkGoal,
+            cupCapacity,
+            setCupCapacity,
+            waterdrinked,
+            setwaterdrinked,
+            IsgoalAchieved,
+            setISgoalAchieved,
+            setMeasuringUnit,
+            measuringUnit
         } as never)
     }
 
@@ -111,7 +121,7 @@ const WaterProgress = (
                 <TouchableOpacity onPress={() => dropTable()}>
                     <Text style={{ ...styles.pageText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{precentageDrinked}%</Text>
                 </TouchableOpacity>
-                <Text style={{ fontSize: 16, color: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.Text }}>{waterdrinked}/{drinkGoal}ml</Text>
+                <Text style={{ fontSize: 16, color: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.Text }}>{waterdrinked}/{drinkGoal} {measuringUnit}</Text>
                 <View>
                     <TouchableOpacity
                         style={{ ...styles.drinkBtn, backgroundColor: IsgoalAchieved || waterdrinkFlag ? 'gray' : '#0fb4fc', }}

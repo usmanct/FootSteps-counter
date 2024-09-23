@@ -10,54 +10,20 @@ import OverLayScreen from '../components/OverLayScreen';
 
 const BmiCalculations = () => {
     const navigation = useNavigation();
-    const CITIES = 'Jakarta,Bandung,Sumbawa,Taliwang,Lombok,Bima'.split(',');
     const [bmivalue, setBmiValue] = useState<any>()
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState('')
     const [showOverLay, setShowOverLay] = useState(false)
 
-    const [userData, setUserData] = useState({
-        gender: 'male',
-        age: '23',
-        height: '170',
-        weight: '70',
-
-    })
-    const { currentType }: any = useContext(AppContext)
+ 
+    const { currentType , userData , setUserData }: any = useContext(AppContext)
     const useCustomTheme = useThemeChange()
 
 
 
-    useEffect(() => {
-        initialLoad()
-    }, [])
-
-
-    const initialLoad = async () => {
-        try {
-            const res = await AsyncStorage.getItem('userData');
-            if (res) {
-                const userData = JSON.parse(res);
-                setUserData(userData); // Update the state with the retrieved data
-            }
-        } catch (error) {
-            console.error('Failed to load user data', error);
-        }
-    }
-
-    // function calculateBMI(weight, heightCm) {
-
-    //   }
-
-    //   // Example usage:
-    //   const weight = 70; // weight in kilograms
-    //   const heightCm = 175; // height in centimeters
-    //   const bmi = calculateBMI(weight, heightCm);
-    //   console.log(bmi); // Output: 22.857142857142858
-
-
-
-
+    // useEffect(() => {
+    //     initialLoad()
+    // }, [])
 
     const calculateBMI = async () => {
         try {

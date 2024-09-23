@@ -26,7 +26,7 @@ const Progress = (
     let subscription: any;
 
     const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
-    const [initialCountflag, setinitailcountflag] = useState<boolean>(false)
+    const [initialCountflag, setinitailcountflag] = useState<boolean>(true)
     // const [IsTargetReached, setIsTargetReached] = useState<any>(false);
 
 
@@ -47,40 +47,44 @@ const Progress = (
     useEffect(() => {
         // if (isPedometerRunning) {
 
-            // let lastSteps = 0;
-            Pedometer.isAvailableAsync().then(
-                (result) => {
-                    setIsPedometerAvailable(String(result));
-                },
-                (error) => {
-                    setIsPedometerAvailable('Could not get availability: ' + error);
-                }
-            );
-            Pedometer.requestPermissionsAsync().then((result) => {
-                setInitialUpdateflag(true);
+        // let lastSteps = 0;
+        Pedometer.isAvailableAsync().then(
+            (result) => {
+                setIsPedometerAvailable(String(result));
             },
-                (error) => {
-                    console.log("Could not get availability:", error)
-                })
-            subscription = Pedometer.watchStepCount((result) => {
-                setCurrentStepCount((preCount: any) => {
-                    const newCount = result.steps;
+            (error) => {
+                setIsPedometerAvailable('Could not get availability: ' + error);
+            }
+        );
+        Pedometer.requestPermissionsAsync().then((result) => {
+            setInitialUpdateflag(true);
+        },
+            (error) => {
+                console.log("Could not get availability:", error)
+            })
+        subscription = Pedometer.watchStepCount((result) => {
+            setCurrentStepCount((preCount: any) => {
+                const newCount = initialCountflag ? preCount + result.steps - 1 : result.steps;
+                console.log("Steps: " , result.steps);
 
-                    if (newCount >= target) {
-                        return target;
-                    }
-                    return newCount;
-                });
+                if (newCount >= target) {
+                    return target;
+                }
+
+                return newCount;
             });
+            setInitialUpdateflag(false);
+        });
         // }
         // else {
         //     subscription && subscription.remove();
         // }
         return () => {
             subscription && subscription.remove();
+            setInitialUpdateflag(true)
 
         };
-    }, [initialCountflag , isPedometerRunning]);
+    }, [initialCountflag, isPedometerRunning]);
 
 
     return (

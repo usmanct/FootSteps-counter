@@ -23,7 +23,13 @@ export const AppProvider = ({ children }: any) => {
     const [currentType, setCurrentType] = useState<string>('light')
     const [isPedometerRunning, setIsPedometerRunning] = useState<boolean>(false)
     const [reminderFlag, setReminderFlag] = useState(false)
+    const [userData, setUserData] = useState({
+        gender: '',
+        age: '',
+        height: '',
+        weight: '',
 
+    })
 
     const MAX_HEIGHT = 200
     return (
@@ -63,6 +69,8 @@ export const AppProvider = ({ children }: any) => {
             setIsPedometerRunning,
             reminderFlag,
             setReminderFlag,
+            userData,
+            setUserData
         }}>
             {children}
         </AppContext.Provider>

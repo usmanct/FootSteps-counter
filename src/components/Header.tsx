@@ -1,10 +1,11 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { useThemeChange } from '../apptheme/ThemeChange'
 
 const Header = ({ currentType }: any) => {
 
   const useCustomTheme = useThemeChange()
+
 
   return (
     <View style={{ ...styles.mainView, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
@@ -25,13 +26,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     paddingVertical: 20,
-    backgroundColor: '#e9eaee'
+    backgroundColor: '#e9eaee',
+    alignItems:'center'
   },
   headingText: {
     fontSize: 20,
     fontWeight: 'bold',
     flex: 1,
     textAlign: 'center',
-  }
+  },
+  backButton: {
+    position: 'absolute',
+    left: 10, // Adjust to fit your layout
+    justifyContent: 'center',
+  },
 
 })

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Progress from '../components/homeScreen/Progress'
 import Stats from '../components/homeScreen/Stats'
@@ -31,6 +31,7 @@ const Home = () => {
     setIsPedometerRunning,
     reminderFlag,
     setReminderFlag,
+    setUserData
   }: any = useContext(AppContext)
   const now = new Date();
   const dateOnly = now.toLocaleDateString();
@@ -41,6 +42,7 @@ const Home = () => {
   const useCustomTheme = useThemeChange()
   const [initialUpdateflag, setInitialUpdateflag] = useState<boolean>(false)
   const [showOverLay, setShowOverLay] = useState(false)
+  const [loading, setLoading] = useState(true)
   useEffect(() => {
     DataBaseInitialization()
     initialLoad()
@@ -59,6 +61,7 @@ const Home = () => {
 
     return () => {
       subscription.remove();
+
     };
   }, [appState, isPedometerRunning])
 
@@ -66,11 +69,13 @@ const Home = () => {
 
   const handleAppStateChange = (nextAppState: string) => {
     if (nextAppState === 'background' && isPedometerRunning) {
+      console.log("appState changed", nextAppState)
       startService();
       // Start the background service when the app goes to the background
     } else if (nextAppState === 'active') {
-      initialLoad()
+      console.log("appState changed", nextAppState)
       stopService();
+      initialLoad()
       // Stop the backgroun\d service when the app comes to the foreground
     }
   };
@@ -107,7 +112,18 @@ const Home = () => {
 
   const initialLoad = async () => {
     try {
+      stopService();
+
+      const profileData: any = await AsyncStorage.getItem('userData');
+      if (profileData) {
+        const userData = JSON.parse(profileData);
+        setUserData(userData); // Update the state with the retrieved data
+      }
+
       const mode = await AsyncStorage.getItem('currentMode')
+      if (mode !== null) {
+        setCurrentType(mode);  // Set the parsed boolean value
+      }
       const pedometerState = await AsyncStorage.getItem('PedemeterState');
       if (pedometerState !== null) {
         const parsedState = JSON.parse(pedometerState); // Ensure you parse it if it's not null
@@ -118,9 +134,6 @@ const Home = () => {
         const parsedState = JSON.parse(notificationState); // Ensure you parse it if it's not null
         setReminderFlag(parsedState);  // Set the parsed boolean value
       }
-
-
-      setCurrentType(mode);
       const res: any = await getData(dateOnly);
       if (res && res.length > 0) {
         setCurrentStepCount(res[0].footsteps);
@@ -138,9 +151,23 @@ const Home = () => {
     } catch (error) {
       console.error('Failed to load initial data', error);
     }
+    finally {
+      setLoading(false);
+    }
   };
 
-
+  if (loading) {
+    return (
+      <View style={
+        {
+          ...styles.loaderContainer,
+          backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white'
+        }
+      }>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
 
   return (
@@ -190,5 +217,13 @@ const Home = () => {
     </ScrollView>
   )
 }
+const styles = StyleSheet.create({
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
 
 export default Home

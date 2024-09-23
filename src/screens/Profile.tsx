@@ -1,38 +1,39 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import BmiModal from '../components/bmiScreen/BmiModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useThemeChange } from '../apptheme/ThemeChange';
+import { AppContext } from '../contextApi/AppContext';
 const Profile = ({ currentType, setShowOverLay, showOverLay }: any) => {
 
 
 
-    const [userData, setUserData] = useState({
-        gender: 'male',
-        age: '23',
-        height: '170',
-        weight: '70',
+    // const [userData, setUserData] = useState({
+    //     gender: 'male',
+    //     age: '23',
+    //     height: '170',
+    //     weight: '70',
 
-    })
+    // })
     const useCustomTheme = useThemeChange()
+    const { userData, setUserData }: any = useContext(AppContext)
+    // useEffect(() => {
+    //     initialLoad()
+    // }, [])
 
-    useEffect(() => {
-        initialLoad()
-    }, [])
 
-
-    const initialLoad = async () => {
-        try {
-            const res = await AsyncStorage.getItem('userData');
-            if (res) {
-                const userData = JSON.parse(res);
-                setUserData(userData); // Update the state with the retrieved data
-            }
-        } catch (error) {
-            console.error('Failed to load user data', error);
-        }
-    }
+    // const initialLoad = async () => {
+    //     try {
+    //         const res = await AsyncStorage.getItem('userData');
+    //         if (res) {
+    //             const userData = JSON.parse(res);
+    //             setUserData(userData); // Update the state with the retrieved data
+    //         }
+    //     } catch (error) {
+    //         console.error('Failed to load user data', error);
+    //     }
+    // }
 
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState('')

@@ -36,7 +36,8 @@ const RunnerActions = ({
   timeReached,
   currentType,
   showOverLay,
-  setShowOverLay
+  setShowOverLay,
+  setRouteCoordinates
 }: any) => {
 
   const [modalVisible, setModalVisible] = useState(false)
@@ -93,6 +94,7 @@ const RunnerActions = ({
     setRunningState(!runningState)
     setTime(0); // Initialize time to 00:00:00
     setSpeed(0)
+    setRouteCoordinates([])
     console.log('Running');
   };
 
@@ -119,7 +121,8 @@ const RunnerActions = ({
         totalDistance,
         setkcalBurn,
         setTotalDistance,
-        currentType
+        currentType,
+        setRouteCoordinates
       } as never)
   }
 

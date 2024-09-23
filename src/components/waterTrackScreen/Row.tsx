@@ -1,11 +1,12 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { useThemeChange } from '../../apptheme/ThemeChange';
 
-const Row = ({ title, subtil, onpress, currentType }: any) => {
+const Row = ({ title, subtil, onpress, currentType , measuringUnit }: any) => {
 
     const useCustomTheme = useThemeChange()
+
 
     return (
         <View style={styles.row}>
@@ -14,7 +15,7 @@ const Row = ({ title, subtil, onpress, currentType }: any) => {
                 onPress={onpress}
                 style={styles.btn}
             >
-                <Text style={{ color: currentType === 'dark' ? 'white' : 'black' }}>{subtil}ml</Text>
+                <Text style={{ color: currentType === 'dark' ? 'white' : 'black' }}>{subtil}</Text>
                 <AntDesign name="down" size={14} color={currentType === 'dark' ? 'white' : 'black'} />
 
             </TouchableOpacity>

@@ -9,6 +9,7 @@ import CompleteAnimation from '../components/CompleteAnimation'
 import DataBaseInitialization from '../sqLiteDb/DataBaseInitialization'
 import { useThemeChange } from '../apptheme/ThemeChange'
 import OverLayScreen from '../components/OverLayScreen'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const WaterTrack = () => {
 
   const [barData, setbarData] = useState<any>([])
@@ -28,6 +29,7 @@ const WaterTrack = () => {
   const [waterdrinked, setwaterdrinked] = useState<any>(0)
   const [IsgoalAchieved, setISgoalAchieved] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [measuringUnit, setMeasuringUnit] = useState<any>('ml')
   const { getALLWaterData, updateWaterRecord, insertWaterData, getWaterData } = useDatabase()
   const [showOverLay, setShowOverLay] = useState(false)
 
@@ -88,6 +90,10 @@ const WaterTrack = () => {
           }).catch(error => {
             console.error('Error inserting new data:', error);
           });
+        }
+        const unitt = await AsyncStorage.getItem('unit');
+        if (unitt !== null) {
+          setMeasuringUnit(unitt);  // Set the parsed boolean value
         }
       } catch (error) {
         console.error('Failed to load initial data', error);
@@ -184,6 +190,8 @@ const WaterTrack = () => {
           currentType={currentType}
           showOverLay={showOverLay}
           setShowOverLay={setShowOverLay}
+          setMeasuringUnit={setMeasuringUnit}
+          measuringUnit={measuringUnit}
         />
         {/* <CanvasProgress/> */}
         <HistoryChat
@@ -191,9 +199,17 @@ const WaterTrack = () => {
           currentType={currentType}
           cupCapacity={cupCapacity}
           drinkGoal={drinkGoal}
+          setMeasuringUnit={setMeasuringUnit}
+          measuringUnit={measuringUnit}
         />
       </ScrollView>
-      <OverLayScreen showOverLay={showOverLay} type={'Complete_Animation'}  waterdrinked={waterdrinked}/>
+      <OverLayScreen
+        showOverLay={showOverLay}
+        type={'Complete_Animation'}
+        waterdrinked={waterdrinked}
+        measuringUnit={measuringUnit}
+        drinkGoal={drinkGoal}
+      />
     </View>)
 }
 

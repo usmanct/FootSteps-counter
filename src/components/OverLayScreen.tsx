@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { AppContext } from '../contextApi/AppContext'
 import { useThemeChange } from '../apptheme/ThemeChange'
 
-const OverLayScreen = ({ modalVisible, showOverLay, type, waterdrinked }: any) => {
+const OverLayScreen = ({ modalVisible, showOverLay, type, waterdrinked, measuringUnit, drinkGoal }: any) => {
 
   const { currentType }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
@@ -13,7 +13,7 @@ const OverLayScreen = ({ modalVisible, showOverLay, type, waterdrinked }: any) =
       {
         ...styles.overlay,
         display: modalVisible || showOverLay ? 'flex' : 'none',
-        backgroundColor: currentType === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',  // Only the background has opacity
+        backgroundColor: currentType === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',  // Only the background has opacity
       }
     }>
 
@@ -28,10 +28,10 @@ const OverLayScreen = ({ modalVisible, showOverLay, type, waterdrinked }: any) =
                 width: 300
               }}
             />
-            <Text style={{ textAlign: 'center', fontSize: 46, fontWeight: '900', color: useCustomTheme.darkMode.Text }}>
-              {waterdrinked}
+            <Text style={{ textAlign: 'center', fontSize: 46, fontWeight: '900', color: currentType === 'dark' ? useCustomTheme.lightMode.Text : useCustomTheme.darkMode.Text }}>
+              {waterdrinked}/{drinkGoal} {measuringUnit}
             </Text>
-            <Text style={{ textAlign: 'center', fontSize: 32, fontWeight: 'bold', color: useCustomTheme.darkMode.Text }}>
+            <Text style={{ textAlign: 'center', fontSize: 32, fontWeight: 'bold', color: currentType === 'dark' ? useCustomTheme.lightMode.Text : useCustomTheme.darkMode.Text }}>
               Congratulations! You have successfully completed the drinking goal.
             </Text>
           </View>

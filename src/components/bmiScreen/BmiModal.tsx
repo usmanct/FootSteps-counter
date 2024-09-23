@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { useThemeChange } from '../../apptheme/ThemeChange';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData, currentType, showOverLay, setShowOverLay }: any) => {
-    const CITIES = 'Jakarta,Bandung,Sumbawa,Taliwang,Lombok,Bima'.split(',');
     const gender = 'male,female,other'.split(',');
     const ageArray = Array.from({ length: 200 }, (_, index) => index + 1);
     const [defaultIndex, setDefaultIndex] = useState({
@@ -16,30 +16,44 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData,
     const [obj, setObj] = useState<any>({})
     const usecustomTheme = useThemeChange()
 
-    const saveChanges = () => {
+    const saveChanges = async () => {
+        let updatedData = { ...userData };
+
         if (title === 'Gender') {
-            setUserData((pre: any) => ({ ...pre, gender: obj.gender }));
-            setDefaultIndex((pre) => ({ ...pre, gender: obj.gindex }));
+            updatedData = { ...userData, gender: obj.gender };
+            setDefaultIndex((prev) => ({ ...prev, gender: obj.gindex }));
         } else if (title === 'Age') {
-            setUserData((pre: any) => ({ ...pre, age: obj.age }));
-            setDefaultIndex((pre) => ({ ...pre, age: obj.aindex }));
+            updatedData = { ...userData, age: obj.age };
+            setDefaultIndex((prev) => ({ ...prev, age: obj.aindex }));
         } else if (title === 'Height') {
-            setUserData((pre: any) => ({ ...pre, height: obj.height }));
-            setDefaultIndex((pre) => ({ ...pre, height: obj.hindex }));
+            updatedData = { ...userData, height: obj.height };
+            setDefaultIndex((prev) => ({ ...prev, height: obj.hindex }));
         } else {
-            setUserData((pre: any) => ({ ...pre, weight: obj.weight }));
-            setDefaultIndex((pre) => ({ ...pre, weight: obj.windex }));
+            updatedData = { ...userData, weight: obj.weight };
+            setDefaultIndex((prev) => ({ ...prev, weight: obj.windex }));
         }
 
+        setUserData(updatedData);
 
-        setModalVisible(!modalVisible)
-        setShowOverLay(!showOverLay)
-    }
+        // Save to localStorage
+        await setLocalStorage(updatedData);
 
-
+        setModalVisible(!modalVisible);
+        setShowOverLay(!showOverLay);
+    };
     useEffect(() => {
-        console.log(userData)
-    }, [userData])
+        console.log('Gender Default index' , defaultIndex );
+    }, [])
+
+    const setLocalStorage = async (data: any) => {
+        console.log("Data", data)
+        try {
+            await AsyncStorage.setItem('userData', JSON.stringify(data));
+            console.log('User data saved!');
+        } catch (error) {
+            console.error('Failed to save user data', error);
+        }
+    };
 
     return (
         <View style={styles.centeredView}>
