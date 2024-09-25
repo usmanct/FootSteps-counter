@@ -23,7 +23,15 @@ const WaterProgress = (
         setShowOverLay,
         showOverLay,
         setMeasuringUnit,
-        measuringUnit
+        measuringUnit,
+        waterReminderFlag,
+        setWaterReminderFlag,
+        startTime,
+        setStartTime,
+        endTime,
+        setEndTime,
+        waterInterval,
+        setWaterInterval
     }: any) => {
     const {
         MAX_HEIGHT,
@@ -54,7 +62,7 @@ const WaterProgress = (
     }, [waterdrinked])
 
     useEffect(() => {
-        let per : any
+        let per: any
         per = waterdrinked / drinkGoal * 100
         setPercentageDrinked(per.toFixed(2))
         const prefill = waterdrinked / drinkGoal * 100
@@ -83,7 +91,15 @@ const WaterProgress = (
             IsgoalAchieved,
             setISgoalAchieved,
             setMeasuringUnit,
-            measuringUnit
+            measuringUnit,
+            waterReminderFlag,
+            setWaterReminderFlag,
+            startTime,
+            setStartTime,
+            endTime,
+            setEndTime,
+            waterInterval,
+            setWaterInterval
         } as never)
     }
 

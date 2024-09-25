@@ -65,22 +65,22 @@ const Account = () => {
     saveSettings();
   }, [reminderTime]);
 
-  useEffect(() => {
-    if (reminderFlag) {
-      const interval = setInterval(() => {
-        const currentTime = new Date();
-        console.log("Current time: ", currentTime.getHours(), currentTime.getMinutes())
-        console.log("Reminder time: ", reminderTime);
-        if (currentTime.getHours() === reminderTime.h && currentTime.getMinutes() === reminderTime.m) {
-          console.log("ooo")
-          registerBackgroundFetchAsync()
-          clearInterval(interval);
-        }
-      }, 1000);
+  // useEffect(() => {
+  //   if (reminderFlag) {
+  //     const interval = setInterval(() => {
+  //       const currentTime = new Date();
+  //       console.log("Current time: ", currentTime.getHours(), currentTime.getMinutes())
+  //       console.log("Reminder time: ", reminderTime);
+  //       if (currentTime.getHours() === reminderTime.h && currentTime.getMinutes() === reminderTime.m) {
+  //         console.log("ooo")
+  //         registerBackgroundFetchAsync()
+  //         clearInterval(interval);
+  //       }
+  //     }, 1000);
 
-      return () => clearInterval(interval);
-    }
-  }, [reminderFlag, reminderTime]);
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [reminderFlag, reminderTime]);
 
 
   const toggleModal = (s: string) => {
@@ -137,7 +137,7 @@ const Account = () => {
           toggleService={toggleService}
         />
         <View style={{ backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, paddingBottom: 15 }}>
-          <LetsRunRow title={'Duration'} subtil={`${reminderTime.h}:${reminderTime.m}`} onpress={() => toggleModal('account')} currentType={currentType} />
+          <LetsRunRow title={'Notification Time'} subtil={`${reminderTime.h}:${reminderTime.m}`} onpress={() => toggleModal('account')} currentType={currentType} />
         </View>
       </View>
       <View style={styles.subcontainer}>

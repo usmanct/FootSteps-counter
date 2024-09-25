@@ -8,9 +8,14 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useThemeChange } from '../../apptheme/ThemeChange'
 import OverLayScreen from '../OverLayScreen'
+import SoundNotification from '../letsrunScreen/SoundNotification'
+import RunningSettingModal from '../letsrunScreen/RunningSettingModal'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { registerWaterreminderTask } from '../../services/BackgroundServices'
 
 const WaterTrackSetting = ({ route }: any) => {
     const [modalVisible, setModalVisible] = useState(false);
+    const [remindermodalVisible, setReminderModalVisible] = useState(false);
     const drinkGaolData: any = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000]
     const cupcapacitydata: any = [50, 100, 150, 200, 250, 300]
     const unitData: any = ['ml', 'oz']
@@ -23,15 +28,29 @@ const WaterTrackSetting = ({ route }: any) => {
         IsgoalAchieved,
         setISgoalAchieved,
         setMeasuringUnit,
-        measuringUnit
+        measuringUnit,
+        waterReminderFlag,
+        setWaterReminderFlag,
+        startTime,
+        setStartTime,
+        endTime,
+        setEndTime,
+        waterInterval,
+        setWaterInterval
     } = route.params;
     const isFocused = useIsFocused();
     const [localDrinkGoal, setLocalDrinkGoal] = useState(route.params.drinkGoal);
     const [localCupCapacity, setLocalCupCapacity] = useState(route.params.cupCapacity)
     const [localMeasuringUnit, setLocalMeasuringUnit] = useState<any>(route.params.measuringUnit)
+    const [localstartTime, setLocalStartTime] = useState(route.params.startTime)
+    const [localendTime, setLocalEndTime] = useState(route.params.endTime)
+    const [localWaterInterval, setLocalWaterInterval] = useState(route.params.waterInterval)
     const [defaultIndexcup, setDefaultIndexcup] = useState(0)
     const [defaultIndexgoal, setDefaultIndexgoal] = useState(0)
     const [defaultUnitIndex, setDefaultUnitIndex] = useState(0)
+    const [showOverLay, setShowOverLay] = useState(false)
+    const [toggleService, setToggleService] = useState(false)
+    const [localWaterReminderFlag, setLocalWaterReminderFlag] = useState(route.params.waterReminderFlag)
     const {
         modalType,
         setModalType,
@@ -53,21 +72,74 @@ const WaterTrackSetting = ({ route }: any) => {
         setDefaultIndexgoal(drinkGaolData.indexOf(localDrinkGoal))
         setDefaultUnitIndex(unitData.indexOf(localMeasuringUnit))
     }, [])
+
+    useEffect(() => {
+        const saveSettings = async () => {
+            try {
+                await AsyncStorage.setItem('startTime', JSON.stringify(localstartTime));
+            } catch (e) {
+                console.error("Failed to save settings to AsyncStorage", e);
+            }
+        };
+
+        saveSettings();
+    }, [localstartTime]);
+    useEffect(() => {
+        const saveSettings = async () => {
+            try {
+                await AsyncStorage.setItem('endTime', JSON.stringify(localendTime));
+            } catch (e) {
+                console.error("Failed to save settings to AsyncStorage", e);
+            }
+        };
+
+        saveSettings();
+    }, [localendTime]);
+    useEffect(() => {
+        const saveSettings = async () => {
+            try {
+                await AsyncStorage.setItem('Interval', JSON.stringify(localWaterInterval));
+            } catch (e) {
+                console.error("Failed to save settings to AsyncStorage", e);
+            }
+        };
+
+        saveSettings();
+        if (waterReminderFlag) {
+            registerWaterreminderTask()
+        }
+    }, [localWaterInterval]);
+
+
     useEffect(() => {
         setISgoalAchieved(false);
     }, [localDrinkGoal, localCupCapacity]);
-
     const unitHandler = () => {
         setModalVisible(!modalVisible)
         setModalType('unit')
+        console.warn('1')
     }
     const cupcapacityHandler = () => {
         setModalVisible(!modalVisible)
         setModalType('cupcapacity')
+        console.warn('2')
     }
     const drinkgoalhandler = () => {
         setModalVisible(!modalVisible)
         setModalType('drinkgoal')
+        console.warn('3')
+    }
+    const startTimeHandler = () => {
+        setReminderModalVisible(!remindermodalVisible)
+        setModalType('Start Time')
+    }
+    const endTimeHandler = () => {
+        setReminderModalVisible(!remindermodalVisible)
+        setModalType('End Time')
+    }
+    const intervalTimeHandler = () => {
+        setReminderModalVisible(!remindermodalVisible)
+        setModalType('Interval')
     }
 
     return (
@@ -77,12 +149,31 @@ const WaterTrackSetting = ({ route }: any) => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <MaterialIcons name="keyboard-backspace" size={24} color={currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text} />
                 </TouchableOpacity>
-                <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Results</Text>
+                <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Water Track Settings</Text>
             </View>
             <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
                 <Row title={"Unit"} onpress={unitHandler} subtil={localMeasuringUnit} currentType={currentType} measuringUnit={measuringUnit} />
                 <Row title={"Cup Capacity"} subtil={localCupCapacity} onpress={cupcapacityHandler} currentType={currentType} measuringUnit={measuringUnit} />
                 <Row title={"Drink Goal"} subtil={localDrinkGoal} onpress={drinkgoalhandler} currentType={currentType} measuringUnit={measuringUnit} />
+            </View>
+            <View style={{ marginHorizontal: 10 }}>
+                <SoundNotification
+                    rowTitle={'Reminder'}
+                    styleProp={{}}
+                    currentType={currentType}
+                    setToggleService={setToggleService}
+                    toggleService={toggleService}
+                    waterReminderFlag={localWaterReminderFlag}
+                    setWaterReminderFlag={(value: any) => {
+                        setWaterReminderFlag(value);
+                        setLocalWaterReminderFlag(value);
+                    }}
+                />
+            </View>
+            <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
+                <Row title={'Start Time'} subtil={`${localstartTime.h}:${localstartTime.m}`} currentType={currentType} onpress={startTimeHandler} />
+                <Row title={'End Time'} subtil={`${localendTime.h}:${localendTime.m}`} currentType={currentType} onpress={endTimeHandler} />
+                <Row title={'Interval'} subtil={`${localWaterInterval.h} hours:${localWaterInterval.m} mins`} currentType={currentType} onpress={intervalTimeHandler} />
             </View>
             <SetDrinkTarget
                 modalVisible={modalVisible}
@@ -117,7 +208,50 @@ const WaterTrackSetting = ({ route }: any) => {
                     setLocalMeasuringUnit(value);
                 }}
             />
-            <OverLayScreen modalVisible={modalVisible} />
+            <RunningSettingModal
+                modalVisible={remindermodalVisible}
+                setModalVisible={setReminderModalVisible}
+                modalType={modalType}
+                setModalType={setModalType}
+                startTime={route.params.startTime}
+                endTime={route.params.endTime}
+                interval={route.params.interval}
+                setInterval={(value: any) => {
+                    setLocalWaterInterval({
+                        h: value.h,
+                        m: value.m,
+                    });
+                    setWaterInterval({
+                        h: value.h,
+                        m: value.m,
+                    });
+                }}
+                setEndTime={(value: any) => {
+                    setLocalEndTime({
+                        h: value.h,
+                        m: value.m,
+                    });
+                    setEndTime({
+                        h: value.h,
+                        m: value.m,
+                    });
+                }}
+                setStartTime={(value: any) => {
+                    setLocalStartTime({
+                        h: value.h,
+                        m: value.m,
+                    });
+                    setStartTime({
+                        h: value.h,
+                        m: value.m,
+                    });
+                }}
+                currentType={currentType}
+                showOverLay={showOverLay}
+                setShowOverLay={setShowOverLay}
+            />
+
+            <OverLayScreen modalVisible={modalVisible || remindermodalVisible} />
         </View>
     )
 }

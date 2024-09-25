@@ -19,7 +19,15 @@ const WaterTrack = () => {
     waterHistory,
     setFillContainer,
     MAX_HEIGHT,
-    currentType
+    currentType,
+    waterReminderFlag,
+    setWaterReminderFlag,
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
+    waterInterval,
+    setWaterInterval
   }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
   const [updateflag, setUpdateflag] = useState(true);
@@ -72,6 +80,27 @@ const WaterTrack = () => {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
+
+        const savedStartTime = await AsyncStorage.getItem('startTime');
+        if (savedStartTime) {
+          console.log('StartTime', savedStartTime)
+          setStartTime(JSON.parse(savedStartTime));
+        }
+        const savedEndTime = await AsyncStorage.getItem('endTime');
+        if (savedEndTime) {
+          console.log('EndTime', savedEndTime)
+          setEndTime(JSON.parse(savedEndTime));
+        }
+        const saveInterval = await AsyncStorage.getItem('Interval');
+        if (saveInterval) {
+          console.log('Interval', saveInterval)
+          setWaterInterval(JSON.parse(saveInterval));
+        }
+        const savedReminderTime = await AsyncStorage.getItem('waterReminderFlag');
+        if (savedReminderTime) {
+          setWaterReminderFlag(JSON.parse(savedReminderTime));
+        }
+
         const data: any = await getWaterData(dateOnly);
         if (data && data.length > 0) {
           // console.log('data====', data[0]);
@@ -192,6 +221,14 @@ const WaterTrack = () => {
           setShowOverLay={setShowOverLay}
           setMeasuringUnit={setMeasuringUnit}
           measuringUnit={measuringUnit}
+          waterReminderFlag={waterReminderFlag}
+          setWaterReminderFlag={setWaterReminderFlag}
+          startTime={startTime}
+          setStartTime={setStartTime}
+          endTime={endTime}
+          setEndTime={setEndTime}
+          waterInterval={waterInterval}
+          setWaterInterval={setWaterInterval}
         />
         {/* <CanvasProgress/> */}
         <HistoryChat

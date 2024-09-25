@@ -38,14 +38,14 @@ const HistoryChat = ({ barData, currentType, cupCapacity, drinkGoal }: any) => {
                         yAxisTextStyle={{
                             color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
                         }}
-                        xAxisLabelTextStyle={{ color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text}}
+                        xAxisLabelTextStyle={{ color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}
 
                     />
                 </View>
                 :
-                <View>
+                <View style={{ alignItems: 'center', paddingVertical: 5 }}>
                     <Image
-                        source={require('../../../assets/waterTrackScreenAssets/Not_found_Gif.gif')}
+                        source={require('../../../assets/waterTrackScreenAssets/Not_found_data.gif')}
                     />
                 </View>
             }

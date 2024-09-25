@@ -30,6 +30,19 @@ export const AppProvider = ({ children }: any) => {
         weight: '',
 
     })
+    const [waterReminderFlag, setWaterReminderFlag] = useState<boolean>(false)
+    const [startTime, setStartTime] = useState<any>({
+        h: 0,
+        m: 0
+    })
+    const [endTime, setEndTime] = useState<any>({
+        h: 0,
+        m: 0
+    })
+    const [waterInterval, setWaterInterval] = useState<any>({
+        h: 0,
+        m: 0
+    })
 
     const MAX_HEIGHT = 200
     return (
@@ -70,7 +83,15 @@ export const AppProvider = ({ children }: any) => {
             reminderFlag,
             setReminderFlag,
             userData,
-            setUserData
+            setUserData,
+            waterReminderFlag,
+            setWaterReminderFlag,
+            startTime,
+            setStartTime,
+            endTime,
+            setEndTime,
+            waterInterval,
+            setWaterInterval
         }}>
             {children}
         </AppContext.Provider>

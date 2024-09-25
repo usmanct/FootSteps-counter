@@ -10,7 +10,7 @@ const StepCountingServiceComponent = () => {
 
     const sleep = (time: number | undefined) => new Promise<void>((resolve) => setTimeout(() => resolve(), time));
     const stepCountingInBackground = async () => {
-        console.log('Date inBackground', dateOnly);
+        // console.log('Date inBackground', dateOnly);
 
         // const res: any = await getData(dateOnly);
         // console.log('stepCountingInBackground', res)
@@ -24,9 +24,7 @@ const StepCountingServiceComponent = () => {
         //     const updatedDistance: any = calculateDistance(updatedCount).toFixed(3); // Implement this based on
         //     await updateFootStepRecord(dateOnly, updatedCount, currentData.goal, updatedEnergy, updatedDistance);
         //     setStepsFlag(false)
-
         // }
-
         // if (newSteps < currentData.goal) {
 
         // Update database with new values

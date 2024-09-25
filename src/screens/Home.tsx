@@ -31,7 +31,9 @@ const Home = () => {
     setIsPedometerRunning,
     reminderFlag,
     setReminderFlag,
-    setUserData
+    setUserData,
+    waterReminderFlag,
+    setWaterReminderFlag,
   }: any = useContext(AppContext)
   const now = new Date();
   const dateOnly = now.toLocaleDateString();
@@ -112,8 +114,6 @@ const Home = () => {
 
   const initialLoad = async () => {
     try {
-      stopService();
-
       const profileData: any = await AsyncStorage.getItem('userData');
       if (profileData) {
         const userData = JSON.parse(profileData);
@@ -134,6 +134,7 @@ const Home = () => {
         const parsedState = JSON.parse(notificationState); // Ensure you parse it if it's not null
         setReminderFlag(parsedState);  // Set the parsed boolean value
       }
+      
       const res: any = await getData(dateOnly);
       if (res && res.length > 0) {
         setCurrentStepCount(res[0].footsteps);

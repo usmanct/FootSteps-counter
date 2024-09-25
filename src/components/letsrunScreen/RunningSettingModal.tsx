@@ -16,13 +16,17 @@ const TargetModal = (
         settargetKcalBurn,
         currentType,
         setShowOverLay,
-        showOverLay
+        showOverLay,
+        startTime,
+        setStartTime,
+        setInterval,
+        setEndTime
     }: any) => {
     const formatNumber = (num: { toString: () => string; }) => num.toString().padStart(2, '0');
     const usecustomTheme = useThemeChange()
 
-    const dataMin: any = Array.from({ length: 60 }, (_, i) => i);
-    const dataHour: any = Array.from({ length: 24 }, (_, i) => i);
+    const dataMin = Array.from({ length: 60 }, (_, i) => formatNumber(i));
+    const dataHour = Array.from({ length: 24 }, (_, i) => formatNumber(i));
     const datakm: any = Array.from({ length: 21 }, (_, i) => i);
     const datakcal: any = Array.from({ length: 401 }, (_, i) => i);
     const [inputValue, setInputValue] = useState<any>({});
@@ -69,6 +73,39 @@ const TargetModal = (
                 m: timeValue.minute
             })
         }
+        else if (modalType === 'Start Time') {
+            console.log('Start Time-------')
+            setDefaultIndexTime({
+                hour: timeValue.hindex,
+                minute: timeValue.mindex
+            })
+            setStartTime({
+                h: timeValue.hour,
+                m: timeValue.minute
+            })
+        }
+        else if (modalType === 'End Time') {
+            console.log('Start Time-------')
+            setDefaultIndexTime({
+                hour: timeValue.hindex,
+                minute: timeValue.mindex
+            })
+            setEndTime({
+                h: timeValue.hour,
+                m: timeValue.minute
+            })
+        }
+        else if (modalType === 'Interval') {
+            console.log('Start Time-------')
+            setDefaultIndexTime({
+                hour: timeValue.hindex,
+                minute: timeValue.mindex
+            })
+            setInterval({
+                h: timeValue.hour,
+                m: timeValue.minute
+            })
+        }
         else if (modalType === 'distance') {
             console.log('distance-------')
             setDefaultIndex(inputValue.i)
@@ -93,7 +130,7 @@ const TargetModal = (
             >
                 <View style={styles.centeredView}>
                     <View style={{ ...styles.modalView, backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white' }}>
-                        {modalType === 'duration' || modalType === 'account'
+                        {modalType === 'duration' || modalType === 'account' || modalType === 'Start Time' || modalType === 'End Time' || modalType === 'Interval'
                             ?
                             <View style={styles.wheelRow}>
                                 <View style={styles.pickerContainer}>

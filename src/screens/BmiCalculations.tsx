@@ -26,12 +26,6 @@ const BmiCalculations = () => {
     // }, [])
 
     const calculateBMI = async () => {
-        try {
-            await AsyncStorage.setItem('userData', JSON.stringify(userData));
-            console.log('User data saved!');
-        } catch (error) {
-            console.error('Failed to save user data', error);
-        }
         const heightM = parseFloat(userData.height) / 100;
         const widthM = parseFloat(userData.weight)
         const res = (widthM / (heightM * heightM)).toFixed(2);
@@ -43,10 +37,6 @@ const BmiCalculations = () => {
         setModalVisible(!modalVisible)
         setShowOverLay(!showOverLay)
         setTitle(e)
-    }
-
-    const navigateToBMI = () => {
-
     }
     useEffect(() => {
         console.log(bmivalue)

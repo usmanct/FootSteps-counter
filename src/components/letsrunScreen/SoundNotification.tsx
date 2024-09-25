@@ -4,9 +4,11 @@ import SwitchToggle from 'react-native-switch-toggle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppContext } from '../../contextApi/AppContext';
 import { useThemeChange } from '../../apptheme/ThemeChange';
+import { registerBackgroundFetchAsync, registerWaterreminderTask, unregisterBackgroundFetchAsync, unregisterWaterReminderTask } from '../../services/BackgroundServices';
 
 const SoundNotification = (
-    { rowTitle,
+    {
+        rowTitle,
         reminderTime,
         setReminderTime,
         reminderFlag,
@@ -16,7 +18,9 @@ const SoundNotification = (
         styleProp,
         currentType,
         isPedometerRunning,
-        setIsPedometerRunning
+        setIsPedometerRunning,
+        waterReminderFlag,
+        setWaterReminderFlag
     }: any) => {
     const [isEnabled, setIsEnabled] = useState(reminderFlag || false);
     const {
@@ -49,38 +53,90 @@ const SoundNotification = (
             console.log('reminderFlag--++', reminderFlag)
             setIsEnabled(reminderFlag)
         }
-    }, [isPedometerRunning, reminderFlag, rowTitle])
+        else if (rowTitle === 'Reminder') {
+            console.log('waterReminderFlag--++', waterReminderFlag)
+            setIsEnabled(waterReminderFlag)
+        }
+    }, [isPedometerRunning, reminderFlag, rowTitle , waterReminderFlag])
 
+    // const toggleSwitch = async () => {
+    //     // Toggle switch and update reminderFlag state
+
+    //     if (rowTitle === 'Daily Step Reminder') {
+    //         setToggleService(!toggleService);
+    //         const updatedFlag = !reminderFlag;
+    //         setReminderFlag(updatedFlag);
+    //         setIsEnabled(updatedFlag);
+
+    //         // Register or unregister background fetch task
+    //         if (updatedFlag) {
+    //             registerBackgroundFetchAsync();
+    //         } else {
+    //             unregisterBackgroundFetchAsync();
+    //         }
+
+    //         // Save reminderFlag state to AsyncStorage
+    //         await AsyncStorage.setItem('reminderFlag', JSON.stringify(updatedFlag));
+
+    //     }
+    //     else if (rowTitle === 'StepCounter') {
+    //         console.log('isPedometerRunning', isPedometerRunning)
+    //         setToggleService(!toggleService);
+    //         setIsPedometerRunning(!isPedometerRunning)
+    //         const a: boolean = isPedometerRunning === true ? false : true;
+    //         setIsEnabled(a)
+    //         console.log('aaaaa', a)
+    //         await AsyncStorage.setItem('PedemeterState', JSON.stringify(a));
+
+    //         if (toggleService) {
+
+    //         }
+    //         else {
+
+    //         }
+    //     }
+    //     else if (rowTitle === 'Reminder') {
+    //         setToggleService(!toggleService);
+    //         const updatedFlag = !waterReminderFlag;
+    //         setWaterReminderFlag(updatedFlag);
+    //         setIsEnabled(updatedFlag);
+    //     }
+    // };
     const toggleSwitch = async () => {
-        // Toggle switch and update reminderFlag state
+        let updatedFlag;
 
         if (rowTitle === 'Daily Step Reminder') {
-            console.log('reminderFlag--', reminderFlag)
-            setToggleService(!toggleService);
-            setReminderFlag(!reminderFlag)
-            const a: boolean = reminderFlag === true ? false : true;
-            setIsEnabled(a)
-            console.log('bbbb', a)
-            await AsyncStorage.setItem('reminderFlag', JSON.stringify(a));
+            updatedFlag = !reminderFlag;
+            setReminderFlag(updatedFlag);
+            setIsEnabled(updatedFlag);
+
+            // Register or unregister background fetch task
+            updatedFlag ? registerBackgroundFetchAsync() : unregisterBackgroundFetchAsync();
+
+            // Save reminderFlag state to AsyncStorage
+            await AsyncStorage.setItem('reminderFlag', JSON.stringify(updatedFlag));
+
+        } else if (rowTitle === 'StepCounter') {
+            updatedFlag = !isPedometerRunning;
+            setIsPedometerRunning(updatedFlag);
+            setIsEnabled(updatedFlag);
+
+            // Save pedometer state to AsyncStorage
+            await AsyncStorage.setItem('PedemeterState', JSON.stringify(updatedFlag));
+
+        } else if (rowTitle === 'Reminder') {
+            updatedFlag = !waterReminderFlag;
+            updatedFlag ? registerWaterreminderTask() : unregisterWaterReminderTask();
+            setWaterReminderFlag(updatedFlag);
+            setIsEnabled(updatedFlag);
+
+            // Save water reminder flag to AsyncStorage
+            await AsyncStorage.setItem('waterReminderFlag', JSON.stringify(updatedFlag));
         }
-        else if (rowTitle === 'StepCounter') {
-            console.log('isPedometerRunning', isPedometerRunning)
-            setToggleService(!toggleService);
-            setIsPedometerRunning(!isPedometerRunning)
-            const a: boolean = isPedometerRunning === true ? false : true;
-            setIsEnabled(a)
-            console.log('aaaaa', a)
-            await AsyncStorage.setItem('PedemeterState', JSON.stringify(a));
 
-            if (toggleService) {
-
-            }
-            else {
-
-            }
-        }
+        // Update the toggle service state if needed
+        setToggleService((prev: any) => !prev);
     };
-
     return (
         <View style={{ ...styles.row, ...styleProp, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
             <Text style={{ ...styles.rowText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{rowTitle}</Text>
@@ -107,7 +163,6 @@ const SoundNotification = (
     );
 };
 
-export default SoundNotification;
 
 const styles = StyleSheet.create({
     row: {
@@ -124,3 +179,4 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     }
 });
+export default SoundNotification;
