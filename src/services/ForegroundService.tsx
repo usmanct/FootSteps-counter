@@ -4,46 +4,28 @@ import { useDatabase } from '../sqLiteDb/useDatabase';
 import { useState } from 'react';
 
 const StepCountingServiceComponent = () => {
-    const { getData, updateFootStepRecord } = useDatabase();
+    const { getData, updateFootStepRecord, insertData } = useDatabase();
     const [stepFlag, setStepsFlag] = useState<boolean>(true)
     const dateOnly = new Date().toLocaleDateString();
 
     const sleep = (time: number | undefined) => new Promise<void>((resolve) => setTimeout(() => resolve(), time));
     const stepCountingInBackground = async () => {
-        // console.log('Date inBackground', dateOnly);
-
-        // const res: any = await getData(dateOnly);
-        // console.log('stepCountingInBackground', res)
-        // const currentData = res && res.length > 0 ? res[0] : { footsteps: 0, energy: 0, distance: 0, goal: 100 };
-        // console.log("currentData: ", currentData);
-        // if (currentData.footsteps < currentData.goal) {
-        //     const newSteps = currentData.footsteps + 1
-        //     console.log("newSteps: ", newSteps);
-        //     const updatedCount = newSteps;
-        //     const updatedEnergy: any = calculateEnergy(updatedCount).toFixed(2);  // Implement this based on your calculation logic
-        //     const updatedDistance: any = calculateDistance(updatedCount).toFixed(3); // Implement this based on
-        //     await updateFootStepRecord(dateOnly, updatedCount, currentData.goal, updatedEnergy, updatedDistance);
-        //     setStepsFlag(false)
-        // }
-        // if (newSteps < currentData.goal) {
-
-        // Update database with new values
-        // }
         return Pedometer.watchStepCount(async (result) => {
+            console.log('Step Count: ', result.steps);
             // Fetch current state directly from the database
             const res: any = await getData(dateOnly);
-            const currentData = res && res.length > 0 ? res[0] : { footsteps: 0, energy: 0, distance: 0, goal: 10000 };
-            console.log("currentData: ", currentData);
-            const newSteps = stepFlag ? result.steps + currentData?.footsteps : result.steps;
-            console.log("newSteps: ", newSteps);
-            // if (newSteps < currentData.goal) {
-            const updatedCount = newSteps;
-            const updatedEnergy: any = calculateEnergy(updatedCount).toFixed(2);  // Implement this based on your calculation logic
-            const updatedDistance: any = calculateDistance(updatedCount).toFixed(3)
-            // Update database with new values
-            setStepsFlag(false)
-            await updateFootStepRecord(dateOnly, updatedCount, currentData.goal, updatedEnergy, updatedDistance);
-            // }
+            const currentData = res && res.length > 0 ? res[0] : null;
+            if (currentData) {
+                // Update existing record for the day
+                const updatedCount = currentData.footsteps + result.steps - 1;
+                const updatedEnergy = calculateEnergy(updatedCount).toFixed(2);
+                const updatedDistance = calculateDistance(updatedCount).toFixed(3);
+
+                await updateFootStepRecord(dateOnly, updatedCount, currentData.goal, updatedEnergy, updatedDistance);
+            } else {
+                // Insert a new record if none exists for the day
+                await insertData(dateOnly, result.steps, 100, calculateEnergy(result.steps), calculateDistance(result.steps));
+            }
         });
 
     };
@@ -79,14 +61,13 @@ const StepCountingServiceComponent = () => {
         console.log("Usman_______________________")
         await new Promise<void>(async (resolve) => {
             while (BackgroundService.isRunning()) {
-                await stepCountingInBackground()
                 await updatingStepsInBackground();
                 await sleep(delay);
             }
             resolve();
         });
 
-        (await pedometerSubscription)?.remove();
+        pedometerSubscription?.remove();
     };
     const updateServiceNotification = async (steps: number, calories: number, goal: number) => {
         if (BackgroundService.isRunning()) {

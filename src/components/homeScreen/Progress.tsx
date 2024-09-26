@@ -64,8 +64,10 @@ const Progress = (
             })
         subscription = Pedometer.watchStepCount((result) => {
             setCurrentStepCount((preCount: any) => {
+                console.log("initial", initialCountflag)
+                console.log("PreCount: ", preCount)
                 const newCount = initialCountflag ? preCount + result.steps - 1 : result.steps;
-                console.log("Steps: " , result.steps);
+                console.log("Steps: ", result.steps);
 
                 if (newCount >= target) {
                     return target;

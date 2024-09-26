@@ -31,112 +31,48 @@ const LetsRun = () => {
   const { currentType }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
 
+  const animateToRegion = (latitude: number, longitude: number) => {
+    if (mapRef.current) {
+      mapRef.current.animateToRegion({
+        latitude,
+        longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+    }
+  };
+
+  // Fetch user's current location and set it as the initial location on the map
   useEffect(() => {
-    const getPermissionsAndTrackLocation = async () => {
+    const getPermissionsAndCurrentLocation = async () => {
       try {
         // Request location permissions
         let { status } = await Location.requestForegroundPermissionsAsync();
-        console.log('Location Status', status)
         if (status !== 'granted') {
           setErrorMsg('Permission to access location was denied');
           return;
         }
 
-        // Start tracking location
-        console.log('Location')
-        Location.watchPositionAsync(
-          { accuracy: Location.Accuracy.High, timeInterval: 1000, distanceInterval: 1 },
-          (newLocation) => {
-            setLocation(newLocation);
-            const { latitude, longitude } = newLocation.coords;
+        // Get initial location
+        const initialLocation = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
 
-            // Center map on the new location
-            if (mapRef.current) {
-              mapRef.current.animateToRegion({
-                latitude,
-                longitude,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-              });
-            }
-          }
-        );
+        const { latitude, longitude } = initialLocation.coords;
+        setLocation(initialLocation);
+
+        // Center map on the initial location when it's available and mapRef is ready
+        animateToRegion(latitude, longitude);
       } catch (error) {
         setErrorMsg('Failed to get location permissions');
         console.error(error);
       }
     };
 
-    getPermissionsAndTrackLocation();
-    console.log('----------------------------------------------------------------')
+    getPermissionsAndCurrentLocation();
   }, []);
-  // useEffect(() => {
-  //   const simulateMovementAndCalculate = () => {
-  //     let counter = 0;
-  //     const startTime: any = new Date();
-
-  //     const interval = setInterval(() => {
-  //       counter += 1;
-
-  //       const newLatitude = location?.coords?.latitude + (counter * 0.0001);
-  //       const newLongitude = location?.coords?.longitude + (counter * 0.0001);
-
-  //       const newLocation = {
-  //         latitude: newLatitude,
-  //         longitude: newLongitude,
-  //       };
-  //       setRouteCoordinates((prev: any) => {
-  //         const newCoordinates = [...prev, newLocation];
-
-  //         // Calculate the distance covered
-  //         if (newCoordinates.length > 1) {
-  //           const lastPoint = newCoordinates[newCoordinates.length - 2];
-  //           const distance = getDistance(lastPoint, { latitude: newLatitude, longitude: newLongitude });
-  //           setTotalDistance(prevDistance => prevDistance + distance);
-  //         }
-
-  //         return newCoordinates;
-  //       });
-
-  //       // Calculate elapsed time
-  //       const currentTime : any = new Date()
-  //       const elapsedTime = (currentTime - startTime) / 1000; // In seconds
-  //       setTotalTime(pre => pre+ elapsedTime);
-  //       console.log("elapsed Time" , elapsedTime)
-
-  //       // Center map on the new location
-  //       if (mapRef.current) {
-  //         mapRef.current.animateToRegion({
-  //           ...newLocation,
-  //           latitudeDelta: 0.01,
-  //           longitudeDelta: 0.01,
-  //         });
-  //       }
-  //       // Convert timeDuration to seconds
-  //       const targetTimeInSeconds = (timeDuration.h * 3600) + (timeDuration.m * 60);
-  //       console.log("targetTimeInSeconds" , targetTimeInSeconds)
-  //       // Stop after reaching the target time
-
-  //       if (totalTime >= targetTimeInSeconds) {
-  //         setIsRunning(false)
-  //         setRunningState(false)
-  //         setTimeReached(!timeReached)
-  //         clearInterval(interval!);
-  //         return;
-  //       }
-  //     }, 1000); // Update every second
-
-  //     return () => clearInterval(interval);
-  //   };
-
-  //   if (IsRunning && runningState) {
-  //     simulateMovementAndCalculate();
-  //   }
-  // }, [IsRunning, runningState ]);
-
-
-
   useEffect(() => {
+    let subscription: { remove: () => void };
     const watchSteps = async () => {
       try {
         const startTime: any = new Date();
@@ -184,6 +120,11 @@ const LetsRun = () => {
     };
 
     watchSteps();
+    return () => {
+      if (subscription) {
+        subscription.remove(); // Cleanup subscription
+      }
+    };
   }, [IsRunning, runningState]);
 
 

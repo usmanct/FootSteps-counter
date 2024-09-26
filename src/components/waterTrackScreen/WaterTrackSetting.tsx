@@ -105,7 +105,7 @@ const WaterTrackSetting = ({ route }: any) => {
         };
 
         saveSettings();
-        if (waterReminderFlag) {
+        if (localWaterReminderFlag) {
             registerWaterreminderTask()
         }
     }, [localWaterInterval]);

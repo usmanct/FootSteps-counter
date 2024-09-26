@@ -22,8 +22,6 @@ TaskManager.defineTask(WATER_REMINDER_TASK, async () => {
         const upperBound = startTime ? JSON.parse(startTime) : { h: null, m: null };
         const endTime = await AsyncStorage.getItem('endTime')
         const lowerBound = endTime ? JSON.parse(endTime) : { h: null, m: null };
-        const timeInterval = await AsyncStorage.getItem('Interval')
-        const NotificationTimeInterval = timeInterval ? JSON.parse(timeInterval) : { h: null, m: null };
         const currentTime = new Date();
 
         const startTimeHours = Number(upperBound.h);
@@ -34,6 +32,9 @@ TaskManager.defineTask(WATER_REMINDER_TASK, async () => {
 
         const currentTimeHours = Number(currentTime.getHours());
         const currentTimeMins = Number(currentTime.getMinutes());
+        console.log("startTime", startTimeHours, startTimeMins)
+        console.log("endTime", endTimeHours, endTimeMins)
+        console.log("currentTime", currentTimeHours, currentTimeMins)
         if (
             waterFlag &&
             (currentTimeHours >= startTimeHours && currentTimeHours <= endTimeHours) &&
@@ -65,6 +66,7 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
 
         const reminderHours = Number(reminderTime.h);
         const reminderMinutes = Number(reminderTime.m);
+        console.log()
 
         if (isNaN(reminderHours) || isNaN(reminderMinutes)) {
             console.error('Invalid reminder time:', reminderTime);
@@ -114,7 +116,7 @@ export async function registerWaterreminderTask() {
     const reminderMinutes = Number(NotificationTimeInterval.m) 
     
     const t  = 60 * 60 * reminderHours + 60 * reminderMinutes
-    
+    console.log('tttttt',t)
     return BackgroundFetch.registerTaskAsync(WATER_REMINDER_TASK, {
         minimumInterval: t, // 1-minute interval
         stopOnTerminate: false,
