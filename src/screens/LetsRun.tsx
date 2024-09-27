@@ -71,34 +71,102 @@ const LetsRun = () => {
 
     getPermissionsAndCurrentLocation();
   }, []);
+
+
+  // useEffect(() => {
+  //   let subscription: { remove: () => void };
+  //   const watchSteps = async () => {
+  //     try {
+  //       const startTime: any = new Date();
+  //       // Start tracking location
+  //       if (IsRunning && runningState) {
+  //         Location.watchPositionAsync(
+  //           { accuracy: Location.Accuracy.High, timeInterval: 1000, distanceInterval: 1 },
+  //           (newLocation) => {
+  //             // console.log('Location tracking', newLocation);
+  //             const { latitude, longitude } = newLocation.coords;
+  //             const elapsedTime = (new Date() - startTime) / 1000; // In seconds
+  //             setTotalTime(elapsedTime);
+  //             // Update location and route
+  //             setLocation(newLocation);
+  //             setRouteCoordinates((prev: any) => {
+  //               const newCoordinates = [...prev, { latitude, longitude }];
+  //               console.log('Updated Coordinate',newCoordinates , prev);
+  //               // Calculate the distance covered
+  //               if (newCoordinates.length > 1) {
+  //                 const lastPoint = newCoordinates[newCoordinates.length - 2];
+  //                 const distance = getDistance(lastPoint, { latitude, longitude });
+  //                 const distanceInKm = distance / 1000
+  //                 setTotalDistance(prevDistance => prevDistance + distanceInKm);
+  //               }
+
+  //               return newCoordinates;
+  //             });
+
+  //             // Center map on the new location
+  //             if (mapRef.current) {
+  //               mapRef.current.animateToRegion({
+  //                 latitude,
+  //                 longitude,
+  //                 latitudeDelta: 0.01,
+  //                 longitudeDelta: 0.01,
+  //               });
+  //             }
+  //           }
+  //         );
+  //       }
+  //     } catch (error) {
+  //       setErrorMsg('Failed to get location permissions');
+  //       console.error(error);
+  //     }
+  //   };
+
+  //   watchSteps();
+  //   return () => {
+  //     if (subscription) {
+  //       subscription.remove(); // Cleanup subscription
+  //     }
+  //   };
+  // }, [IsRunning, runningState]);
+
   useEffect(() => {
     let subscription: { remove: () => void };
     const watchSteps = async () => {
       try {
         const startTime: any = new Date();
-        // Start tracking location
         if (IsRunning && runningState) {
-          Location.watchPositionAsync(
+          subscription = await Location.watchPositionAsync(
             { accuracy: Location.Accuracy.High, timeInterval: 1000, distanceInterval: 1 },
             (newLocation) => {
-              // console.log('Location tracking', newLocation);
               const { latitude, longitude } = newLocation.coords;
               const elapsedTime = (new Date() - startTime) / 1000; // In seconds
               setTotalTime(elapsedTime);
-              // Update location and route
-              setLocation(newLocation);
-              setRouteCoordinates((prev: any) => {
-                const newCoordinates = [...prev, { latitude, longitude }];
 
-                // Calculate the distance covered
-                if (newCoordinates.length > 1) {
-                  const lastPoint = newCoordinates[newCoordinates.length - 2];
+              setLocation(newLocation);
+
+              setRouteCoordinates((prev: any) => {
+                if (prev.length > 0) {
+                  const lastPoint = prev[prev.length - 1];
                   const distance = getDistance(lastPoint, { latitude, longitude });
-                  const distanceInKm = distance / 1000
-                  setTotalDistance(prevDistance => prevDistance + distanceInKm);
+
+                  // Apply distance threshold to filter out minor changes
+                  const thresholdDistance = 5; // Minimum distance in meters to count as movement
+                  console.log('distance', distance)
+                  if (distance < thresholdDistance) {
+                    console.log('Return the')
+                    return prev; // Ignore minor movement
+                  }
+
+                  // Add new coordinate and calculate distance covered
+                  const newCoordinates = [...prev, { latitude, longitude }];
+                  const distanceInKm = distance / 1000;
+                  setTotalDistance((prevDistance) => prevDistance + distanceInKm);
+                  console.log('Updated Coordinates:', newCoordinates.length);
+                  return newCoordinates;
                 }
 
-                return newCoordinates;
+                // For the first coordinate, just add it without checking distance
+                return [{ latitude, longitude }];
               });
 
               // Center map on the new location
@@ -126,7 +194,6 @@ const LetsRun = () => {
       }
     };
   }, [IsRunning, runningState]);
-
 
 
   return (

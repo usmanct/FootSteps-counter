@@ -22,9 +22,6 @@ const StepCountingServiceComponent = () => {
                 const updatedDistance = calculateDistance(updatedCount).toFixed(3);
 
                 await updateFootStepRecord(dateOnly, updatedCount, currentData.goal, updatedEnergy, updatedDistance);
-            } else {
-                // Insert a new record if none exists for the day
-                await insertData(dateOnly, result.steps, 100, calculateEnergy(result.steps), calculateDistance(result.steps));
             }
         });
 
@@ -100,7 +97,7 @@ const StepCountingServiceComponent = () => {
             color: '#2ecc71',
             linkingURI: 'com.usmanct.FootStepscounter://home',
             parameters: {
-                delay: 60000, // Delay in milliseconds
+                delay: 5000, // Delay in milliseconds
             },
             progressBar: {
                 max: currentData.goal, // Set the maximum value to the goal
