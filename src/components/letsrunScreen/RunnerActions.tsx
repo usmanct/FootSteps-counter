@@ -37,7 +37,11 @@ const RunnerActions = ({
   currentType,
   showOverLay,
   setShowOverLay,
-  setRouteCoordinates
+  setRouteCoordinates,
+  distanceAchieve,
+  setDistanceAchieve,
+  kcalAchieve,
+  setKcalAchieve
 }: any) => {
 
   const [modalVisible, setModalVisible] = useState(false)
@@ -58,12 +62,38 @@ const RunnerActions = ({
       clearInterval(interval);
       // onStopHandler() 
     }
-    if (timeReached) {
-      onStopHandler()
-    }
-    return () => clearInterval(interval);
-  }, [IsRunning, runningState, timeReached]);
+    // if (timeReached) {
+    //   onStopHandler()
+    // }
 
+    return () => clearInterval(interval);
+  }, [IsRunning, runningState]);
+
+  useEffect(() => {
+    //compare the Timeduration with the time passed while running
+    const timeDurationSeconds = timeDuration.h * 60 * 60 + timeDuration.m * 60
+    const e = (Math.ceil(kcalBurn * 100) / 100).toFixed(2);
+    console.log(timeDurationSeconds, '--------------------------------------------------------', time)
+    if (timeDurationSeconds <= time) {
+      console.log('Time reached')
+      setTimeReached(true)
+    }
+
+    if (targetKcalBurn <= e) {
+      setKcalAchieve(true)
+    }
+
+  }, [time])
+
+  useEffect(() => {
+    const d = parseInt((Math.ceil((totalDistance / 1000) * 100) / 100)); // Ceiling value for total distance in km
+    console.log('--------------------------------------------------------', d, distanceCovered, distanceAchieve)
+
+    if (distanceCovered < d) {
+      console.log('Distance reached' , d)
+      setDistanceAchieve(true)
+    }
+  }, [totalDistance])
 
 
   useEffect(() => {
@@ -122,7 +152,13 @@ const RunnerActions = ({
         setkcalBurn,
         setTotalDistance,
         currentType,
-        setRouteCoordinates
+        setRouteCoordinates,
+        timeReached,
+        kcalAchieve,
+        distanceAchieve,
+        setTimeReached,
+        setDistanceAchieve,
+        setKcalAchieve
       } as never)
   }
 
@@ -199,6 +235,7 @@ const RunnerActions = ({
             unit={'time'}
             value={formatTime(time)}
             letsRunScreen={true}
+            timeReached={timeReached}
           />
           <StatsCard
             icon={require('../../../assets/letsRunScreenAssets/calories_icon.png')}
@@ -206,6 +243,7 @@ const RunnerActions = ({
             isFirst={true}
             value={(kcalBurn).toFixed(2)}
             letsRunScreen={true}
+            kcalAchieve={kcalAchieve}
           />
           <StatsCard
             icon={require('../../../assets/letsRunScreenAssets/distance_icon.png')}
@@ -213,6 +251,7 @@ const RunnerActions = ({
             isFirst={undefined}
             value={(totalDistance / 1000).toFixed(2)}
             letsRunScreen={true}
+            distanceAchieve={distanceAchieve}
           />
         </View>
         <View style={styles.btnRow}>

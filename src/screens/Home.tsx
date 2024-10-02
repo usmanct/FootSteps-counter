@@ -77,7 +77,6 @@ const Home = () => {
     } else if (nextAppState === 'active') {
       console.log("appState changed", nextAppState)
       stopService();
-      initialLoad()
       // Stop the backgroun\d service when the app comes to the foreground
     }
   };
@@ -85,6 +84,7 @@ const Home = () => {
 
   useEffect(() => {
     if (initialUpdateflag) {
+      console.log("stepps Updating" , currentStepCount)
       updateFootStepRecord(dateOnly, currentStepCount, target, kcal, distance).then(async () => {
         const res = await getData(dateOnly)
       }).catch((e) => {

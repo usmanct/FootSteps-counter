@@ -4,45 +4,53 @@ import { useDatabase } from '../sqLiteDb/useDatabase';
 import { useState } from 'react';
 
 const StepCountingServiceComponent = () => {
-    const { getData, updateFootStepRecord, insertData } = useDatabase();
-    const [stepFlag, setStepsFlag] = useState<boolean>(true)
+    const { getData, updateFootStepRecord } = useDatabase();
     const dateOnly = new Date().toLocaleDateString();
+    let preResult = 0; // Initialize preResult to store previous step count
 
-    const sleep = (time: number | undefined) => new Promise<void>((resolve) => setTimeout(() => resolve(), time));
+    const sleep = (time: any) => new Promise((resolve) => setTimeout(resolve, time));
+
     const stepCountingInBackground = async () => {
         return Pedometer.watchStepCount(async (result) => {
             console.log('Step Count: ', result.steps);
+
             // Fetch current state directly from the database
             const res: any = await getData(dateOnly);
             const currentData = res && res.length > 0 ? res[0] : null;
+
             if (currentData) {
+                // Calculate new step count
+                const updatedCount = currentData.footsteps + result.steps - preResult;
+
+                // Update preResult to current step count for the next callback
+                preResult = result.steps;
+
                 // Update existing record for the day
-                const updatedCount = currentData.footsteps + result.steps - 1;
+                console.log("currentData: ", currentData);
                 const updatedEnergy = calculateEnergy(updatedCount).toFixed(2);
                 const updatedDistance = calculateDistance(updatedCount).toFixed(3);
 
                 await updateFootStepRecord(dateOnly, updatedCount, currentData.goal, updatedEnergy, updatedDistance);
             }
         });
-
     };
 
-    const calculateEnergy = (steps: number) => {
-        console.log("stepppp", steps)
-        return steps * 0.05;
+    const calculateEnergy = (steps: any) => {
+        console.log("stepppp", steps);
+        return steps * 0.05; // Example calculation
     };
 
-    const calculateDistance = (steps: number) => {
-        console.log("stepppp", steps)
-        return (steps * 0.6) / 1000;
+    const calculateDistance = (steps: any) => {
+        console.log("stepppp", steps);
+        return (steps * 0.6) / 1000; // Example calculation
     };
 
     const updatingStepsInBackground = async () => {
         try {
-            const res = await getData(dateOnly);
-            console.log("Updating steps in background", res)
+            const res: any = await getData(dateOnly);
+            console.log("Updating steps in background", res);
             if (res && res.length > 0) {
-                const { footsteps, energy, goal, }: any = res[0];
+                const { footsteps, energy, goal } = res[0];
                 if (BackgroundService.isRunning()) {
                     await updateServiceNotification(footsteps, energy, goal);
                 }
@@ -52,10 +60,10 @@ const StepCountingServiceComponent = () => {
         }
     };
 
-    const veryIntensiveTask = async (taskDataArguments: { delay: number; }) => {
+    const veryIntensiveTask = async (taskDataArguments) => {
         const { delay } = taskDataArguments;
         const pedometerSubscription = stepCountingInBackground();
-        console.log("Usman_______________________")
+
         await new Promise<void>(async (resolve) => {
             while (BackgroundService.isRunning()) {
                 await updatingStepsInBackground();
@@ -66,7 +74,8 @@ const StepCountingServiceComponent = () => {
 
         pedometerSubscription?.remove();
     };
-    const updateServiceNotification = async (steps: number, calories: number, goal: number) => {
+
+    const updateServiceNotification = async (steps: any, calories: any, goal: any) => {
         if (BackgroundService.isRunning()) {
             console.log('Updating notification');
             await BackgroundService.updateNotification({
@@ -102,7 +111,6 @@ const StepCountingServiceComponent = () => {
             progressBar: {
                 max: currentData.goal, // Set the maximum value to the goal
                 value: currentData.footsteps, // Set the current value to the footsteps
-                // indeterminate: true,
                 accentColor: '#2ecc71',
                 color: '#2ecc71',
                 progressBackgroundColor: '#f5f5f5',
@@ -113,10 +121,8 @@ const StepCountingServiceComponent = () => {
         console.log('startService--------------------------------Ending--------------------------------');
     };
 
-
     const stopService = async () => {
         console.log('StopService--------------------------------');
-        setStepsFlag(true)
         await BackgroundService.stop();
         console.log('StopService--------------------------------Ending----------------------------------');
     };
@@ -124,7 +130,7 @@ const StepCountingServiceComponent = () => {
     return {
         stopService,
         startService,
-    }
+    };
 };
 
 export default StepCountingServiceComponent;

@@ -27,6 +27,8 @@ const LetsRun = () => {
   const [runningState, setRunningState] = useState<boolean>(false)
   const mapRef = useRef<any>(null);
   const [timeReached, setTimeReached] = useState(false);
+  const [distanceAchieve, setDistanceAchieve] = useState(false)
+  const [kcalAchieve, setKcalAchieve] = useState(false)
   const [showOverLay, setShowOverLay] = useState(false)
   const { currentType }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
@@ -152,7 +154,9 @@ const LetsRun = () => {
                   // Apply distance threshold to filter out minor changes
                   const thresholdDistance = 5; // Minimum distance in meters to count as movement
                   console.log('distance', distance)
-                  if (distance < thresholdDistance) {
+                  console.log("Setted Values To be Achieve", targetKcalBurn, distanceCovered, timeDuration)
+                  console.log("Values Change by the Time increase Or location Update", speed, kcalBurn)
+                  if (distance > thresholdDistance) {
                     console.log('Return the')
                     return prev; // Ignore minor movement
                   }
@@ -250,6 +254,10 @@ const LetsRun = () => {
         showOverLay={showOverLay}
         setShowOverLay={setShowOverLay}
         setRouteCoordinates={setRouteCoordinates}
+        distanceAchieve={distanceAchieve}
+        setDistanceAchieve={setDistanceAchieve}
+        kcalAAchieve={kcalAchieve}
+        setKcalAchieve={setKcalAchieve}
       />
       <OverLayScreen showOverLay={showOverLay} />
     </ScrollView>

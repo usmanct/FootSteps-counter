@@ -5,6 +5,7 @@ import { AntDesign } from '@expo/vector-icons';
 import TargetModal from '../TargetModal';
 import { Pedometer } from 'expo-sensors';
 import { useThemeChange } from '../../apptheme/ThemeChange';
+import StepCountingServiceComponent from '../../services/ForegroundService';
 
 const Progress = (
     {
@@ -23,13 +24,10 @@ const Progress = (
 
     const [modalVisible, setModalVisible] = useState(false);
     const useCustomTheme = useThemeChange()
+    const { startService, stopService } = StepCountingServiceComponent()
     let subscription: any;
 
     const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
-    const [initialCountflag, setinitailcountflag] = useState<boolean>(true)
-    // const [IsTargetReached, setIsTargetReached] = useState<any>(false);
-
-
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
 
@@ -48,9 +46,11 @@ const Progress = (
         // if (isPedometerRunning) {
 
         // let lastSteps = 0;
+        let preResult: number 
         Pedometer.isAvailableAsync().then(
             (result) => {
                 setIsPedometerAvailable(String(result));
+                console.log("Pedometer is Available")
             },
             (error) => {
                 setIsPedometerAvailable('Could not get availability: ' + error);
@@ -64,29 +64,31 @@ const Progress = (
             })
         subscription = Pedometer.watchStepCount((result) => {
             setCurrentStepCount((preCount: any) => {
-                console.log("initial", initialCountflag)
                 console.log("PreCount: ", preCount)
-                const newCount = initialCountflag ? preCount + result.steps - 1 : result.steps;
+                console.log("Stepsss From", preResult)
+                const newCount: any = preCount + (result.steps - preResult) || 0;
+                console.log("NewCount: ", newCount);
                 console.log("Steps: ", result.steps);
-
+                preResult = result.steps;
                 if (newCount >= target) {
                     return target;
                 }
-
                 return newCount;
             });
-            setInitialUpdateflag(false);
+            stopService()
         });
         // }
         // else {
+        //     console.log("Pedometer Is Not Running");
         //     subscription && subscription.remove();
+        //     setInitialUpdateflag(true)
         // }
         return () => {
             subscription && subscription.remove();
             setInitialUpdateflag(true)
 
         };
-    }, [initialCountflag, isPedometerRunning]);
+    }, []);
 
 
     return (

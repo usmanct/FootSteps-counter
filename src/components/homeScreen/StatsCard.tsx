@@ -3,7 +3,17 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useThemeChange } from '../../apptheme/ThemeChange'
 import { AppContext } from '../../contextApi/AppContext'
 
-const StatsCard = ({ icon, value, unit, isFirst, letsRunScreen }: any) => {
+const StatsCard = (
+    {
+        icon,
+        value,
+        unit,
+        isFirst,
+        letsRunScreen,
+        timeReached,
+        kcalAchieve,
+        distanceAchieve
+    }: any) => {
 
     const { currentType }: any = useContext(AppContext)
     const useCustomTheme = useThemeChange()
@@ -19,7 +29,7 @@ const StatsCard = ({ icon, value, unit, isFirst, letsRunScreen }: any) => {
             <Text style={
                 {
                     fontWeight: 'bold',
-                    color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
+                    color: timeReached || kcalAchieve || distanceAchieve ? 'red' : currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
                 }
             }>
                 {value}

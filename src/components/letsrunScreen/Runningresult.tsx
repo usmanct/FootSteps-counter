@@ -28,7 +28,10 @@ const Runningresult = ({ route }: any) => {
         setkcalBurn,
         setTotalDistance,
         currentType,
-        setRouteCoordinates
+        setRouteCoordinates,
+        setTimeReached,
+        setDistanceAchieve,
+        setKcalAchieve
     }: any = route.params
 
     const useCustomTheme = useThemeChange()
@@ -55,6 +58,9 @@ const Runningresult = ({ route }: any) => {
         setkcalBurn(0)
         setTotalDistance(0)
         setRouteCoordinates([])
+        setTimeReached(false)
+        setDistanceAchieve(false)
+        setKcalAchieve(false)
     }
 
     const formatTime = (seconds: number) => {
@@ -206,6 +212,7 @@ const Runningresult = ({ route }: any) => {
                         unit={'time'}
                         value={formatTime(time)}
                         letsRunScreen={true}
+                        timeReached={route.params.timeReached}
                     />
                     <StatsCard
                         icon={require('../../../assets/letsRunScreenAssets/calories_icon.png')}
@@ -213,6 +220,7 @@ const Runningresult = ({ route }: any) => {
                         isFirst={true}
                         value={(kcalBurn).toFixed(2)}
                         letsRunScreen={true}
+                        kcalAchieve={route.params.kcalAchieve}
                     />
                     <StatsCard
                         icon={require('../../../assets/letsRunScreenAssets/distance_icon.png')}
@@ -220,6 +228,7 @@ const Runningresult = ({ route }: any) => {
                         isFirst={undefined}
                         value={(totalDistance / 1000).toFixed(2)}
                         letsRunScreen={true}
+                        distanceAchieve={route.params.distanceAchieve}
                     />
                 </View>
                 <View style={{ alignItems: 'center' }}>
