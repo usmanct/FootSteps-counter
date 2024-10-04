@@ -3,11 +3,24 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'reac
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { useThemeChange } from '../apptheme/ThemeChange';
 
-const TargetModal = ({ modalVisible, setModalVisible, target, setTarget, currentType, showOverLay, setShowOverLay }: any) => {
+const TargetModal = (
+    {
+        modalVisible,
+        setModalVisible,
+        target,
+        setTarget,
+        currentType,
+        showOverLay,
+        setShowOverLay,
+        data,
+        defaultIndex,
+        setDefaultIndex
+    }
+        : any) => {
 
-    const data: any = [10, 20, 50, 100, 200, 300, 500, 600, 700, 800, 900, 1000, 2000,]
+
     const [inputValue, setInputValue] = useState<any>({})
-    const [defaultIndex, setDefaultIndex] = useState(0)
+    // const [defaultIndex, setDefaultIndex] = useState(0)
     const usecustomTheme = useThemeChange()
     useEffect(() => {
         console.log(inputValue)
@@ -34,22 +47,26 @@ const TargetModal = ({ modalVisible, setModalVisible, target, setTarget, current
             >
                 <View style={styles.centeredView}>
                     <View style={{ ...styles.modalView, backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white' }}>
-                        <WheelPickerExpo
-                            height={150}
-                            width={150}
-                            initialSelectedIndex={defaultIndex}
-                            items={data.map((name: any) => ({ label: name, value: '' }))}
-                            onChange={
-                                ({ item, index }) => {
-                                    setInputValue((pre: any) => ({ ...pre, value: item.label, i: index }))
+                        <Text style={{ fontWeight: "bold", fontSize: 16, color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Set Target</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                            <WheelPickerExpo
+                                height={150}
+                                width={50}
+                                initialSelectedIndex={defaultIndex}
+                                items={data.map((name: any) => ({ label: name, value: '' }))}
+                                onChange={
+                                    ({ item, index }) => {
+                                        setInputValue((pre: any) => ({ ...pre, value: item.label, i: index }))
+                                    }
+
                                 }
+                                selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
 
-                            }
-                            selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
+                                backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
 
-                            backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
-
-                        />
+                            />
+                            <Text style={{ fontWeight: "bold", color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Steps</Text>
+                        </View>
                         <Pressable
                             style={[styles.button, { backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.bmiButton : '#f49913' }]}
                             onPress={saveChanges}>

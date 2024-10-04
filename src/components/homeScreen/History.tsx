@@ -100,12 +100,12 @@ const History = ({ currentType, currentStepCount, target }: any) => {
         <View style={{ ...styles.upperContainer, backgroundColor: currentType === 'dark' ? useCustomTheme?.darkMode?.bgcolor : 'white' }}>
             <View style={styles.container}>
                 <Text style={{ ...styles.heading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Your Progress</Text>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={{ ...styles.btn, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn2 : useCustomTheme.lightMode.Btn2 }}
                     onPress={toggleMonthWeekHandler}>
                     <Text style={styles.btnText}>{calenderType}</Text>
                     <AntDesign name="right" size={14} color="white" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 {calenderModal ?
                     <View
                         style={{
@@ -145,8 +145,6 @@ const History = ({ currentType, currentStepCount, target }: any) => {
             </View>
             <View style={{ ...styles.hrline, borderColor: currentType === 'dark' ? '#14161d' : useCustomTheme.lightMode.Header }}></View>
             <CalendarProvider date={''}>
-                {
-                    calenderType === 'Month' ?
                         <Calendar
                             key={currentType}
                             onDayPress={onPressDateHandler}
@@ -189,37 +187,6 @@ const History = ({ currentType, currentStepCount, target }: any) => {
                                 )
                             )}
                         />
-                        :
-                        <WeekCalendar
-                            onDayPress={onPressDateHandler}
-                            firstDay={1}
-                            markingType={'custom'}
-                            markedDates={{
-                                '2024-09-12': {
-                                    customStyles: {
-                                        container: {
-                                            borderColor: 'blue',
-                                            borderWidth: 1,
-                                        },
-                                        text: {
-                                            color: 'blue',
-                                        },
-                                    },
-                                },
-                                [selected]: {
-                                    selected: true,
-                                    disableTouchEvent: true,
-                                },
-                            }}
-                            theme={{
-                                todayTextColor: 'blue',
-                                calendarBackground: 'transparent',
-                                dayTextColor: 'black',
-                                monthTextColor: 'black',
-                            }}
-                        />
-
-                }
             </CalendarProvider>
 
         </View>

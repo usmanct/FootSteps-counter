@@ -20,13 +20,13 @@ const TargetModal = (
         startTime,
         setStartTime,
         setInterval,
-        setEndTime
+        setEndTime,
+        startTimeDefaultIndex,
+        setStartTimeDefaultIndex,
+        dataHour,
+        dataMin
     }: any) => {
-    const formatNumber = (num: { toString: () => string; }) => num.toString().padStart(2, '0');
     const usecustomTheme = useThemeChange()
-
-    const dataMin = Array.from({ length: 60 }, (_, i) => formatNumber(i));
-    const dataHour = Array.from({ length: 24 }, (_, i) => formatNumber(i));
     const datakm: any = Array.from({ length: 21 }, (_, i) => i);
     const datakcal: any = Array.from({ length: 401 }, (_, i) => i);
     const [inputValue, setInputValue] = useState<any>({});
@@ -75,9 +75,9 @@ const TargetModal = (
         }
         else if (modalType === 'Start Time') {
             console.log('Start Time-------')
-            setDefaultIndexTime({
-                hour: timeValue.hindex,
-                minute: timeValue.mindex
+            setStartTimeDefaultIndex({
+                h: timeValue.hindex,
+                m: timeValue.mindex
             })
             setStartTime({
                 h: timeValue.hour,
@@ -130,6 +130,7 @@ const TargetModal = (
             >
                 <View style={styles.centeredView}>
                     <View style={{ ...styles.modalView, backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white' }}>
+                        <Text style={{ fontWeight: 'bold', color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>{modalType === 'account' ? 'Set Time' : modalType}</Text>
                         {modalType === 'duration' || modalType === 'account' || modalType === 'Start Time' || modalType === 'End Time' || modalType === 'Interval'
                             ?
                             <View style={styles.wheelRow}>
@@ -148,7 +149,7 @@ const TargetModal = (
                                         selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
                                         backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
                                     />
-                                    <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Hours</Text>
+                                    {/* <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Hours</Text> */}
                                 </View>
                                 <View style={styles.pickerContainer}>
                                     <WheelPickerExpo
@@ -165,7 +166,7 @@ const TargetModal = (
                                         selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
                                         backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
                                     />
-                                    <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Minutes</Text>
+                                    {/* <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Minutes</Text> */}
                                 </View>
                             </View>
                             :
@@ -273,7 +274,8 @@ const styles = StyleSheet.create({
     pickerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        // marginHorizontal: 10,
+        marginHorizontal: 10,
+
     },
     pickerLabel: {
         marginLeft: 10,

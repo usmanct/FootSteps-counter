@@ -19,6 +19,9 @@ const WaterTrackSetting = ({ route }: any) => {
     const drinkGaolData: any = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000]
     const cupcapacitydata: any = [50, 100, 150, 200, 250, 300]
     const unitData: any = ['ml', 'oz']
+    const formatNumber = (num: { toString: () => string; }) => num.toString().padStart(2, '0');
+    const dataMin = Array.from({ length: 60 }, (_, i) => formatNumber(i));
+    const dataHour = Array.from({ length: 24 }, (_, i) => formatNumber(i));
     const { drinkGoal,
         setDrinkGoal,
         cupCapacity,
@@ -56,6 +59,12 @@ const WaterTrackSetting = ({ route }: any) => {
         setModalType,
         currentType
     }: any = useContext(AppContext)
+    const [startTimeDefaultIndex, setStartTimeDefaultIndex] = useState(
+        {
+            h: 0,
+            m: 0
+        }
+    )
     const useCustomTheme = useThemeChange()
     const navigation = useNavigation();
 
@@ -71,6 +80,7 @@ const WaterTrackSetting = ({ route }: any) => {
         setDefaultIndexcup(cupcapacitydata.indexOf(localCupCapacity))
         setDefaultIndexgoal(drinkGaolData.indexOf(localDrinkGoal))
         setDefaultUnitIndex(unitData.indexOf(localMeasuringUnit))
+
     }, [])
 
     useEffect(() => {
@@ -170,7 +180,16 @@ const WaterTrackSetting = ({ route }: any) => {
                     }}
                 />
             </View>
-            <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
+            <View
+                style={
+                    {
+                        ...styles.container,
+                        backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : !localWaterReminderFlag ? '#a6a6a6' : useCustomTheme.lightMode.Header
+                    }
+                }
+                pointerEvents={localWaterReminderFlag ? 'auto' : 'none'}
+            >
+                {!localWaterReminderFlag ? <Text>Trun on Reminder for setting values</Text> : null}
                 <Row title={'Start Time'} subtil={`${localstartTime.h}:${localstartTime.m}`} currentType={currentType} onpress={startTimeHandler} />
                 <Row title={'End Time'} subtil={`${localendTime.h}:${localendTime.m}`} currentType={currentType} onpress={endTimeHandler} />
                 <Row title={'Interval'} subtil={`${localWaterInterval.h} hours:${localWaterInterval.m} mins`} currentType={currentType} onpress={intervalTimeHandler} />
@@ -249,6 +268,10 @@ const WaterTrackSetting = ({ route }: any) => {
                 currentType={currentType}
                 showOverLay={showOverLay}
                 setShowOverLay={setShowOverLay}
+                startTimeDefaultIndex={startTimeDefaultIndex}
+                setStartTimeDefaultIndex={setStartTimeDefaultIndex}
+                dataMin={dataMin}
+                dataHour={dataHour}
             />
 
             <OverLayScreen modalVisible={modalVisible || remindermodalVisible} />

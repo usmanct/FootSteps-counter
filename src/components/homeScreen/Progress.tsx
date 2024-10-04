@@ -21,13 +21,19 @@ const Progress = (
         setIsPedometerRunning,
     }
         : any) => {
-
+            const data: any = [
+                500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500,
+                6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500,
+                11000, 11500, 12000, 12500, 13000, 13500, 14000, 14500, 15000, 15500,
+                16000, 16500, 17000, 17500, 18000, 18500, 19000, 19500, 20000
+            ]
     const [modalVisible, setModalVisible] = useState(false);
     const useCustomTheme = useThemeChange()
     const { startService, stopService } = StepCountingServiceComponent()
     let subscription: any;
 
     const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
+    const [defaultIndex, setDefaultIndex] = useState<any>(0)
     const now = new Date();
     const dateOnly = now.toLocaleDateString();
 
@@ -37,6 +43,9 @@ const Progress = (
             setCurrentStepCount(target)
         }
     }, [target, currentStepCount]);
+    useEffect(() => {
+        setDefaultIndex(data.indexOf(target))
+    }, []);
 
     const openTargetModal = () => {
         setModalVisible(!modalVisible)
@@ -107,6 +116,9 @@ const Progress = (
                     currentType={currentType}
                     showOverLay={showOverLay}
                     setShowOverLay={setShowOverLay}
+                    data={data}
+                    defaultIndex={defaultIndex}
+                    setDefaultIndex={setDefaultIndex}
                 />
                 <TouchableOpacity
                     style={{ ...styles.btn, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Btn1 : useCustomTheme.lightMode.Btn1 }}
