@@ -7,33 +7,16 @@ import { useThemeChange } from '../apptheme/ThemeChange';
 import { AppContext } from '../contextApi/AppContext';
 const Profile = ({ currentType, setShowOverLay, showOverLay }: any) => {
 
-
-
-    // const [userData, setUserData] = useState({
-    //     gender: 'male',
-    //     age: '23',
-    //     height: '170',
-    //     weight: '70',
-
-    // })
+    const genderArray = 'male,female,other'.split(',');
+    const ageArray = Array.from({ length: 200 }, (_, index) => index + 1);
+    const [defaultIndex, setDefaultIndex] = useState({
+        gender: 0,
+        age: 0,
+        height: 0,
+        weight: 0
+    })
     const useCustomTheme = useThemeChange()
     const { userData, setUserData }: any = useContext(AppContext)
-    // useEffect(() => {
-    //     initialLoad()
-    // }, [])
-
-
-    // const initialLoad = async () => {
-    //     try {
-    //         const res = await AsyncStorage.getItem('userData');
-    //         if (res) {
-    //             const userData = JSON.parse(res);
-    //             setUserData(userData); // Update the state with the retrieved data
-    //         }
-    //     } catch (error) {
-    //         console.error('Failed to load user data', error);
-    //     }
-    // }
 
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState('')
@@ -43,6 +26,15 @@ const Profile = ({ currentType, setShowOverLay, showOverLay }: any) => {
         setShowOverLay(!showOverLay)
         setTitle(e)
     }
+
+    useEffect(() => {
+        setDefaultIndex({
+            gender: genderArray.indexOf(userData.gender),
+            age: ageArray.indexOf(Number(userData.age)),
+            height: ageArray.indexOf(Number(userData.height)),
+            weight: ageArray.indexOf(Number(userData.weight))
+        })
+    }, [userData])
 
 
     return (
@@ -56,6 +48,10 @@ const Profile = ({ currentType, setShowOverLay, showOverLay }: any) => {
                 currentType={currentType}
                 setShowOverLay={setShowOverLay}
                 showOverLay={showOverLay}
+                genderArray={genderArray}
+                ageArray={ageArray}
+                defaultIndex={defaultIndex}
+                setDefaultIndex={setDefaultIndex}
             />
             <View style={styles.row}>
                 <Text style={{ ...styles.rowText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Gender</Text>

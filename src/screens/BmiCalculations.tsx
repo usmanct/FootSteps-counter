@@ -14,9 +14,17 @@ const BmiCalculations = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState('')
     const [showOverLay, setShowOverLay] = useState(false)
+    const genderArray = 'male,female,other'.split(',');
+    const ageArray = Array.from({ length: 200 }, (_, index) => index + 1);
+    const [defaultIndex, setDefaultIndex] = useState({
+        gender: 0,
+        age: 0,
+        height: 0,
+        weight: 0
+    })
 
- 
-    const { currentType , userData , setUserData }: any = useContext(AppContext)
+
+    const { currentType, userData, setUserData }: any = useContext(AppContext)
     const useCustomTheme = useThemeChange()
 
 
@@ -37,10 +45,15 @@ const BmiCalculations = () => {
         setModalVisible(!modalVisible)
         setShowOverLay(!showOverLay)
         setTitle(e)
-    }
+    }    
     useEffect(() => {
-        console.log(bmivalue)
-    }, [bmivalue])
+        setDefaultIndex({
+            gender: genderArray.indexOf(userData.gender),
+            age: ageArray.indexOf(Number(userData.age)),
+            height: ageArray.indexOf(Number(userData.height)),
+            weight: ageArray.indexOf(Number(userData.weight))
+        })
+    }, [userData])
 
     return (
         <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
@@ -99,6 +112,10 @@ const BmiCalculations = () => {
                 currentType={currentType}
                 showOverLay={showOverLay}
                 setShowOverLay={setShowOverLay}
+                genderArray={genderArray}
+                ageArray={ageArray}
+                defaultIndex={defaultIndex}
+                setDefaultIndex={setDefaultIndex}
             />
         </View>
     )

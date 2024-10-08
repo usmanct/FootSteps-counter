@@ -17,11 +17,13 @@ const WaterTrackSetting = ({ route }: any) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [remindermodalVisible, setReminderModalVisible] = useState(false);
     const drinkGaolData: any = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000]
-    const cupcapacitydata: any = [50, 100, 150, 200, 250, 300]
+    const cupcapacitydata: any = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
+    const md: any = ['AM', 'PM']
     const unitData: any = ['ml', 'oz']
     const formatNumber = (num: { toString: () => string; }) => num.toString().padStart(2, '0');
     const dataMin = Array.from({ length: 60 }, (_, i) => formatNumber(i));
-    const dataHour = Array.from({ length: 24 }, (_, i) => formatNumber(i));
+    const dataHour = Array.from({ length: 12 }, (_, i) => formatNumber(i + 1));
+    const dataHoursInterval = Array.from({ length: 13 }, (_, i) => formatNumber(i));
     const { drinkGoal,
         setDrinkGoal,
         cupCapacity,
@@ -62,7 +64,21 @@ const WaterTrackSetting = ({ route }: any) => {
     const [startTimeDefaultIndex, setStartTimeDefaultIndex] = useState(
         {
             h: 0,
-            m: 0
+            m: 0,
+            md: 0,
+        }
+    )
+    const [endTimeDefaultIndex, setEndTimeDefaultIndex] = useState(
+        {
+            h: 0,
+            m: 0,
+            md: 0,
+        }
+    )
+    const [intervalDefaultIndex, setIntervalTimeDefaultIndex] = useState(
+        {
+            h: 0,
+            m: 0,
         }
     )
     const useCustomTheme = useThemeChange()
@@ -80,11 +96,28 @@ const WaterTrackSetting = ({ route }: any) => {
         setDefaultIndexcup(cupcapacitydata.indexOf(localCupCapacity))
         setDefaultIndexgoal(drinkGaolData.indexOf(localDrinkGoal))
         setDefaultUnitIndex(unitData.indexOf(localMeasuringUnit))
-
-    }, [])
+        setStartTimeDefaultIndex({
+            h: dataHour.indexOf(localstartTime.h),
+            m: dataMin.indexOf(localstartTime.m),
+            md: md.indexOf(localstartTime.md)
+        })
+        setEndTimeDefaultIndex({
+            h: dataHour.indexOf(localendTime.h),
+            m: dataMin.indexOf(localendTime.m),
+            md: md.indexOf(localendTime.md)
+        })
+        console.log("WaterINterval", waterInterval)
+        setIntervalTimeDefaultIndex({
+            h: dataHour.indexOf(localWaterInterval.h),
+            m: dataMin.indexOf(localWaterInterval.m),
+        })
+        console.log("----------------------------------------------------------------", localstartTime)
+    }, [localstartTime, localendTime, localWaterInterval])
 
     useEffect(() => {
         const saveSettings = async () => {
+            console.log("localstartTime", localstartTime)
+            console.log("StartTime", startTime)
             try {
                 await AsyncStorage.setItem('startTime', JSON.stringify(localstartTime));
             } catch (e) {
@@ -184,14 +217,14 @@ const WaterTrackSetting = ({ route }: any) => {
                 style={
                     {
                         ...styles.container,
-                        backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : !localWaterReminderFlag ? '#a6a6a6' : useCustomTheme.lightMode.Header
+                        backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : !localWaterReminderFlag ? '#c7c7c7' : useCustomTheme.lightMode.Header
                     }
                 }
                 pointerEvents={localWaterReminderFlag ? 'auto' : 'none'}
             >
                 {!localWaterReminderFlag ? <Text>Trun on Reminder for setting values</Text> : null}
-                <Row title={'Start Time'} subtil={`${localstartTime.h}:${localstartTime.m}`} currentType={currentType} onpress={startTimeHandler} />
-                <Row title={'End Time'} subtil={`${localendTime.h}:${localendTime.m}`} currentType={currentType} onpress={endTimeHandler} />
+                <Row title={'Start Time'} subtil={`${localstartTime.h}:${localstartTime.m} ${localstartTime.md === 0 ? 'AM' : 'PM'}`} currentType={currentType} onpress={startTimeHandler} />
+                <Row title={'End Time'} subtil={`${localendTime.h}:${localendTime.m} ${localendTime.md === 0 ? 'AM' : 'PM'}`} currentType={currentType} onpress={endTimeHandler} />
                 <Row title={'Interval'} subtil={`${localWaterInterval.h} hours:${localWaterInterval.m} mins`} currentType={currentType} onpress={intervalTimeHandler} />
             </View>
             <SetDrinkTarget
@@ -249,20 +282,24 @@ const WaterTrackSetting = ({ route }: any) => {
                     setLocalEndTime({
                         h: value.h,
                         m: value.m,
+                        md: value.md,
                     });
                     setEndTime({
                         h: value.h,
                         m: value.m,
+                        md: value.md,
                     });
                 }}
                 setStartTime={(value: any) => {
                     setLocalStartTime({
                         h: value.h,
                         m: value.m,
+                        md: value.md,
                     });
                     setStartTime({
                         h: value.h,
                         m: value.m,
+                        md: value.md,
                     });
                 }}
                 currentType={currentType}
@@ -270,8 +307,14 @@ const WaterTrackSetting = ({ route }: any) => {
                 setShowOverLay={setShowOverLay}
                 startTimeDefaultIndex={startTimeDefaultIndex}
                 setStartTimeDefaultIndex={setStartTimeDefaultIndex}
+                endTimeDefaultIndex={endTimeDefaultIndex}
+                setEndTimeDefaultIndex={setEndTimeDefaultIndex}
+                setIntervalTimeDefaultIndex={setIntervalTimeDefaultIndex}
+                intervalDefaultIndex={intervalDefaultIndex}
                 dataMin={dataMin}
                 dataHour={dataHour}
+                md={md}
+                dataHoursInterval={dataHoursInterval}
             />
 
             <OverLayScreen modalVisible={modalVisible || remindermodalVisible} />

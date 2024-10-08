@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
 
-const CustomSwitch = ({ isEnabled, onValueChange, rowTitle }) => {
+const CustomSwitch = ({ isEnabled, onValueChange, rowTitle } :any) => {
     const [thumbPosition] = useState(new Animated.Value(isEnabled ? 1 : 0));
     const trackWidth = 50; // Adjust this based on your design
     const thumbSize = 20;  // Adjust this based on your design

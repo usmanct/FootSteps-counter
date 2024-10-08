@@ -23,8 +23,16 @@ const TargetModal = (
         setEndTime,
         startTimeDefaultIndex,
         setStartTimeDefaultIndex,
+        endTimeDefaultIndex,
+        setEndTimeDefaultIndex,
+        setIntervalTimeDefaultIndex,
+        intervalDefaultIndex,
+        setReminderDefaultIndex,
+        reimderDefaultIndex,
         dataHour,
-        dataMin
+        dataMin,
+        md,
+        dataHoursInterval
     }: any) => {
     const usecustomTheme = useThemeChange()
     const datakm: any = Array.from({ length: 21 }, (_, i) => i);
@@ -33,8 +41,10 @@ const TargetModal = (
     const [timeValue, setTimeValue] = useState<any>({
         hour: 0,
         hindex: 0,
+        md: 0,
         minute: 0,
         mindex: 0,
+        mdindex: 0,
     })
     const [defaultIndexTime, setDefaultIndexTime] = useState({
         hour: 0,
@@ -52,18 +62,21 @@ const TargetModal = (
         // setDefaultIndex(inputValue.i);
 
         if (modalType === 'account') {
-            console.log("account--------")
-            setDefaultIndexTime({
+            // console.log("account--------", timeValue)
+
+            setReminderDefaultIndex({
                 hour: timeValue.hindex,
-                minute: timeValue.mindex
+                minute: timeValue.mindex,
+                md: timeValue.mdindex
             })
             setReminderTime({
                 h: timeValue.hour,
-                m: timeValue.minute
+                m: timeValue.minute,
+                md: timeValue.md
             })
         }
         else if (modalType === 'duration') {
-            console.log("duration---------")
+            // console.log("duration---------")
             setDefaultIndexTime({
                 hour: timeValue.hindex,
                 minute: timeValue.mindex
@@ -74,45 +87,50 @@ const TargetModal = (
             })
         }
         else if (modalType === 'Start Time') {
-            console.log('Start Time-------')
+            // console.log('Start Time-------', timeValue)
             setStartTimeDefaultIndex({
                 h: timeValue.hindex,
-                m: timeValue.mindex
+                m: timeValue.mindex,
+                md: timeValue.mdindex
             })
             setStartTime({
                 h: timeValue.hour,
-                m: timeValue.minute
+                m: timeValue.minute,
+                md: timeValue.md
             })
         }
         else if (modalType === 'End Time') {
-            console.log('Start Time-------')
-            setDefaultIndexTime({
+            // console.log('End Time-------', timeValue)
+            setEndTimeDefaultIndex({
                 hour: timeValue.hindex,
-                minute: timeValue.mindex
+                minute: timeValue.mindex,
+                md: timeValue.mdindex
             })
             setEndTime({
                 h: timeValue.hour,
-                m: timeValue.minute
+                m: timeValue.minute,
+                md: timeValue.md
             })
         }
         else if (modalType === 'Interval') {
-            console.log('Start Time-------')
-            setDefaultIndexTime({
+            // console.log('Start Time-------')
+            // console.log('Interval-------', timeValue)
+            setIntervalTimeDefaultIndex({
                 hour: timeValue.hindex,
-                minute: timeValue.mindex
+                minute: timeValue.mindex,
             })
             setInterval({
                 h: timeValue.hour,
-                m: timeValue.minute
+                m: timeValue.minute,
             })
         }
         else if (modalType === 'distance') {
-            console.log('distance-------')
+            // console.log('distance-------')
             setDefaultIndex(inputValue.i)
             setDsitanceCovered(inputValue.value)
         }
         else {
-            console.log('distance-------')
+            // console.log('distance-------')
             setDefaultIndex(inputValue.i)
             settargetKcalBurn(inputValue.value)
         }
@@ -138,11 +156,20 @@ const TargetModal = (
                                     <WheelPickerExpo
                                         height={150}
                                         width={50}
-                                        initialSelectedIndex={defaultIndexTime.hour}
-                                        items={dataHour.map((name: any) => ({ label: name, value: '' }))}
+                                        initialSelectedIndex={
+                                            modalType === 'Start Time' ?
+                                                startTimeDefaultIndex.h :
+                                                modalType === 'End Time' ?
+                                                    endTimeDefaultIndex.h :
+                                                    modalType === 'Interval' ?
+                                                        intervalDefaultIndex.h :
+                                                        modalType === 'account' ?
+                                                            reimderDefaultIndex.h :
+                                                            defaultIndexTime.hour}
+                                        items={modalType === 'Interval' ? dataHoursInterval.map((name: any) => ({ label: name, value: '' })) : dataHour.map((name: any) => ({ label: name, value: '' }))}
                                         onChange={
                                             ({ item, index }) => {
-                                                console.log(item, index)
+                                                // console.log(item, index)
                                                 setTimeValue((prev: any) => ({ ...prev, hour: item.label, hindex: index }));
                                             }
                                         }
@@ -156,7 +183,16 @@ const TargetModal = (
 
                                         height={150}
                                         width={50}
-                                        initialSelectedIndex={defaultIndexTime.minute}
+                                        initialSelectedIndex={modalType === 'Start Time' ?
+                                            startTimeDefaultIndex.m :
+                                            modalType === 'End Time' ?
+                                                endTimeDefaultIndex.m :
+                                                modalType === 'Interval' ?
+                                                    intervalDefaultIndex.m :
+                                                    modalType === 'account' ?
+                                                        reimderDefaultIndex.m :
+                                                        defaultIndexTime.minute
+                                        }
                                         items={dataMin.map((name: any) => ({ label: name, value: '' }))}
                                         onChange={
                                             ({ item, index }) => {
@@ -168,6 +204,33 @@ const TargetModal = (
                                     />
                                     {/* <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Minutes</Text> */}
                                 </View>
+                                {!(modalType === 'Interval') &&
+                                    <View style={styles.pickerContainer}>
+                                        <WheelPickerExpo
+
+                                            height={150}
+                                            width={50}
+                                            initialSelectedIndex={modalType === 'Start Time' ?
+                                                startTimeDefaultIndex.md :
+                                                modalType === 'End Time' ?
+                                                    endTimeDefaultIndex.md :
+                                                    modalType === 'account' ?
+                                                        reimderDefaultIndex.md :
+                                                        defaultIndexTime.minute
+                                            }
+                                            items={(md || []).map((name: any) => ({ label: name, value: '', }))}
+                                            onChange={
+                                                ({ item, index }) => {
+                                                    setTimeValue((prev: any) => ({ ...prev, md: item.label, mdindex: index }));
+                                                }
+                                            }
+                                            selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
+                                            backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
+                                        />
+                                        {/* <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Minutes</Text> */}
+                                    </View>
+                                }
+
                             </View>
                             :
                             <View style={styles.pickerContainer}>

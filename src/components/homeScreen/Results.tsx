@@ -1,5 +1,5 @@
-import { FlatList, StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import { FlatList, StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
 import StatsCard from './StatsCard';
 import { AppContext } from '../../contextApi/AppContext';
 import { BarChart } from "react-native-gifted-charts";
@@ -14,19 +14,19 @@ const Results = () => {
         currentType
     }: any = useContext(AppContext);
     const navigation = useNavigation();
-    const useCustomTheme = useThemeChange()
+    const useCustomTheme = useThemeChange();
     const [totalSteps, setTotalSteps] = useState(0);
-    const { waterHistory }: any = useContext(AppContext)
-    const [fetchData, setFetchData] = useState<any>([])
+    const { waterHistory }: any = useContext(AppContext);
+    const [fetchData, setFetchData] = useState<any>([]);
 
-    const yAxixsLabels = ['0', '1000', '2000', '3000', '4000', '5000', '6000']
-    const { getALLWaterData, dropTable } = useDatabase()
+    const yAxixsLabels = ['0', '1000', '2000', '3000', '4000', '5000', '6000'];
+    const { getALLWaterData, dropTable } = useDatabase();
 
     useEffect(() => {
-        getALLWaterData()
-        const waterDrinkedData = waterHistory.map((data: { waterIntake: any; date: any; }) => ({ value: data.waterIntake, label: data.date }))
-        setFetchData([...waterDrinkedData])
-    }, [waterHistory])
+        getALLWaterData();
+        const waterDrinkedData = waterHistory.map((data: { waterIntake: any; date: any; }) => ({ value: data.waterIntake, label: data.date }));
+        setFetchData([...waterDrinkedData]);
+    }, [waterHistory]);
 
     useEffect(() => {
         let total = 0;
@@ -34,11 +34,34 @@ const Results = () => {
             total += e.footsteps;
         });
         setTotalSteps(total);
-
     }, [record]);
+
+    const renderRecordItem = ({ item }: any) => (
+        <View style={styles.subContainer}>
+            <StatsCard
+                icon={require('../../../assets/homeScreenAssets/distance_icon.png')}
+                value={item?.distance}
+                unit={'Km'}
+                isFirst={undefined}
+            />
+            <StatsCard
+                isFirst={true}
+                icon={require('../../../assets/homeScreenAssets/timer_icon.png')}
+                value={item?.date}
+                unit={'Timer'}
+            />
+            <StatsCard
+                icon={require('../../../assets/homeScreenAssets/calories_icon.png')}
+                value={item?.energy} 
+                unit={'Kcal'}
+                isFirst={undefined}
+            />
+        </View>
+    );
+
     return (
         <View style={{ flex: 1, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
-            <ScrollView>
+            <View>
                 <View style={{ justifyContent: 'center', flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <MaterialIcons name="keyboard-backspace" size={24} color={currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text} />
@@ -47,40 +70,25 @@ const Results = () => {
                         <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Results</Text>
                     </TouchableOpacity>
                 </View>
-                {record.length ?
+
+                {/* {record.length ? ( */}
                     <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
                         <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
                             <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>FootSteps</Text>
                         </View>
                         <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{totalSteps}</Text>
+
+                        {/* Move the FlatList here to render directly below the FootSteps count */}
                         <FlatList
                             data={record}
-                            renderItem={({ item }) => (
-                                <View style={styles.subContainer}>
-                                    <StatsCard
-                                        icon={require('../../../assets/homeScreenAssets/distance_icon.png')}
-                                        value={item?.distance}
-                                        unit={'Km'}
-                                        isFirst={undefined}
-                                    />
-                                    <StatsCard isFirst={true}
-                                        icon={require('../../../assets/homeScreenAssets/timer_icon.png')}
-                                        value={item?.date}
-                                        unit={'Timer'}
-                                    />
-                                    <StatsCard
-                                        icon={require('../../../assets/homeScreenAssets/calories_icon.png')}
-                                        value={item?.energy} unit={'Kcal'}
-                                        isFirst={undefined}
-                                    />
-                                </View>
-                            )}
+                            renderItem={renderRecordItem}
+                            keyExtractor={(item) => item.date} // Make sure to provide a keyExtractor for FlatList
                             scrollEnabled={true}
                         />
-                    </View> :
-                    null
-                }
-                {fetchData.length ?
+                    </View>
+                {/* ) : null} */}
+
+                {fetchData.length ? (
                     <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.bgcolor }}>
                         <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
                             <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>Water Drinked</Text>
@@ -108,23 +116,21 @@ const Results = () => {
                             }}
                             xAxisLabelTextStyle={{ color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}
                         />
-                    </View> :
-                    null
-                }
-            </ScrollView>
-            {!fetchData.length && !record.length ?
+                    </View>
+                ) : null}
+            </View>
+            {!fetchData.length && !record.length ? (
                 <View style={styles.notFoundContainer}>
                     <Image
                         source={require('../../../assets/waterTrackScreenAssets/Not_found_Gif.gif')}
                     />
                 </View>
-                : null}
+            ) : null}
         </View>
+    );
+};
 
-    )
-}
-
-export default Results
+export default Results;
 
 const styles = StyleSheet.create({
     container: {
@@ -148,7 +154,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         gap: 15,
         paddingHorizontal: 10,
-
     },
     btnView: {
         justifyContent: 'flex-end',
@@ -173,7 +178,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginVertical: 10,
-
     },
     subHeading: {
         fontSize: 16,
@@ -209,4 +213,4 @@ const styles = StyleSheet.create({
         left: 10, // Adjust to fit your layout
         justifyContent: 'center',
     },
-})
+});

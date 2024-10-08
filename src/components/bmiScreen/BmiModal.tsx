@@ -4,15 +4,22 @@ import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { useThemeChange } from '../../apptheme/ThemeChange';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData, currentType, showOverLay, setShowOverLay }: any) => {
-    const gender = 'male,female,other'.split(',');
-    const ageArray = Array.from({ length: 200 }, (_, index) => index + 1);
-    const [defaultIndex, setDefaultIndex] = useState({
-        gender: 0,
-        age: 22,
-        height: 169,
-        weight: 69
-    })
+const BmiModal = ({
+    modalVisible,
+    setModalVisible,
+    title,
+    userData,
+    setUserData,
+    currentType,
+    showOverLay,
+    setShowOverLay,
+    genderArray,
+    ageArray,
+    defaultIndex,
+    setDefaultIndex
+}: any) => {
+
+
     const [obj, setObj] = useState<any>({})
     const usecustomTheme = useThemeChange()
 
@@ -20,17 +27,19 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData,
         let updatedData = { ...userData };
 
         if (title === 'Gender') {
+            console.log("obj" , obj)
             updatedData = { ...userData, gender: obj.gender };
-            setDefaultIndex((prev) => ({ ...prev, gender: obj.gindex }));
+            setDefaultIndex((prev: any) => ({ ...prev, gender: obj.gindex }));
         } else if (title === 'Age') {
+            console.log("obj" , obj)
             updatedData = { ...userData, age: obj.age };
-            setDefaultIndex((prev) => ({ ...prev, age: obj.aindex }));
+            setDefaultIndex((prev: any) => ({ ...prev, age: obj.aindex }));
         } else if (title === 'Height') {
             updatedData = { ...userData, height: obj.height };
-            setDefaultIndex((prev) => ({ ...prev, height: obj.hindex }));
+            setDefaultIndex((prev: any) => ({ ...prev, height: obj.hindex }));
         } else {
             updatedData = { ...userData, weight: obj.weight };
-            setDefaultIndex((prev) => ({ ...prev, weight: obj.windex }));
+            setDefaultIndex((prev: any) => ({ ...prev, weight: obj.windex }));
         }
 
         setUserData(updatedData);
@@ -42,7 +51,7 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData,
         setShowOverLay(!showOverLay);
     };
     useEffect(() => {
-        console.log('Gender Default index' , defaultIndex );
+        console.log('Gender Default index', defaultIndex);
     }, [])
 
     const setLocalStorage = async (data: any) => {
@@ -77,8 +86,8 @@ const BmiModal = ({ modalVisible, setModalVisible, title, userData, setUserData,
                                         defaultIndex.height : defaultIndex.weight}
                             items={
                                 title === 'Gender' ?
-                                    gender.map(name => ({ label: name, value: '' }))
-                                    : ageArray.map(name => ({ label: String(name), value: '' }))
+                                    (genderArray || []).map((name: any) => ({ label: name, value: '' }))
+                                    : (ageArray || []).map((name: any) => ({ label: String(name), value: '' }))
                             }
                             onChange={
                                 ({ item, index }) => {

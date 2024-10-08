@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Image, View } from 'react-native'
+import { StyleSheet, Text, Image, View, ActivityIndicator } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import SoundNotification from '../components/letsrunScreen/SoundNotification'
 import LetsRunRow from '../components/letsrunScreen/LetsRunRow'
@@ -12,20 +12,31 @@ import { useThemeChange } from '../apptheme/ThemeChange'
 import OverLayScreen from '../components/OverLayScreen'
 import { registerBackgroundFetchAsync } from '../services/BackgroundServices'
 import StepCountingServiceComponent from '../services/ForegroundService'
+import PrivacyPolicyAndRating from '../components/PrivacyPolicyAndRating'
 // import { startRunningreminderService } from '../services/ForegroundService'
 
 const Account = () => {
 
-
-
+  const formatNumber = (num: { toString: () => string; }) => num.toString().padStart(2, '0');
+  const dataMin = Array.from({ length: 60 }, (_, i) => formatNumber(i));
+  const dataHour = Array.from({ length: 12 }, (_, i) => formatNumber(i + 1));
+  const md: any = ['AM', 'PM']
+  const [loading, setLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [modalType, setModalType] = useState('')
-  const [reminderTime, setReminderTime] = useState({
+  const [reminderTime, setReminderTime] = useState<any>({
     h: 0,
-    m: 0
+    m: 0,
+    md: 'AM'
+  })
+  const [reimderDefaultIndex, setReminderDefaultIndex] = useState({
+    h: 0,
+    m: 0,
+    md: 0
   })
   const [toggleService, setToggleService] = useState(false)
   const [showOverLay, setShowOverLay] = useState(false)
+
   const {
     currentType,
     isPedometerRunning,
@@ -39,20 +50,38 @@ const Account = () => {
 
   useEffect(() => {
     const loadSettings = async () => {
+      setLoading(true)
       try {
         const savedReminderTime = await AsyncStorage.getItem('reminderTime');
         if (savedReminderTime) {
           console.log('ReminderTime', savedReminderTime)
           setReminderTime(JSON.parse(savedReminderTime));
+          setReminderDefaultIndex({
+            h: dataHour.indexOf(JSON.parse(savedReminderTime).h),
+            m: dataMin.indexOf(JSON.parse(savedReminderTime).m),
+            md: md.indexOf(JSON.parse(savedReminderTime).m)
+          })
         }
 
       } catch (e) {
         console.error("Failed to load settings from AsyncStorage", e);
       }
+      finally {
+        setLoading(false)
+      }
     };
-
+    console.log('ReminderTime')
     loadSettings();
   }, []);
+
+  useEffect(() => {
+    setReminderDefaultIndex({
+      h: dataHour.indexOf(reminderTime.h),
+      m: dataMin.indexOf(reminderTime.m),
+      md: md.indexOf(reminderTime.md)
+    })
+  }, [reminderTime])
+
   useEffect(() => {
     const saveSettings = async () => {
       try {
@@ -89,7 +118,18 @@ const Account = () => {
     setShowOverLay(!showOverLay)
   }
 
-
+  if (loading) {
+    return (
+      <View style={
+        {
+          ...styles.loaderContainer,
+          backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white'
+        }
+      }>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
   return (
     <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
       <View style={{ ...styles.headerRow, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
@@ -137,11 +177,14 @@ const Account = () => {
           toggleService={toggleService}
         />
         <View style={{ backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, paddingBottom: 15 }}>
-          <LetsRunRow title={'Notification Time'} subtil={`${reminderTime.h}:${reminderTime.m}`} onpress={() => toggleModal('account')} currentType={currentType} />
+          <LetsRunRow title={'Notification Time'} subtil={`${reminderTime.h}:${reminderTime.m} ${reminderTime.md === 0 ? 'AM' : 'PM'}`} onpress={() => toggleModal('account')} currentType={currentType} />
         </View>
       </View>
       <View style={styles.subcontainer}>
         <Profile currentType={currentType} showOverLay={showOverLay} setShowOverLay={setShowOverLay} />
+      </View>
+      <View style={styles.subcontainer}>
+        <PrivacyPolicyAndRating currentType={currentType} />
       </View>
       <RunningSettingModal
         modalVisible={modalVisible}
@@ -153,6 +196,11 @@ const Account = () => {
         currentType={currentType}
         showOverLay={showOverLay}
         setShowOverLay={setShowOverLay}
+        dataMin={dataMin}
+        dataHour={dataHour}
+        setReminderDefaultIndex={setReminderDefaultIndex}
+        reimderDefaultIndex={reimderDefaultIndex}
+        md={md}
       />
       <OverLayScreen modalVisible={modalVisible} showOverLay={showOverLay} />
     </View>
@@ -169,6 +217,11 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     // paddingHorizontal: 10,
     // paddingVertical: 15,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   subcontainer: {
     paddingVertical: 10,

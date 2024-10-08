@@ -103,7 +103,6 @@ const StepCountingServiceComponent = () => {
                 name: 'ic_launcher',
                 type: 'mipmap',
             },
-            color: '#2ecc71',
             linkingURI: 'com.usmanct.FootStepscounter://home',
             parameters: {
                 delay: 5000, // Delay in milliseconds

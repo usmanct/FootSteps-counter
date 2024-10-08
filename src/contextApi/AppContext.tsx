@@ -19,25 +19,27 @@ export const AppProvider = ({ children }: any) => {
     const [currentStepCount, setCurrentStepCount] = useState(0);
     const [kcal, setKcal] = useState<any>(0);
     const [distance, setDistance] = useState<any>(0);
-    const [target, setTarget] = useState(100)
+    const [target, setTarget] = useState(500)
     const [currentType, setCurrentType] = useState<string>('light')
     const [isPedometerRunning, setIsPedometerRunning] = useState<boolean>(false)
     const [reminderFlag, setReminderFlag] = useState(false)
     const [userData, setUserData] = useState({
-        gender: '',
-        age: '',
-        height: '',
-        weight: '',
+        gender: 'male',
+        age: '23',
+        height: '172',
+        weight: '72',
 
     })
     const [waterReminderFlag, setWaterReminderFlag] = useState<boolean>(false)
     const [startTime, setStartTime] = useState<any>({
         h: 0,
-        m: 0
+        m: 0,
+        md:'AM'
     })
     const [endTime, setEndTime] = useState<any>({
         h: 0,
-        m: 0
+        m: 0,
+        md:'AM'
     })
     const [waterInterval, setWaterInterval] = useState<any>({
         h: 0,

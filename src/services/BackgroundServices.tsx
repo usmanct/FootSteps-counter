@@ -19,15 +19,17 @@ TaskManager.defineTask(WATER_REMINDER_TASK, async () => {
     try {
         const waterFlag = await AsyncStorage.getItem('waterReminderFlag')
         const startTime = await AsyncStorage.getItem('startTime')
-        const upperBound = startTime ? JSON.parse(startTime) : { h: null, m: null };
+        const upperBound = startTime ? JSON.parse(startTime) : { h: null, m: null, md: null };
         const endTime = await AsyncStorage.getItem('endTime')
-        const lowerBound = endTime ? JSON.parse(endTime) : { h: null, m: null };
+        const lowerBound = endTime ? JSON.parse(endTime) : { h: null, m: null, md: null };
         const currentTime = new Date();
+        console.log('Reminder Time', upperBound)
+        console.log("End Time", lowerBound)
 
-        const startTimeHours = Number(upperBound.h);
+        const startTimeHours = upperBound.md === 'AM' ? Number(upperBound.h) : Number(upperBound.h) + Number(12);
         const startTimeMins = Number(upperBound.m);
 
-        const endTimeHours = Number(lowerBound.h);
+        const endTimeHours = lowerBound.md === 'AM' ? Number(lowerBound.h) : Number(lowerBound.h) + Number(12)
         const endTimeMins = Number(lowerBound.m);
 
         const currentTimeHours = Number(currentTime.getHours());
@@ -58,13 +60,13 @@ TaskManager.defineTask(WATER_REMINDER_TASK, async () => {
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
     try {
         const reminderTimeString = await AsyncStorage.getItem('reminderTime');
-        const reminderTime = reminderTimeString ? JSON.parse(reminderTimeString) : { h: null, m: null };
+        const reminderTime = reminderTimeString ? JSON.parse(reminderTimeString) : { h: null, m: null, md: null };
         const reminderFlag = await AsyncStorage.getItem('reminderFlag');
 
         // Get current time
         const currentTime = new Date();
 
-        const reminderHours = Number(reminderTime.h);
+        const reminderHours = reminderTime.md === 'AM' ? Number(reminderTime.h) : Number(reminderTime.h) + Number(12);
         const reminderMinutes = Number(reminderTime.m);
         console.log()
 
@@ -97,7 +99,7 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
 export async function registerBackgroundFetchAsync() {
 
     return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-        minimumInterval: 20, // 1-minute interval
+        minimumInterval: 5, // 1-minute interval
         stopOnTerminate: false,
         startOnBoot: true,
     });
@@ -113,10 +115,10 @@ export async function registerWaterreminderTask() {
     const timeInterval = await AsyncStorage.getItem('Interval')
     const NotificationTimeInterval = timeInterval ? JSON.parse(timeInterval) : { h: null, m: null };
     const reminderHours = Number(NotificationTimeInterval.h);
-    const reminderMinutes = Number(NotificationTimeInterval.m) 
-    
-    const t  = 60 * 60 * reminderHours + 60 * reminderMinutes
-    console.log('tttttt',t)
+    const reminderMinutes = Number(NotificationTimeInterval.m)
+
+    const t = 60 * 60 * reminderHours + 60 * reminderMinutes
+    console.log('tttttt', t)
     return BackgroundFetch.registerTaskAsync(WATER_REMINDER_TASK, {
         minimumInterval: t, // 1-minute interval
         stopOnTerminate: false,

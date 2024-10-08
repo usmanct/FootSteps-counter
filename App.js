@@ -1,10 +1,11 @@
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { Alert, SafeAreaView, StyleSheet, Platform  } from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext, AppProvider } from './src/contextApi/AppContext';
 import { BottomTabs } from './src/bottomNavigation/BottomTabs';
 import * as Location from 'expo-location';
 import SplashScreen from './src/screens/SplashScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Linking from 'expo-linking';
 
 export default function App() {
 
@@ -25,15 +26,41 @@ export default function App() {
   const getPermission = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     console.log('status', status);
-    if (status !== 'granted') {
-      console.error('Permissons are not allowed')
-      return;
-    }
-  }
 
+    if (status !== 'granted') {
+      Alert.alert(
+        'Location Permission Denied',
+        'To proceed, you need to allow location access in your device settings.',
+        [
+          {
+            text: 'Open Settings',
+            onPress: () => Linking.openSettings(), // Open the app's settings
+          },
+          {
+            text: 'Allow Access to Location',
+            onPress: () => Linking.openSettings(), // Open the app's settings
+          }
+        ],
+        { cancelable: false } // Prevents dismissing the alert by tapping outside
+      );
+    }
+  };
+  const openBatteryOptimizationSettings = () => {
+    if (Platform.OS === 'android') {
+      const packageName = 'com.usmanct.FootStepscounter'; // Replace this with your app's package name
+
+      Linking.openURL(`package:${packageName}`)
+        .catch(() => {
+          Alert.alert('Error', 'Unable to open battery optimization settings.');
+        });
+    } else {
+      Alert.alert('Not supported', 'This feature is only available on Android.');
+    }
+  };
 
   useEffect(() => {
     getPermission();
+    // openBatteryOptimizationSettings()
   }, []);
 
 
