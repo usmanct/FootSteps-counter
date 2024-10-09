@@ -1,18 +1,15 @@
-import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import WaterProgress from '../components/waterTrackScreen/WaterProgress'
 import HistoryChat from '../components/waterTrackScreen/HistoryChat'
 import { useDatabase } from '../sqLiteDb/useDatabase'
 import { AppContext } from '../contextApi/AppContext'
-import CompleteAnimation from '../components/CompleteAnimation'
-import DataBaseInitialization from '../sqLiteDb/DataBaseInitialization'
 import { useThemeChange } from '../apptheme/ThemeChange'
 import OverLayScreen from '../components/OverLayScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Loader from '../components/Loader'
 const WaterTrack = () => {
-
-  const [barData, setbarData] = useState<any>([])
   const now = new Date();
   const dateOnly = now.toLocaleDateString();
   const {
@@ -30,8 +27,8 @@ const WaterTrack = () => {
     setWaterInterval
   }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
+  const [barData, setbarData] = useState<any>([])
   const [updateflag, setUpdateflag] = useState(true);
-  const [currentDate, setCurrentDate] = useState(dateOnly);
   const [drinkGoal, setDrinkGoal] = useState(1000)
   const [cupCapacity, setCupCapacity] = useState(50)
   const [waterdrinked, setwaterdrinked] = useState<any>(0)
@@ -40,7 +37,6 @@ const WaterTrack = () => {
   const [measuringUnit, setMeasuringUnit] = useState<any>('ml')
   const { getALLWaterData, updateWaterRecord, insertWaterData, getWaterData } = useDatabase()
   const [showOverLay, setShowOverLay] = useState(false)
-
   useEffect(() => {
     const waterDrinkedData = waterHistory.map((data: any) => ({
       value: data?.waterIntake,
@@ -51,7 +47,6 @@ const WaterTrack = () => {
     // Check if the goal is achieved
 
   }, [waterdrinked, waterHistory]);
-
   useEffect(() => {
     if (IsgoalAchieved) {
       setTimeout(() => {
@@ -59,14 +54,12 @@ const WaterTrack = () => {
       }, 5000);
     }
   }, [IsgoalAchieved])
-
   useEffect(() => {
     const interval = setInterval(() => {
       const newNow = new Date();
       const newDateOnly = newNow.toLocaleDateString();
       if (newDateOnly !== dateOnly) {
         insertWaterData(dateOnly, waterdrinked, cupCapacity, drinkGoal).then(() => {
-          // console.log('Data inserted successfully');
         }).catch(error => {
           console.error('Error inserting data:', error);
         });
@@ -76,66 +69,60 @@ const WaterTrack = () => {
 
     return () => clearInterval(interval); // Clean up the interval on unmount
   }, [dateOnly]);
-
   useEffect(() => {
-    const loadInitialData = async () => {
-      try {
-
-        const savedStartTime = await AsyncStorage.getItem('startTime');
-        if (savedStartTime) {
-          console.log('StartTime', savedStartTime)
-          setStartTime(JSON.parse(savedStartTime));
-        }
-        const savedEndTime = await AsyncStorage.getItem('endTime');
-        if (savedEndTime) {
-          console.log('EndTime', savedEndTime)
-          setEndTime(JSON.parse(savedEndTime));
-        }
-        const saveInterval = await AsyncStorage.getItem('Interval');
-        if (saveInterval) {
-          console.log('Interval', saveInterval)
-          setWaterInterval(JSON.parse(saveInterval));
-        }
-        const savedReminderTime = await AsyncStorage.getItem('waterReminderFlag');
-        if (savedReminderTime) {
-          setWaterReminderFlag(JSON.parse(savedReminderTime));
-        }
-
-        const data: any = await getWaterData(dateOnly);
-        if (data && data.length > 0) {
-          // console.log('data====', data[0]);
-          if (data[0]?.goal == data[0]?.waterIntake) {
-            // console.log('goal', data[0]?.goal, data[0]?.waterIntake);
-            setISgoalAchieved(true);
-          }
-          setDrinkGoal(data[0]?.goal);
-          setCupCapacity(data[0]?.cupCapacity);
-          setwaterdrinked(data[0]?.waterIntake);
-          setFillContainer((data[0]?.waterIntake / data[0]?.goal) * MAX_HEIGHT);
-        } else {
-          // If no data for the current date, insert a new row
-          insertWaterData(dateOnly, waterdrinked, cupCapacity, drinkGoal).then(() => {
-            // console.log('New data inserted for the current date');
-          }).catch(error => {
-            console.error('Error inserting new data:', error);
-          });
-        }
-        const unitt = await AsyncStorage.getItem('unit');
-        if (unitt !== null) {
-          setMeasuringUnit(unitt);  // Set the parsed boolean value
-        }
-      } catch (error) {
-        console.error('Failed to load initial data', error);
-      }
-      finally {
-        setLoading(false);
-      }
-    };
     getALLWaterData();
-
     loadInitialData();
   }, [])
+  const loadInitialData = async () => {
+    try {
 
+      const savedStartTime = await AsyncStorage.getItem('startTime');
+      if (savedStartTime) {
+        console.log('StartTime', savedStartTime)
+        setStartTime(JSON.parse(savedStartTime));
+      }
+      const savedEndTime = await AsyncStorage.getItem('endTime');
+      if (savedEndTime) {
+        console.log('EndTime', savedEndTime)
+        setEndTime(JSON.parse(savedEndTime));
+      }
+      const saveInterval = await AsyncStorage.getItem('Interval');
+      if (saveInterval) {
+        console.log('Interval', saveInterval)
+        setWaterInterval(JSON.parse(saveInterval));
+      }
+      const savedReminderTime = await AsyncStorage.getItem('waterReminderFlag');
+      if (savedReminderTime) {
+        setWaterReminderFlag(JSON.parse(savedReminderTime));
+      }
+
+      const data: any = await getWaterData(dateOnly);
+      if (data && data.length > 0) {
+        if (data[0]?.goal == data[0]?.waterIntake) {
+          setISgoalAchieved(true);
+        }
+        setDrinkGoal(data[0]?.goal);
+        setCupCapacity(data[0]?.cupCapacity);
+        setwaterdrinked(data[0]?.waterIntake);
+        setFillContainer((data[0]?.waterIntake / data[0]?.goal) * MAX_HEIGHT);
+      } else {
+        // If no data for the current date, insert a new row
+        insertWaterData(dateOnly, waterdrinked, cupCapacity, drinkGoal).then(() => {
+        }).catch(error => {
+          console.error('Error inserting new data:', error);
+        });
+      }
+      const unitt = await AsyncStorage.getItem('unit');
+      if (unitt !== null) {
+        setMeasuringUnit(unitt);  // Set the parsed boolean value
+      }
+    } catch (error) {
+      console.error('Failed to load initial data', error);
+    }
+    finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     if (updateflag) {
       setUpdateflag(false);
@@ -156,49 +143,9 @@ const WaterTrack = () => {
       updateAndFetchData();
     }
   }, [waterdrinked, cupCapacity, drinkGoal]);
-
-
-  // useEffect(() => {
-  //   const totalIntake = waterdrinked
-
-  //   if (totalIntake >= drinkGoal && IsgoalAchieved) {
-  //     setGoalAchieved(true);
-  //     setTimeout(() => setGoalAchieved(false), 10000); // hide overlay after 2 seconds
-  //   }
-
-  // }, [waterdrinked])
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const newNow = new Date();
-  //     const newDateOnly = newNow.toLocaleDateString();
-
-  //     if (newDateOnly !== currentDate) {
-  //       // Date has changed, insert data and update current date
-  //       insertWaterData();
-  //       setCurrentDate(newDateOnly);
-  //     }
-  //     else{
-  //       insertWaterData();
-  //       // updateWaterRecord(currentDate)
-  //     }
-  //   }, 60000); // Check every minute
-
-  //   return () => clearInterval(interval); // Clean up the interval on unmount
-  // }, [currentDate, insertWaterData, waterdrinked]);
   if (loading) {
-    return (
-      <View style={
-        {
-          ...styles.loaderContainer,
-          backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white'
-        }
-      }>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
+    return <Loader currentType={currentType} />
   }
-
   return (
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -230,7 +177,6 @@ const WaterTrack = () => {
           waterInterval={waterInterval}
           setWaterInterval={setWaterInterval}
         />
-        {/* <CanvasProgress/> */}
         <HistoryChat
           barData={barData}
           currentType={currentType}
@@ -249,13 +195,4 @@ const WaterTrack = () => {
       />
     </View>)
 }
-
-const styles = StyleSheet.create({
-  loaderContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
-
 export default WaterTrack

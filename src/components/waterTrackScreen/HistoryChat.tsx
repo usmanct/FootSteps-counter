@@ -1,14 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import { Dimensions } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 import { useThemeChange } from '../../apptheme/ThemeChange';
-const screenHeight = Dimensions.get("window").height;
 
-const HistoryChat = ({ barData, currentType, cupCapacity, drinkGoal }: any) => {
+const HistoryChat = ({ barData, currentType }: any) => {
     const useCustomTheme = useThemeChange()
     const yAxixsLabels = ['0', '1000', '2000', '3000', '4000', '5000', '6000']
-
     return (
         <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
             <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
@@ -39,7 +36,6 @@ const HistoryChat = ({ barData, currentType, cupCapacity, drinkGoal }: any) => {
                             color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text
                         }}
                         xAxisLabelTextStyle={{ color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}
-
                     />
                 </View>
                 :
@@ -49,13 +45,10 @@ const HistoryChat = ({ barData, currentType, cupCapacity, drinkGoal }: any) => {
                     />
                 </View>
             }
-
         </View>
     );
 };
-
 export default HistoryChat;
-
 const styles = StyleSheet.create({
     container: {
         margin: 10,

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { Modal, StyleSheet, Text, Pressable, View } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { useThemeChange } from '../../apptheme/ThemeChange';
 
@@ -9,7 +9,6 @@ const TargetModal = (
         setModalVisible,
         modalType,
         setModalType,
-        reminderTime,
         setReminderTime,
         settimeDuration,
         setDsitanceCovered,
@@ -17,7 +16,6 @@ const TargetModal = (
         currentType,
         setShowOverLay,
         showOverLay,
-        startTime,
         setStartTime,
         setInterval,
         setEndTime,
@@ -51,19 +49,9 @@ const TargetModal = (
         minute: 0
     });
     const [defaultIndex, setDefaultIndex] = useState(0);
-
-    // useEffect(() => {
-    //     console.log(inputValue);
-    //     console.log(defaultIndex);
-    // }, [target]);
-
     const saveChanges = () => {
-        // setTarget(inputValue.value);
-        // setDefaultIndex(inputValue.i);
 
         if (modalType === 'account') {
-            // console.log("account--------", timeValue)
-
             setReminderDefaultIndex({
                 hour: timeValue.hindex,
                 minute: timeValue.mindex,
@@ -76,7 +64,6 @@ const TargetModal = (
             })
         }
         else if (modalType === 'duration') {
-            // console.log("duration---------")
             setDefaultIndexTime({
                 hour: timeValue.hindex,
                 minute: timeValue.mindex
@@ -87,7 +74,6 @@ const TargetModal = (
             })
         }
         else if (modalType === 'Start Time') {
-            // console.log('Start Time-------', timeValue)
             setStartTimeDefaultIndex({
                 h: timeValue.hindex,
                 m: timeValue.mindex,
@@ -100,7 +86,6 @@ const TargetModal = (
             })
         }
         else if (modalType === 'End Time') {
-            // console.log('End Time-------', timeValue)
             setEndTimeDefaultIndex({
                 hour: timeValue.hindex,
                 minute: timeValue.mindex,
@@ -113,8 +98,6 @@ const TargetModal = (
             })
         }
         else if (modalType === 'Interval') {
-            // console.log('Start Time-------')
-            // console.log('Interval-------', timeValue)
             setIntervalTimeDefaultIndex({
                 hour: timeValue.hindex,
                 minute: timeValue.mindex,
@@ -125,12 +108,10 @@ const TargetModal = (
             })
         }
         else if (modalType === 'distance') {
-            // console.log('distance-------')
             setDefaultIndex(inputValue.i)
             setDsitanceCovered(inputValue.value)
         }
         else {
-            // console.log('distance-------')
             setDefaultIndex(inputValue.i)
             settargetKcalBurn(inputValue.value)
         }
@@ -169,18 +150,15 @@ const TargetModal = (
                                         items={modalType === 'Interval' ? dataHoursInterval.map((name: any) => ({ label: name, value: '' })) : dataHour.map((name: any) => ({ label: name, value: '' }))}
                                         onChange={
                                             ({ item, index }) => {
-                                                // console.log(item, index)
                                                 setTimeValue((prev: any) => ({ ...prev, hour: item.label, hindex: index }));
                                             }
                                         }
                                         selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
                                         backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
                                     />
-                                    {/* <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Hours</Text> */}
                                 </View>
                                 <View style={styles.pickerContainer}>
                                     <WheelPickerExpo
-
                                         height={150}
                                         width={50}
                                         initialSelectedIndex={modalType === 'Start Time' ?
@@ -202,7 +180,6 @@ const TargetModal = (
                                         selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
                                         backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
                                     />
-                                    {/* <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Minutes</Text> */}
                                 </View>
                                 {!(modalType === 'Interval') &&
                                     <View style={styles.pickerContainer}>
@@ -227,7 +204,6 @@ const TargetModal = (
                                             selectedStyle={{ ...styles.selectedItem, borderColor: currentType === 'dark' ? usecustomTheme.darkMode.activeStroke : '#fc5c74' }}
                                             backgroundColor={currentType === 'dark' ? usecustomTheme.darkMode.Header : 'white'}
                                         />
-                                        {/* <Text style={{ color: currentType === 'dark' ? usecustomTheme.darkMode.Text : usecustomTheme.lightMode.Text }}>Minutes</Text> */}
                                     </View>
                                 }
 
@@ -271,6 +247,7 @@ const TargetModal = (
         </View>
     );
 };
+export default TargetModal;
 
 const styles = StyleSheet.create({
     centeredView: {
@@ -346,5 +323,3 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
-
-export default TargetModal;

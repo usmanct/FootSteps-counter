@@ -2,7 +2,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import BmiModal from '../components/bmiScreen/BmiModal';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useThemeChange } from '../apptheme/ThemeChange';
 import { AppContext } from '../contextApi/AppContext';
 const Profile = ({ currentType, setShowOverLay, showOverLay }: any) => {
@@ -17,16 +16,8 @@ const Profile = ({ currentType, setShowOverLay, showOverLay }: any) => {
     })
     const useCustomTheme = useThemeChange()
     const { userData, setUserData }: any = useContext(AppContext)
-
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState('')
-
-    const toggleModal = (e: any) => {
-        setModalVisible(!modalVisible)
-        setShowOverLay(!showOverLay)
-        setTitle(e)
-    }
-
     useEffect(() => {
         setDefaultIndex({
             gender: genderArray.indexOf(userData.gender),
@@ -35,6 +26,11 @@ const Profile = ({ currentType, setShowOverLay, showOverLay }: any) => {
             weight: ageArray.indexOf(Number(userData.weight))
         })
     }, [userData])
+    const toggleModal = (e: any) => {
+        setModalVisible(!modalVisible)
+        setShowOverLay(!showOverLay)
+        setTitle(e)
+    }
 
 
     return (

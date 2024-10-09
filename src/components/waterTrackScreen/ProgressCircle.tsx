@@ -1,24 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
-import { Button, StyleSheet, View, Image, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import { AppContext } from '../../contextApi/AppContext';
-import { useDatabase } from '../../sqLiteDb/useDatabase';
 import React from 'react';
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
-import { useThemeChange } from '../../apptheme/ThemeChange';
-import Wave from "react-native-waves"
+import { useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { WaterWave } from './WaterWave';
 const { width } = Dimensions.get('window');
-
-
-
-
 const ProgressCircle = ({
     drinkGoal,
-    setDrinkGoal,
     cupCapacity,
-    setCupCapacity,
     waterdrinked,
-    setwaterdrinked,
     IsgoalAchieved,
     setISgoalAchieved,
     currentType
@@ -30,24 +20,10 @@ const ProgressCircle = ({
         fillcontainer,
         setFillContainer,
     }: any = useContext(AppContext)
-    const useCustomTheme = useThemeChange()
     const [bolflag, setBolFlag] = useState(true)
     const [drinkflag, setDrinkFlag] = useState(true)
     const [cupHeight, setCupHeight] = useState(0)
-
-
-    const now = new Date();
-    const dateOnly = now.toLocaleDateString();
-    const [today, setToday] = useState(dateOnly)
-    const { getALLWaterData, updateWaterRecord, insertWaterData, getWaterData } = useDatabase()
     const waveOffset = useSharedValue(0)
-
-    const waveAnimation = useAnimatedStyle(() => {
-        return {
-            transform: [{ translateX: waveOffset.value }],
-        };
-    });
-
     useEffect(() => {
         waveOffset.value = withRepeat(
             withTiming(-width, { duration: 2000 }),
@@ -55,8 +31,6 @@ const ProgressCircle = ({
             true
         );
     }, []);
-
-
     useEffect(() => {
         let HEIGHT_ON_EVERY_CUP
 
@@ -71,18 +45,11 @@ const ProgressCircle = ({
         }
 
     }, [])
-
-
-
-
     useEffect(() => {
         if (IsgoalAchieved) {
             setBolFlag(true);
         }
     }, [IsgoalAchieved])
-
-
-
     useEffect(() => {
 
         if (bolflag) {
@@ -120,8 +87,6 @@ const ProgressCircle = ({
         let preHeight = (p * MAX_HEIGHT) / 100
         setFillContainer(preHeight)
     }, [drinkGoal])
-
-
     useEffect(() => {
         let HEIGHT_ON_EVERY_CUP
         let NO_OF_CUPS = drinkGoal / cupCapacity
@@ -130,45 +95,8 @@ const ProgressCircle = ({
         setNoOfCups(NO_OF_CUPS)
 
     }, [cupCapacity])
-
     return (
-        // <View style={{ ...styles.container, height: MAX_HEIGHT, borderColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke }}>
-        //     <Image
-        //         source={require('../../../assets/waterTrackScreenAssets/water_icon.png')}
-        //         style={{ height: 100, width: 100 }}
-        //     />
-        //     <View style={{ ...styles.fillingContainer, height: fillcontainer || 0, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke }}>
-        //     {/* <Animated.View style={[styles.ave, waveAnimation]} /> */}
-        //     </View>
-        //     {/* <Wave delta={1} maxPoints={1} placement="bottom" height={fillcontainer || 0} color={currentType === 'dark' ? useCustomTheme.darkMode.activeStroke : useCustomTheme.lightMode.activeStroke} /> */}
-        // </View>
-        <WaterWave size={200} value={fillcontainer} currentType={currentType}/>
+        <WaterWave size={200} value={fillcontainer} currentType={currentType} />
     );
 };
-
 export default ProgressCircle;
-
-const styles = StyleSheet.create({
-    container: {
-        width: 200,
-        borderWidth: 5,
-        borderRadius: 100,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        overflow: 'hidden',
-        alignItems: 'center'
-    },
-    fillingContainer: {
-        width: '100%',
-        position: 'absolute',
-        bottom: 0,
-        borderBottomLeftRadius: 4,
-        borderBottomRightRadius: 4,
-    },
-    wave: {
-        width: '200%', // Double the width for seamless animation
-        height: '100%',
-        backgroundColor: '#9f49ff',
-        borderRadius: 100,
-    },
-});

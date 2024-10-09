@@ -1,14 +1,9 @@
 import { StyleSheet, Text, Pressable, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import SoundNotification from './SoundNotification'
-import Row from '../waterTrackScreen/Row'
 import LetsRunRow from './LetsRunRow'
 import RunningSettingModal from './RunningSettingModal'
 import StatsCard from '../homeScreen/StatsCard'
-import { AntDesign } from '@expo/vector-icons';
-import { SimpleLineIcons } from '@expo/vector-icons';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { Octicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeChange } from '../../apptheme/ThemeChange'
 const RunnerActions = ({
@@ -49,8 +44,6 @@ const RunnerActions = ({
   const [modalType, setModalType] = useState('')
   const [time, setTime] = useState(1);
   const useCustomTheme = useThemeChange()
-
-
   useEffect(() => {
     let interval: string | number | NodeJS.Timeout | undefined;
 
@@ -60,65 +53,46 @@ const RunnerActions = ({
       }, 1000);
     } else {
       clearInterval(interval);
-      // onStopHandler() 
     }
-    // if (timeReached) {
-    //   onStopHandler()
-    // }
 
     return () => clearInterval(interval);
   }, [IsRunning, runningState]);
-
   useEffect(() => {
     //compare the Timeduration with the time passed while running
     const timeDurationSeconds = timeDuration.h * 60 * 60 + timeDuration.m * 60
     const e = (Math.ceil(kcalBurn * 100) / 100).toFixed(2);
-    console.log(timeDurationSeconds, '--------------------------------------------------------', time)
     if (timeDurationSeconds <= time) {
       console.log('Time reached')
       setTimeReached(true)
     }
-
     if (targetKcalBurn <= e) {
       setKcalAchieve(true)
     }
-
   }, [time])
 
   useEffect(() => {
+    // @ts-ignore
     const d = parseInt((Math.ceil((totalDistance / 1000) * 100) / 100)); // Ceiling value for total distance in km
-    console.log('--------------------------------------------------------', d, distanceCovered, distanceAchieve)
-
     if (distanceCovered < d) {
-      console.log('Distance reached' , d)
       setDistanceAchieve(true)
     }
   }, [totalDistance])
-
-
   useEffect(() => {
     // I assume here Weight is 72
     if (IsRunning && runningState) {
       const kcalPerKm = 72 * 1.036
       const totalKcal = kcalPerKm * totalDistance / 1000
       setkcalBurn(totalKcal)
-      console.log("totalDistance: ", totalDistance)
-      console.log("time: ", time)
       const pace = (totalDistance / time).toFixed(2)
-      console.log("pace", pace)
       setSpeed(pace === 'NaN' ? 0 : pace)
     }
   }, [totalDistance, IsRunning, runningState])
-
-
-
   const toggleModal = (s: string) => {
     setModalType(s)
     setModalVisible(!modalVisible)
     setShowOverLay(!showOverLay)
 
   }
-
   const letsRunHandler = () => {
     setIsRunning(!IsRunning);
     setRunningState(!runningState)
@@ -127,16 +101,15 @@ const RunnerActions = ({
     setRouteCoordinates([])
     console.log('Running');
   };
-
   const pauscontinueHandler = () => {
     setRunningState(!runningState)
     console.log('Running', runningState);
     // setIsRunning(!IsRunning);
   }
-
   const onStopHandler = () => {
     setIsRunning(false)
     setRunningState(false)
+    // @ts-ignore
     navigation.navigate('Runningresult',
       {
         mapRef,
@@ -161,7 +134,6 @@ const RunnerActions = ({
         setKcalAchieve
       } as never)
   }
-
   // Format time as HH:MM:SS
   const formatTime = (seconds: number) => {
     const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -169,7 +141,6 @@ const RunnerActions = ({
     const sec = String(seconds % 60).padStart(2, '0');
     return `${hours}:${minutes}:${sec}`;
   };
-
   return (
     !IsRunning ? (
       <View style={styles.container}>
@@ -277,10 +248,8 @@ export default RunnerActions
 const styles = StyleSheet.create({
   container: {
     gap: 5,
-    // backgroundColor:'red'
   },
   container1: {
-
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
@@ -291,7 +260,6 @@ const styles = StyleSheet.create({
     gap: 15,
     paddingHorizontal: 10,
   },
-
   button: {
     paddingHorizontal: 30,
     paddingVertical: 10,

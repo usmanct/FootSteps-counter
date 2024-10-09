@@ -1,6 +1,5 @@
-import { StyleSheet, Text, View, Modal, Pressable, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import Header from '../Header'
 import Row from './Row'
 import SetDrinkTarget from './SetDrinkTarget'
 import { AppContext } from '../../contextApi/AppContext'
@@ -26,24 +25,19 @@ const WaterTrackSetting = ({ route }: any) => {
     const dataHoursInterval = Array.from({ length: 13 }, (_, i) => formatNumber(i));
     const { drinkGoal,
         setDrinkGoal,
-        cupCapacity,
         setCupCapacity,
-        waterdrinked,
-        setwaterdrinked,
-        IsgoalAchieved,
         setISgoalAchieved,
         setMeasuringUnit,
         measuringUnit,
-        waterReminderFlag,
         setWaterReminderFlag,
-        startTime,
         setStartTime,
-        endTime,
         setEndTime,
         waterInterval,
         setWaterInterval
     } = route.params;
     const isFocused = useIsFocused();
+    const useCustomTheme = useThemeChange()
+    const navigation = useNavigation();
     const [localDrinkGoal, setLocalDrinkGoal] = useState(route.params.drinkGoal);
     const [localCupCapacity, setLocalCupCapacity] = useState(route.params.cupCapacity)
     const [localMeasuringUnit, setLocalMeasuringUnit] = useState<any>(route.params.measuringUnit)
@@ -81,9 +75,6 @@ const WaterTrackSetting = ({ route }: any) => {
             m: 0,
         }
     )
-    const useCustomTheme = useThemeChange()
-    const navigation = useNavigation();
-
     useEffect(() => {
         if (isFocused) {
             setLocalDrinkGoal(route.params.drinkGoal);
@@ -91,7 +82,6 @@ const WaterTrackSetting = ({ route }: any) => {
             setLocalMeasuringUnit(route.params.measuringUnit);
         }
     }, [isFocused, route.params.drinkGoal, route.params.cupCapacity, route.params.measuringUnit]);
-
     useEffect(() => {
         setDefaultIndexcup(cupcapacitydata.indexOf(localCupCapacity))
         setDefaultIndexgoal(drinkGaolData.indexOf(localDrinkGoal))
@@ -111,13 +101,9 @@ const WaterTrackSetting = ({ route }: any) => {
             h: dataHour.indexOf(localWaterInterval.h),
             m: dataMin.indexOf(localWaterInterval.m),
         })
-        console.log("----------------------------------------------------------------", localstartTime)
     }, [localstartTime, localendTime, localWaterInterval])
-
     useEffect(() => {
         const saveSettings = async () => {
-            console.log("localstartTime", localstartTime)
-            console.log("StartTime", startTime)
             try {
                 await AsyncStorage.setItem('startTime', JSON.stringify(localstartTime));
             } catch (e) {
@@ -152,8 +138,6 @@ const WaterTrackSetting = ({ route }: any) => {
             registerWaterreminderTask()
         }
     }, [localWaterInterval]);
-
-
     useEffect(() => {
         setISgoalAchieved(false);
     }, [localDrinkGoal, localCupCapacity]);
@@ -184,10 +168,8 @@ const WaterTrackSetting = ({ route }: any) => {
         setReminderModalVisible(!remindermodalVisible)
         setModalType('Interval')
     }
-
     return (
         <View style={{ backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white', flex: 1 }}>
-            {/* BlurView and Overlay when modal is visible */}
             <View style={{ justifyContent: 'center', flexDirection: 'row', alignItems: 'center' }}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <MaterialIcons name="keyboard-backspace" size={24} color={currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text} />
@@ -316,7 +298,6 @@ const WaterTrackSetting = ({ route }: any) => {
                 md={md}
                 dataHoursInterval={dataHoursInterval}
             />
-
             <OverLayScreen modalVisible={modalVisible || remindermodalVisible} />
         </View>
     )
@@ -333,14 +314,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         gap: 15,
         paddingHorizontal: 10,
-    },
-    darkeroverlay: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0,0,0,0.4)', // Adjust opacity for a darker overlay
-    },
-    brightoverlay: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(255, 255, 255, 0.2)', // Light white overlay with low opacity for dark mode
     },
     backButton: {
         position: 'absolute',

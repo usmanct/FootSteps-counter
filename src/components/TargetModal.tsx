@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Modal, StyleSheet, Text, Pressable, View } from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { useThemeChange } from '../apptheme/ThemeChange';
-
 const TargetModal = (
     {
         modalVisible,
         setModalVisible,
-        target,
         setTarget,
         currentType,
         showOverLay,
@@ -17,26 +15,18 @@ const TargetModal = (
         setDefaultIndex
     }
         : any) => {
-
-
-    const [inputValue, setInputValue] = useState<any>({})
-    // const [defaultIndex, setDefaultIndex] = useState(0)
     const usecustomTheme = useThemeChange()
-    useEffect(() => {
-        console.log(inputValue)
-        console.log(defaultIndex)
-
-    }, [target])
-
-
+    const [inputValue, setInputValue] = useState<any>({})
     const saveChanges = () => {
         setTarget(inputValue.value)
         setDefaultIndex(inputValue.i)
         setModalVisible(!modalVisible)
         setShowOverLay(!showOverLay)
     }
-
-
+    const closeModal = useCallback(() => {
+        setModalVisible(false);
+        setShowOverLay(false);
+    }, [setModalVisible, setShowOverLay]);
 
     return (
         <View style={styles.centeredView}>
@@ -74,11 +64,7 @@ const TargetModal = (
                         </Pressable>
                         <Pressable
                             style={[styles.button, { backgroundColor: currentType === 'dark' ? usecustomTheme.darkMode.Btn1 : '#0fb4fc' }]}
-                            onPress={() => {
-                                setModalVisible(!modalVisible)
-                                setShowOverLay(!showOverLay)
-                            }
-                            }>
+                            onPress={closeModal}>
                             <Text style={styles.textStyle}>Cancel</Text>
                         </Pressable>
                     </View>
@@ -87,7 +73,7 @@ const TargetModal = (
         </View>
     );
 };
-
+export default TargetModal;
 const styles = StyleSheet.create({
     centeredView: {
         flex: 1,
@@ -124,7 +110,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.8,
         shadowRadius: 2,
         elevation: 5,
-
     },
     saveBtn: {
         backgroundColor: '#f49913',
@@ -138,25 +123,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 14
     },
-    modalText: {
-        marginBottom: 15,
-        textAlign: 'center',
-    },
-    input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        borderRadius: 5,
-        borderColor: '#ccc',
-        marginBottom: 10,
-        fontSize: 16,
-    },
     selectedItem: {
         borderWidth: 2,
         color: '#0cf249',
         fontWeight: 'bold',
     }
 });
-
-export default TargetModal;

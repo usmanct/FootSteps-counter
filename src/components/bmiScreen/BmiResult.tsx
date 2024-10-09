@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState , memo } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../contextApi/AppContext';
 import { useThemeChange } from '../../apptheme/ThemeChange';
@@ -87,15 +87,13 @@ const BmiResult = ({ route }: any) => {
     )
 }
 
-export default BmiResult
+export default memo(BmiResult)
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // justifyContent: 'center',
         alignItems: 'center',
         padding: 20
-
     },
     subContainer: {
         borderRadius: 10,
@@ -123,23 +121,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         color: 'grey',
         textAlign: 'center',
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 20,
-    },
-    btn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 5,
-    },
-    btnText: {
-        fontSize: 14,
-        color: 'grey',
-    },
-    rowText: {
-        fontWeight: 'bold',
     },
     button: {
         backgroundColor: '#f49913',
@@ -184,8 +165,4 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 14
     },
-
-
-
-
 })

@@ -1,20 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SwitchToggle from 'react-native-switch-toggle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AppContext } from '../../contextApi/AppContext';
 import { useThemeChange } from '../../apptheme/ThemeChange';
 import { registerBackgroundFetchAsync, registerWaterreminderTask, unregisterBackgroundFetchAsync, unregisterWaterReminderTask } from '../../services/BackgroundServices';
 
 const SoundNotification = (
     {
         rowTitle,
-        reminderTime,
-        setReminderTime,
         reminderFlag,
         setReminderFlag,
         setToggleService,
-        toggleService,
         styleProp,
         currentType,
         isPedometerRunning,
@@ -23,26 +19,7 @@ const SoundNotification = (
         setWaterReminderFlag
     }: any) => {
     const [isEnabled, setIsEnabled] = useState(reminderFlag || false);
-    const {
-        currentStepCount,
-        setCurrentStepCount,
-    }: any = useContext(AppContext)
     const useCustomTheme = useThemeChange()
-
-    // useEffect(() => {
-    //     const saveSettings = async () => {
-    //         try {
-    //             // Ensure reminderFlag is either true or false
-    //             const valueToStore = reminderFlag !== undefined ? JSON.stringify(reminderFlag) : 'false';
-    //             console.log("value", valueToStore)
-    //             await AsyncStorage.setItem('reminderFlag', valueToStore);
-    //         } catch (e) {
-    //             console.error("Failed to save settings to AsyncStorage", e);
-    //         }
-    //     };
-
-    //     saveSettings();
-    // }, [reminderFlag]);
 
     useEffect(() => {
         if (rowTitle === 'StepCounter') {
@@ -58,50 +35,6 @@ const SoundNotification = (
             setIsEnabled(waterReminderFlag)
         }
     }, [isPedometerRunning, reminderFlag, rowTitle , waterReminderFlag])
-
-    // const toggleSwitch = async () => {
-    //     // Toggle switch and update reminderFlag state
-
-    //     if (rowTitle === 'Daily Step Reminder') {
-    //         setToggleService(!toggleService);
-    //         const updatedFlag = !reminderFlag;
-    //         setReminderFlag(updatedFlag);
-    //         setIsEnabled(updatedFlag);
-
-    //         // Register or unregister background fetch task
-    //         if (updatedFlag) {
-    //             registerBackgroundFetchAsync();
-    //         } else {
-    //             unregisterBackgroundFetchAsync();
-    //         }
-
-    //         // Save reminderFlag state to AsyncStorage
-    //         await AsyncStorage.setItem('reminderFlag', JSON.stringify(updatedFlag));
-
-    //     }
-    //     else if (rowTitle === 'StepCounter') {
-    //         console.log('isPedometerRunning', isPedometerRunning)
-    //         setToggleService(!toggleService);
-    //         setIsPedometerRunning(!isPedometerRunning)
-    //         const a: boolean = isPedometerRunning === true ? false : true;
-    //         setIsEnabled(a)
-    //         console.log('aaaaa', a)
-    //         await AsyncStorage.setItem('PedemeterState', JSON.stringify(a));
-
-    //         if (toggleService) {
-
-    //         }
-    //         else {
-
-    //         }
-    //     }
-    //     else if (rowTitle === 'Reminder') {
-    //         setToggleService(!toggleService);
-    //         const updatedFlag = !waterReminderFlag;
-    //         setWaterReminderFlag(updatedFlag);
-    //         setIsEnabled(updatedFlag);
-    //     }
-    // };
     const toggleSwitch = async () => {
         let updatedFlag;
 
@@ -162,8 +95,7 @@ const SoundNotification = (
         </View>
     );
 };
-
-
+export default SoundNotification;
 const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
@@ -179,4 +111,3 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     }
 });
-export default SoundNotification;

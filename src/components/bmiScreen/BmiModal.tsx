@@ -50,15 +50,9 @@ const BmiModal = ({
         setModalVisible(!modalVisible);
         setShowOverLay(!showOverLay);
     };
-    useEffect(() => {
-        console.log('Gender Default index', defaultIndex);
-    }, [])
-
     const setLocalStorage = async (data: any) => {
-        console.log("Data", data)
         try {
             await AsyncStorage.setItem('userData', JSON.stringify(data));
-            console.log('User data saved!');
         } catch (error) {
             console.error('Failed to save user data', error);
         }

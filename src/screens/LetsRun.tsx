@@ -1,6 +1,5 @@
 import { StyleSheet, Image, View, Text, ScrollView } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import Header from '../components/Header'
 import RunnerMap from '../components/letsrunScreen/RunnerMap'
 import RunnerActions from '../components/letsrunScreen/RunnerActions'
 import * as Location from 'expo-location';
@@ -9,7 +8,6 @@ import { AppContext } from '../contextApi/AppContext'
 import { useThemeChange } from '../apptheme/ThemeChange'
 import OverLayScreen from '../components/OverLayScreen'
 const LetsRun = () => {
-
   const [timeDuration, settimeDuration] = useState({
     h: 0,
     m: 1
@@ -32,7 +30,6 @@ const LetsRun = () => {
   const [showOverLay, setShowOverLay] = useState(false)
   const { currentType }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
-
   const animateToRegion = (latitude: number, longitude: number) => {
     if (mapRef.current) {
       mapRef.current.animateToRegion({
@@ -44,7 +41,6 @@ const LetsRun = () => {
     }
   };
 
-  // Fetch user's current location and set it as the initial location on the map
   useEffect(() => {
     const getPermissionsAndCurrentLocation = async () => {
       try {
@@ -54,15 +50,12 @@ const LetsRun = () => {
           setErrorMsg('Permission to access location was denied');
           return;
         }
-
         // Get initial location
         const initialLocation = await Location.getCurrentPositionAsync({
           accuracy: Location.Accuracy.High,
         });
-
         const { latitude, longitude } = initialLocation.coords;
         setLocation(initialLocation);
-
         // Center map on the initial location when it's available and mapRef is ready
         animateToRegion(latitude, longitude);
       } catch (error) {
@@ -70,67 +63,8 @@ const LetsRun = () => {
         console.error(error);
       }
     };
-
     getPermissionsAndCurrentLocation();
   }, []);
-
-
-  // useEffect(() => {
-  //   let subscription: { remove: () => void };
-  //   const watchSteps = async () => {
-  //     try {
-  //       const startTime: any = new Date();
-  //       // Start tracking location
-  //       if (IsRunning && runningState) {
-  //         Location.watchPositionAsync(
-  //           { accuracy: Location.Accuracy.High, timeInterval: 1000, distanceInterval: 1 },
-  //           (newLocation) => {
-  //             // console.log('Location tracking', newLocation);
-  //             const { latitude, longitude } = newLocation.coords;
-  //             const elapsedTime = (new Date() - startTime) / 1000; // In seconds
-  //             setTotalTime(elapsedTime);
-  //             // Update location and route
-  //             setLocation(newLocation);
-  //             setRouteCoordinates((prev: any) => {
-  //               const newCoordinates = [...prev, { latitude, longitude }];
-  //               console.log('Updated Coordinate',newCoordinates , prev);
-  //               // Calculate the distance covered
-  //               if (newCoordinates.length > 1) {
-  //                 const lastPoint = newCoordinates[newCoordinates.length - 2];
-  //                 const distance = getDistance(lastPoint, { latitude, longitude });
-  //                 const distanceInKm = distance / 1000
-  //                 setTotalDistance(prevDistance => prevDistance + distanceInKm);
-  //               }
-
-  //               return newCoordinates;
-  //             });
-
-  //             // Center map on the new location
-  //             if (mapRef.current) {
-  //               mapRef.current.animateToRegion({
-  //                 latitude,
-  //                 longitude,
-  //                 latitudeDelta: 0.01,
-  //                 longitudeDelta: 0.01,
-  //               });
-  //             }
-  //           }
-  //         );
-  //       }
-  //     } catch (error) {
-  //       setErrorMsg('Failed to get location permissions');
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   watchSteps();
-  //   return () => {
-  //     if (subscription) {
-  //       subscription.remove(); // Cleanup subscription
-  //     }
-  //   };
-  // }, [IsRunning, runningState]);
-
   useEffect(() => {
     let subscription: { remove: () => void };
     const watchSteps = async () => {
@@ -141,6 +75,7 @@ const LetsRun = () => {
             { accuracy: Location.Accuracy.High, timeInterval: 1000, distanceInterval: 1 },
             (newLocation) => {
               const { latitude, longitude } = newLocation.coords;
+              // @ts-ignore
               const elapsedTime = (new Date() - startTime) / 1000; // In seconds
               setTotalTime(elapsedTime);
 
@@ -153,9 +88,6 @@ const LetsRun = () => {
 
                   // Apply distance threshold to filter out minor changes
                   const thresholdDistance = 5; // Minimum distance in meters to count as movement
-                  console.log('distance', distance)
-                  console.log("Setted Values To be Achieve", targetKcalBurn, distanceCovered, timeDuration)
-                  console.log("Values Change by the Time increase Or location Update", speed, kcalBurn)
                   if (distance > thresholdDistance) {
                     console.log('Return the')
                     return prev; // Ignore minor movement
@@ -165,10 +97,8 @@ const LetsRun = () => {
                   const newCoordinates = [...prev, { latitude, longitude }];
                   const distanceInKm = distance / 1000;
                   setTotalDistance((prevDistance) => prevDistance + distanceInKm);
-                  console.log('Updated Coordinates:', newCoordinates.length);
                   return newCoordinates;
                 }
-
                 // For the first coordinate, just add it without checking distance
                 return [{ latitude, longitude }];
               });
@@ -270,16 +200,11 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     alignItems: 'center',
-    // justifyContent: 'center',
-    // paddingHorizontal: 10,
-    // paddingVertical: 15,
-
   },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    // marginBottom: 10,
     paddingVertical: 15,
     width: '100%'
   },

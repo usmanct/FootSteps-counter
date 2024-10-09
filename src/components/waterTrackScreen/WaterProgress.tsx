@@ -21,7 +21,6 @@ const WaterProgress = (
         setISgoalAchieved,
         currentType,
         setShowOverLay,
-        showOverLay,
         setMeasuringUnit,
         measuringUnit,
         waterReminderFlag,
@@ -35,32 +34,27 @@ const WaterProgress = (
     }: any) => {
     const {
         MAX_HEIGHT,
-        fillcontainer,
         setFillContainer,
     }: any = useContext(AppContext)
+    const { dropTable } = useDatabase()
     const isFocused = useIsFocused();
     const useCustomTheme = useThemeChange()
-    const now = new Date()
-    const dateOnly = now.toLocaleDateString();
-    const [waterdrinkFlag, setWaterDrinkFlag] = useState(false)
     const navigation = useNavigation();
-    const { dropTable, getWaterData } = useDatabase()
+    const [waterdrinkFlag, setWaterDrinkFlag] = useState(false)
+    const [precentageDrinked, setPercentageDrinked] = useState(0.0)
     useEffect(() => {
         if (drinkGoal <= waterdrinked) {
             setISgoalAchieved(true)
-
         }
         setTimeout(() => {
             setWaterDrinkFlag(false)
         }, 4000)
     }, [isFocused, waterdrinkFlag])
-
     useEffect(() => {
         if (drinkGoal <= waterdrinked && waterdrinkFlag) {
             setShowOverLay(true)
         }
     }, [waterdrinked])
-
     useEffect(() => {
         let per: any
         per = waterdrinked / drinkGoal * 100
@@ -70,9 +64,6 @@ const WaterProgress = (
         setFillContainer(preHeight)
 
     }, [waterdrinked, drinkGoal, cupCapacity])
-
-    const [precentageDrinked, setPercentageDrinked] = useState(0.0)
-
     const handleDrink = () => {
         if (!IsgoalAchieved) {
             setwaterdrinked(waterdrinked + cupCapacity)
@@ -81,6 +72,7 @@ const WaterProgress = (
 
     }
     const navigateToSetting = () => {
+        // @ts-ignore
         navigation.navigate('WaterTrackSetting', {
             drinkGoal,
             setDrinkGoal,
@@ -102,7 +94,6 @@ const WaterProgress = (
             setWaterInterval
         } as never)
     }
-
     return (
         <>
             <ImageBackground
@@ -119,7 +110,6 @@ const WaterProgress = (
                         <AntDesign name="right" size={14} color="white" />
                     </TouchableOpacity>
                 </View>
-                {/* <View style={styles.innerContainer}> */}
                 <ProgressCircle
                     drinkGoal={drinkGoal}
                     setDrinkGoal={setDrinkGoal}
@@ -131,7 +121,6 @@ const WaterProgress = (
                     setISgoalAchieved={setISgoalAchieved}
                     currentType={currentType}
                 />
-                {/* </View> */}
             </ImageBackground>
             <View style={[styles.container, styles.resultContainer, { backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }]}>
                 <TouchableOpacity onPress={() => dropTable()}>
@@ -160,16 +149,12 @@ export default WaterProgress
 
 const styles = StyleSheet.create({
     container: {
-
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white',
-        // margin: 10,
         paddingVertical: 15,
-        // borderRadius: 8,
         gap: 15,
         paddingHorizontal: 10,
-
     },
     resultContainer: {
         marginHorizontal: 10,
@@ -179,17 +164,14 @@ const styles = StyleSheet.create({
     },
     btnView: {
         justifyContent: 'flex-end',
-        // backgroundColor: 'green',
         width: '100%',
         flexDirection: 'row',
-
     },
     btn: {
         flexDirection: 'row',
         alignItems: 'baseline',
         gap: 5,
         borderColor: 'black',
-        // borderWidth: 1,
         borderRadius: 5,
         paddingHorizontal: 10,
         paddingVertical: 5,

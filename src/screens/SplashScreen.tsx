@@ -7,7 +7,6 @@ const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width
 
 const SplashScreen = () => {
-    const [progress, setProgress] = useState<boolean>(false)
     const [loaderWidth, setLoaderWidth] = useState<number>(0)
 
 

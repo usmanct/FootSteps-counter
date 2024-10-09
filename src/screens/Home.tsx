@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from 'react-native'
+import { ScrollView,} from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Progress from '../components/homeScreen/Progress'
 import Stats from '../components/homeScreen/Stats'
@@ -9,13 +9,12 @@ import { useDatabase } from '../sqLiteDb/useDatabase'
 import DataBaseInitialization from '../sqLiteDb/DataBaseInitialization'
 import { AppState } from 'react-native';
 import { AppContext } from '../contextApi/AppContext'
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import StepCountingServiceComponent from '../services/ForegroundService'
 import { useThemeChange } from '../apptheme/ThemeChange'
 import OverLayScreen from '../components/OverLayScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Loader from '../components/Loader'
 const Home = () => {
-
   const {
     currentStepCount,
     setCurrentStepCount,
@@ -29,11 +28,8 @@ const Home = () => {
     setCurrentType,
     isPedometerRunning,
     setIsPedometerRunning,
-    reminderFlag,
     setReminderFlag,
     setUserData,
-    waterReminderFlag,
-    setWaterReminderFlag,
   }: any = useContext(AppContext)
   const now = new Date();
   const dateOnly = now.toLocaleDateString();
@@ -49,15 +45,6 @@ const Home = () => {
     DataBaseInitialization()
     initialLoad()
   }, [])
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     initialLoad();
-
-  //   }, [])
-  // );
-
-
-
   useEffect(() => {
     const subscription = AppState.addEventListener('change', handleAppStateChange);
 
@@ -66,25 +53,17 @@ const Home = () => {
 
     };
   }, [appState, isPedometerRunning])
-
-
-
-  const handleAppStateChange = (nextAppState: string) => {
+  const handleAppStateChange = useCallback((nextAppState: string) => {
     if (nextAppState === 'background' && isPedometerRunning) {
-      console.log("appState changed", nextAppState)
       startService();
       // Start the background service when the app goes to the background
     } else if (nextAppState === 'active') {
-      console.log("appState changed", nextAppState)
       stopService();
       // Stop the backgroun\d service when the app comes to the foreground
     }
-  };
-
-
+  } ,[isPedometerRunning]);
   useEffect(() => {
     if (initialUpdateflag) {
-      console.log("stepps Updating" , currentStepCount)
       updateFootStepRecord(dateOnly, currentStepCount, target, kcal, distance).then(async () => {
         const res = await getData(dateOnly)
       }).catch((e) => {
@@ -92,9 +71,6 @@ const Home = () => {
       })
     }
   }, [currentStepCount, kcal, distance, target])
-
-
-
   useEffect(() => {
     const interval = setInterval(async () => {
       const newNow = new Date();
@@ -134,7 +110,7 @@ const Home = () => {
         const parsedState = JSON.parse(notificationState); // Ensure you parse it if it's not null
         setReminderFlag(parsedState);  // Set the parsed boolean value
       }
-      
+
       const res: any = await getData(dateOnly);
       if (res && res.length > 0) {
         setCurrentStepCount(res[0].footsteps);
@@ -156,21 +132,9 @@ const Home = () => {
       setLoading(false);
     }
   };
-
   if (loading) {
-    return (
-      <View style={
-        {
-          ...styles.loaderContainer,
-          backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white'
-        }
-      }>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
+    return <Loader currentType={currentType} />;
   }
-
-
   return (
     <ScrollView
       contentContainerStyle={{ backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white', position: 'relative' }}
@@ -218,13 +182,4 @@ const Home = () => {
     </ScrollView>
   )
 }
-const styles = StyleSheet.create({
-  loaderContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
-
-
 export default Home

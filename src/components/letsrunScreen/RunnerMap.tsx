@@ -1,30 +1,20 @@
 import { StyleSheet, Text, View, Dimensions, ActivityIndicator } from 'react-native';
-import React, { useEffect, useState, useRef } from 'react';
+import React  from 'react';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
-import { getDistance } from 'geolib';
-import * as Location from 'expo-location';
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 
 const RunnerMap = ({
-    totalDistance,
-    setTotalDistance,
     mapRef, errorMsg,
     location,
     routeCoordinates,
-    setErrorMsg,
-    setRouteCoordinates,
-    setLocation,
-    speed,
-    setSpeed,
     currentType
 }: any) => {
-
-    useEffect(() => {
-        console.log("mapref", mapRef)
-        console.log("location", location)
-        console.log("routeCoordinates", routeCoordinates)
-    }, [])
+    // useEffect(() => {
+    //     console.log("mapref", mapRef)
+    //     console.log("location", location)
+    //     console.log("routeCoordinates", routeCoordinates)
+    // }, [])
     const darkModeMapStyle = [
         {
             "elementType": "geometry",
@@ -113,10 +103,6 @@ const RunnerMap = ({
             ]
         }
     ];
-
-
-
-
     return (
         <View style={{ ...styles.map, justifyContent: 'center', alignItems: 'center' }}>
             {errorMsg ? (
@@ -153,12 +139,11 @@ const RunnerMap = ({
         </View>
     );
 };
-
+export default RunnerMap;
 const styles = StyleSheet.create({
     map: {
         width: screenWidth,
         height: screenHeight / 2 - 20,
-        // backgroundColor: 'green'
     },
     distanceContainer: {
         padding: 10,
@@ -168,5 +153,3 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
-
-export default RunnerMap;

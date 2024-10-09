@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { FlatList, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import StatsCard from './StatsCard';
 import { AppContext } from '../../contextApi/AppContext';
@@ -52,7 +52,7 @@ const Results = () => {
             />
             <StatsCard
                 icon={require('../../../assets/homeScreenAssets/calories_icon.png')}
-                value={item?.energy} 
+                value={item?.energy}
                 unit={'Kcal'}
                 isFirst={undefined}
             />
@@ -70,29 +70,34 @@ const Results = () => {
                         <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>Results</Text>
                     </TouchableOpacity>
                 </View>
-
-                {/* {record.length ? ( */}
-                    <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
-                        <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
-                            <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>FootSteps</Text>
-                        </View>
-                        <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{totalSteps}</Text>
-
-                        {/* Move the FlatList here to render directly below the FootSteps count */}
-                        <FlatList
-                            data={record}
-                            renderItem={renderRecordItem}
-                            keyExtractor={(item) => item.date} // Make sure to provide a keyExtractor for FlatList
-                            scrollEnabled={true}
-                        />
+                <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.bgcolor }}>
+                    <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
+                        <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>FootSteps</Text>
                     </View>
-                {/* ) : null} */}
-
-                {fetchData.length ? (
-                    <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.bgcolor }}>
-                        <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
-                            <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>Water Drinked</Text>
+                    {totalSteps !== 0 ?
+                        <View>
+                            <Text style={{ ...styles.headingText, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}>{totalSteps}</Text>
+                            <FlatList
+                                data={record}
+                                renderItem={renderRecordItem}
+                                keyExtractor={(item) => item.date} // Make sure to provide a keyExtractor for FlatList
+                                scrollEnabled={true}
+                            />
                         </View>
+                        :
+                        <Image
+                            source={require('../../../assets/waterTrackScreenAssets/Not_found_data.gif')}
+                            height={200}
+                            width={200}
+
+                        />
+                    }
+                </View>
+                <View style={{ ...styles.container, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.bgcolor }}>
+                    <View style={{ ...styles.chartHeading, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bmiButton : useCustomTheme.darkMode.bmiButton }}>
+                        <Text style={{ ...styles.textHeading, color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.darkMode.Text }}>Water Drinked</Text>
+                    </View>
+                    {fetchData.length ?
                         <BarChart
                             frontColor={'#9f49ff'}
                             barWidth={40}
@@ -116,16 +121,16 @@ const Results = () => {
                             }}
                             xAxisLabelTextStyle={{ color: currentType === 'dark' ? useCustomTheme.darkMode.Text : useCustomTheme.lightMode.Text }}
                         />
-                    </View>
-                ) : null}
-            </View>
-            {!fetchData.length && !record.length ? (
-                <View style={styles.notFoundContainer}>
-                    <Image
-                        source={require('../../../assets/waterTrackScreenAssets/Not_found_Gif.gif')}
-                    />
+                        :
+                        <Image
+                            source={require('../../../assets/waterTrackScreenAssets/Not_found_data.gif')}
+                            height={200}
+                            width={200}
+
+                        />
+                    }
                 </View>
-            ) : null}
+            </View>
         </View>
     );
 };
@@ -189,7 +194,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white',
+        backgroundColor: 'red',
         borderRadius: 8,
         margin: 10,
         marginTop: 5,

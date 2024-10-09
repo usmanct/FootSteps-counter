@@ -1,26 +1,18 @@
 import { Dimensions, Pressable, StyleSheet, Text, View, Image } from 'react-native'
-import React, { useEffect, useRef } from 'react'
-import Header from '../Header'
+import React  from 'react'
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import StatsCard from '../homeScreen/StatsCard';
 import { useNavigation } from '@react-navigation/native';
-import { SimpleLineIcons } from '@expo/vector-icons';
-import { Octicons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useThemeChange } from '../../apptheme/ThemeChange';
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
-
 const Runningresult = ({ route }: any) => {
     const navigation = useNavigation();
     const {
         mapRef,
-        errorMsg,
         location,
         routeCoordinates,
         kcalBurn,
-        distanceCovered,
         time,
         speed,
         setSpeed,
@@ -33,25 +25,7 @@ const Runningresult = ({ route }: any) => {
         setDistanceAchieve,
         setKcalAchieve
     }: any = route.params
-
     const useCustomTheme = useThemeChange()
-    // useEffect(()=>{
-    //     if (mapRef.current) {
-    //         mapRef.current.takeSnapshot({
-    //           width: 300,      // optional, when omitted the view-width is used
-    //           height: 300,     // optional, when omitted the view-height is used
-    //           region: null,    // iOS only, optional region to render
-    //           format: 'png',   // image formats: 'png', 'jpg' (default: 'png')
-    //           quality: 0.8,    // image quality: 0..1 (only relevant for jpg, default: 1)
-    //           result: 'file'   // result types: 'file', 'base64' (default: 'file')
-    //         }).then((uri: any) => {
-    //           setMapSnapshot(uri);
-    //         }).catch((error: any) => {
-    //           console.error('Error taking snapshot', error);
-    //         });
-    //       }
-    // } , [])
-
     const runAgainHandler = () => {
         navigation.navigate('LetsRun' as never)
         setSpeed(0)
@@ -62,7 +36,6 @@ const Runningresult = ({ route }: any) => {
         setDistanceAchieve(false)
         setKcalAchieve(false)
     }
-
     const formatTime = (seconds: number) => {
         const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
         const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
@@ -157,10 +130,6 @@ const Runningresult = ({ route }: any) => {
             ]
         }
     ];
-
-
-
-
     return (
         <View style={{ backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.bgcolor : 'white' }}>
             <View style={{ ...styles.headerRow, backgroundColor: currentType === 'dark' ? useCustomTheme.darkMode.Header : useCustomTheme.lightMode.Header }}>
@@ -247,14 +216,12 @@ export default Runningresult
 const styles = StyleSheet.create({
 
     container: {
-        // backgroundColor: 'white',
         margin: 10,
         paddingVertical: 15,
         borderRadius: 8,
         gap: 15,
         paddingHorizontal: 10,
         height: screenHeight
-
     },
     container1: {
 
@@ -293,7 +260,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        // marginBottom: 10,
         paddingVertical: 15,
         backgroundColor: '#e9eaee',
         width: '100%'

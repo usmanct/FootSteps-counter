@@ -4,10 +4,8 @@ import { AppContext } from '../contextApi/AppContext'
 import { useThemeChange } from '../apptheme/ThemeChange'
 
 const OverLayScreen = ({ modalVisible, showOverLay, type, waterdrinked, measuringUnit, drinkGoal }: any) => {
-
   const { currentType }: any = useContext(AppContext)
   const useCustomTheme = useThemeChange()
-
   return (
     <View style={
       {
@@ -41,9 +39,7 @@ const OverLayScreen = ({ modalVisible, showOverLay, type, waterdrinked, measurin
     </View>
   )
 }
-
 export default OverLayScreen
-
 const styles = StyleSheet.create({
   overlay: {
     position: 'absolute',

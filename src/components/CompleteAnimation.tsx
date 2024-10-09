@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import Animated, { Easing, useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
 
-const CompleteAnimation = ({ isVisible }) => {
+const CompleteAnimation = ({ isVisible }: any) => {
   const opacity = useSharedValue(0);
 
   useEffect(() => {

@@ -1,11 +1,8 @@
 import React, { createContext, useState } from 'react';
-
+// @ts-ignore
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }: any) => {
-
-    const now = new Date();
-    const dateOnly = now.toLocaleDateString();
     const [record, setRecord] = useState([])
     const [isLoading, setIsLoading] = useState(true);
     const [preWaterCount, setWaterCupCount] = useState(0)
